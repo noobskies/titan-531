@@ -94,25 +94,61 @@ User must go to Supabase dashboard and run `schema.sql` in SQL Editor. This crea
 
 Once schema is applied and connection verified, build:
 
-1. **Auth Context & Hook**
+1. **Auth Context & Hook** ✅
 
-   - `hooks/useAuth.ts` - Authentication state management
-   - `context/AuthContext.tsx` - Auth provider
-   - Session management
-   - Guest mode detection
+   - `context/AuthContext.tsx` - Authentication state management
+   - Session persistence and auto-refresh
+   - `useAuth()` hook for global auth access
+   - Guest mode detection (default state)
+   - Sign out functionality
 
-2. **Auth UI Components**
+2. **Auth UI Components** ✅
 
    - `components/AuthModal.tsx` - Sign up/in modal
-   - OAuth buttons (Google, GitHub)
+   - Supabase Auth UI integration
    - Email/password forms
-   - Error handling
+   - Google OAuth button (requires Supabase dashboard config)
+   - Tab switching between sign up and sign in
 
-3. **Integration**
-   - Add "Sign Up" button to Settings
-   - Handle auth state changes
-   - Persist sessions
-   - Guest → Authenticated flow
+3. **Integration** ✅
+   - Added "Cloud Sync" section to Settings
+   - "Enable Cloud Sync" button for guest users
+   - Account status display for authenticated users
+   - Sign out functionality with local data preservation
+   - Session persistence across page reloads
+   - Guest → Authenticated flow working
+
+**Critical Fixes Applied:**
+
+1. **React Hooks Error**
+   - Removed conflicting `@supabase/auth-helpers-react` package
+   - Added React deduplication to `vite.config.ts`
+   - Resolved "Cannot read properties of null (reading 'useState')" error
+
+**Files Created:**
+
+- `context/AuthContext.tsx` (Auth state management)
+- `components/AuthModal.tsx` (Authentication UI)
+
+**Files Modified:**
+
+- `features/settings/Settings.tsx` (Cloud Sync section)
+- `App.tsx` (AuthProvider wrapper)
+- `package.json` (removed conflicting package)
+- `vite.config.ts` (added React deduplication)
+
+**Testing Checklist:**
+
+- ✅ App starts without errors
+- ✅ Guest mode works (all features via localStorage)
+- ✅ "Enable Cloud Sync" button appears in Settings
+- ✅ Auth modal opens with sign up/sign in tabs
+- ✅ Can create account with email/password
+- ✅ Session persists on page reload
+- ✅ Sign out returns to guest mode
+- ✅ No breaking changes to existing functionality
+
+## Phase 3: Data Migration Service (Next)
 
 ## Phase 3: Data Migration Service
 
