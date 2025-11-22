@@ -1,29 +1,58 @@
 
-import React from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { Layout } from './components/Layout';
 import { AppView, LiftType } from './types';
-import { ActiveWorkout } from './features/ActiveWorkout';
-import { Onboarding } from './features/Onboarding';
-import { ToolsView } from './features/Tools';
-import { SettingsView } from './features/Settings';
-import { Dashboard } from './features/Dashboard';
-import { HistoryView } from './features/History';
-import { ProfileView } from './features/Profile';
-import { AICoachView } from './features/AICoach';
-import { CoachDashboard } from './features/CoachDashboard';
-import { ExerciseManager } from './features/ExerciseManager';
-import { Nutrition } from './features/Nutrition';
-import { Conditioning } from './features/Conditioning';
-import { WorkoutStart } from './features/WorkoutStart';
-import { CycleTransition } from './features/CycleTransition';
+import { Onboarding } from './features/shared/Onboarding';
+import { WorkoutStart } from './features/workout/WorkoutStart';
+import { CycleTransition } from './features/workout/CycleTransition';
 import { Modal } from './components/Modal';
-import { Crown } from 'lucide-react';
+import { Crown, Loader } from 'lucide-react';
 import { ACHIEVEMENTS, PROGRAMS, THEME_COLORS } from './constants';
 import { useAppController } from './hooks/useAppController';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { UIProvider, useUI } from './context/UIContext';
+import { useLocalStorage } from './hooks/useLocalStorage';
 
-const App: React.FC = () => {
+// Lazy Load Major Views
+const ActiveWorkout = React.lazy(() => import('./features/workout/ActiveWorkout').then(m => ({ default: m.ActiveWorkout })));
+const ToolsView = React.lazy(() => import('./features/tools/Tools').then(m => ({ default: m.ToolsView })));
+const SettingsView = React.lazy(() => import('./features/settings/Settings').then(m => ({ default: m.SettingsView })));
+const Dashboard = React.lazy(() => import('./features/shared/Dashboard').then(m => ({ default: m.Dashboard })));
+const HistoryView = React.lazy(() => import('./features/history/History').then(m => ({ default: m.HistoryView })));
+const ProfileView = React.lazy(() => import('./features/settings/Profile').then(m => ({ default: m.ProfileView })));
+const AICoachView = React.lazy(() => import('./features/coaching/AICoach').then(m => ({ default: m.AICoachView })));
+const CoachDashboard = React.lazy(() => import('./features/coaching/CoachDashboard').then(m => ({ default: m.CoachDashboard })));
+const ExerciseManager = React.lazy(() => import('./features/shared/ExerciseManager').then(m => ({ default: m.ExerciseManager })));
+const Nutrition = React.lazy(() => import('./features/shared/Nutrition').then(m => ({ default: m.Nutrition })));
+const Conditioning = React.lazy(() => import('./features/shared/Conditioning').then(m => ({ default: m.Conditioning })));
+
+const APP_VERSION = '1.2.1';
+
+const AppContent: React.FC = () => {
   const ctrl = useAppController();
   const theme = THEME_COLORS[ctrl.activeProfile.themeColor || 'blue'];
+  const { showToast, setInstallPrompt } = useUI();
+  const [lastVersion, setLastVersion] = useLocalStorage('titan_version', '');
+
+  // Check for updates
+  useEffect(() => {
+      if (lastVersion !== APP_VERSION) {
+          if (lastVersion) {
+            showToast(`Titan updated to v${APP_VERSION}`, 'info');
+          }
+          setLastVersion(APP_VERSION);
+      }
+  }, []);
+
+  // PWA Install Prompt Listener
+  useEffect(() => {
+    const handler = (e: any) => {
+      e.preventDefault();
+      setInstallPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, [setInstallPrompt]);
 
   // Export/Import Handlers (View specific)
   const handleExportData = () => {
@@ -34,6 +63,7 @@ const App: React.FC = () => {
       a.href = url;
       a.download = `titan-531-backup.json`;
       a.click();
+      showToast("Data exported successfully", "success");
   };
 
   const handleImportData = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,12 +75,13 @@ const App: React.FC = () => {
               const data = JSON.parse(e.target?.result as string);
               if (data.profile && data.history) {
                   ctrl.updateRootProfile(data.profile);
-                  // Direct history update required here or expose setHistory in ctrl if needed
-                  // Ideally import logic moves to controller too, but for now:
-                  alert("Data imported! Please refresh.");
-                  window.location.reload();
+                  // Trigger reload to ensure all hooks sync
+                  showToast("Data imported! Reloading...", "success");
+                  setTimeout(() => window.location.reload(), 1000);
               }
-          } catch (err) { alert("Error parsing file."); }
+          } catch (err) { 
+            showToast("Error parsing file", "error"); 
+          }
       };
       reader.readAsText(file);
   };
@@ -92,77 +123,83 @@ const App: React.FC = () => {
         ::-webkit-scrollbar-thumb:hover { background: var(--theme-secondary); }
       `}</style>
 
-      {ctrl.view === AppView.Workout && ctrl.activeSession && (
-        <ActiveWorkout 
-          session={ctrl.activeSession} 
-          personalRecord={ctrl.activeProfile.oneRepMaxes[ctrl.activeSession.lift as LiftType] || 0}
-          defaultRestTime={ctrl.activeProfile.defaultRestTimer || 120}
-          timerSettings={ctrl.activeProfile.timerSettings}
-          unit={ctrl.activeProfile.unit}
-          soundEnabled={ctrl.activeProfile.soundEnabled}
-          voiceEnabled={ctrl.activeProfile.voiceEnabled}
-          plateInventory={ctrl.activeProfile.plateInventory}
-          customExercises={ctrl.activeProfile.customExercises}
-          onUpdateSession={ctrl.setActiveSession}
-          onComplete={ctrl.completeWorkout}
-          language={ctrl.activeProfile.language}
-        />
-      )}
-
-      {ctrl.view === AppView.Conditioning && (
-          <Conditioning onSave={ctrl.saveConditioning} onCancel={() => ctrl.setView(AppView.Dashboard)} unit={ctrl.activeProfile.unit} />
-      )}
-
-      {ctrl.view === AppView.Dashboard && (
-          <Dashboard 
-              profile={ctrl.activeProfile} 
-              onStartWorkout={ctrl.startWorkout} 
-              onStartConditioning={() => ctrl.setView(AppView.Conditioning)}
-              tip={ctrl.dailyTip}
-              completedLiftsThisWeek={getCompletedLiftsForWeek()}
-              onFinishWeek={() => ctrl.activeProfile.currentWeek < 4 && ctrl.saveProfile({ ...ctrl.activeProfile, currentWeek: (ctrl.activeProfile.currentWeek + 1) as 1|2|3|4 })}
-              onFinishCycle={() => ctrl.setShowCycleTransition(true)}
-              onOpenSettings={() => ctrl.setView(AppView.Settings)}
+      <Suspense fallback={
+        <div className="flex h-[50vh] items-center justify-center text-slate-500">
+           <Loader className="animate-spin mr-2" /> Loading...
+        </div>
+      }>
+        {ctrl.view === AppView.Workout && ctrl.activeSession && (
+          <ActiveWorkout 
+            session={ctrl.activeSession} 
+            personalRecord={ctrl.activeProfile.oneRepMaxes[ctrl.activeSession.lift as LiftType] || 0}
+            defaultRestTime={ctrl.activeProfile.defaultRestTimer || 120}
+            timerSettings={ctrl.activeProfile.timerSettings}
+            unit={ctrl.activeProfile.unit}
+            soundEnabled={ctrl.activeProfile.soundEnabled}
+            voiceEnabled={ctrl.activeProfile.voiceEnabled}
+            plateInventory={ctrl.activeProfile.plateInventory}
+            customExercises={ctrl.activeProfile.customExercises}
+            onUpdateSession={ctrl.setActiveSession}
+            onComplete={ctrl.completeWorkout}
+            language={ctrl.activeProfile.language}
           />
-      )}
+        )}
 
-      {ctrl.view === AppView.Workout && !ctrl.activeSession && (
-          <WorkoutStart profile={ctrl.activeProfile} onStartWorkout={ctrl.startWorkout} completedLifts={getCompletedLiftsForWeek()} />
-      )}
+        {ctrl.view === AppView.Conditioning && (
+            <Conditioning onSave={ctrl.saveConditioning} onCancel={() => ctrl.setView(AppView.Dashboard)} unit={ctrl.activeProfile.unit} />
+        )}
 
-      {ctrl.view === AppView.History && (
-          <HistoryView history={ctrl.activeHistory} onDeleteSession={ctrl.deleteWorkout} onUpdateSession={ctrl.updateHistorySession} />
-      )}
+        {ctrl.view === AppView.Dashboard && (
+            <Dashboard 
+                profile={ctrl.activeProfile} 
+                onStartWorkout={ctrl.startWorkout} 
+                onStartConditioning={() => ctrl.setView(AppView.Conditioning)}
+                tip={ctrl.dailyTip}
+                completedLiftsThisWeek={getCompletedLiftsForWeek()}
+                onFinishWeek={() => ctrl.activeProfile.currentWeek < 4 && ctrl.saveProfile({ ...ctrl.activeProfile, currentWeek: (ctrl.activeProfile.currentWeek + 1) as 1|2|3|4 })}
+                onFinishCycle={() => ctrl.setShowCycleTransition(true)}
+                onOpenSettings={() => ctrl.setView(AppView.Settings)}
+            />
+        )}
 
-      {ctrl.view === AppView.Nutrition && <Nutrition profile={ctrl.activeProfile} onUpdateProfile={ctrl.saveProfile} />}
-      {ctrl.view === AppView.AICoach && <AICoachView profile={ctrl.activeProfile} history={ctrl.activeHistory} />}
-      {ctrl.view === AppView.Profile && <ProfileView profile={ctrl.activeProfile} history={ctrl.activeHistory} onUpdateProfile={ctrl.saveProfile} onOpenSettings={() => ctrl.setView(AppView.Settings)} />}
-      {ctrl.view === AppView.Tools && <ToolsView profile={ctrl.activeProfile} onUpdateProfile={ctrl.saveProfile} language={ctrl.activeProfile.language} />}
-      
-      {ctrl.view === AppView.Settings && (
-          <SettingsView
-              profile={ctrl.activeProfile}
-              onUpdateProfile={ctrl.saveProfile}
-              onExport={handleExportData}
-              onImport={handleImportData}
-              onReset={() => { localStorage.clear(); window.location.reload(); }}
-              onBack={() => ctrl.setView(AppView.Profile)}
-              onChangeView={ctrl.setView}
-          />
-      )}
-      
-      {ctrl.view === AppView.CoachDashboard && (
-          <CoachDashboard 
-            clients={ctrl.rootProfile.clients || []}
-            onAddClient={(c) => ctrl.updateRootProfile({ ...ctrl.rootProfile, clients: [...(ctrl.rootProfile.clients||[]), c] })}
-            onSelectClient={(id) => { ctrl.setViewingProfileId(id); ctrl.setView(AppView.Dashboard); }}
-            language={ctrl.rootProfile.language || 'en'}
-          />
-      )}
+        {ctrl.view === AppView.Workout && !ctrl.activeSession && (
+            <WorkoutStart profile={ctrl.activeProfile} onStartWorkout={ctrl.startWorkout} completedLifts={getCompletedLiftsForWeek()} />
+        )}
 
-      {ctrl.view === AppView.ExerciseManager && (
-          <ExerciseManager profile={ctrl.activeProfile} onUpdateProfile={ctrl.saveProfile} onBack={() => ctrl.setView(AppView.Settings)} />
-      )}
+        {ctrl.view === AppView.History && (
+            <HistoryView history={ctrl.activeHistory} onDeleteSession={ctrl.deleteWorkout} onUpdateSession={ctrl.updateHistorySession} />
+        )}
+
+        {ctrl.view === AppView.Nutrition && <Nutrition profile={ctrl.activeProfile} onUpdateProfile={ctrl.saveProfile} />}
+        {ctrl.view === AppView.AICoach && <AICoachView profile={ctrl.activeProfile} history={ctrl.activeHistory} />}
+        {ctrl.view === AppView.Profile && <ProfileView profile={ctrl.activeProfile} history={ctrl.activeHistory} onUpdateProfile={ctrl.saveProfile} onOpenSettings={() => ctrl.setView(AppView.Settings)} />}
+        {ctrl.view === AppView.Tools && <ToolsView profile={ctrl.activeProfile} onUpdateProfile={ctrl.saveProfile} language={ctrl.activeProfile.language} />}
+        
+        {ctrl.view === AppView.Settings && (
+            <SettingsView
+                profile={ctrl.activeProfile}
+                onUpdateProfile={ctrl.saveProfile}
+                onExport={handleExportData}
+                onImport={handleImportData}
+                onReset={() => { localStorage.clear(); window.location.reload(); }}
+                onBack={() => ctrl.setView(AppView.Profile)}
+                onChangeView={ctrl.setView}
+            />
+        )}
+        
+        {ctrl.view === AppView.CoachDashboard && (
+            <CoachDashboard 
+              clients={ctrl.rootProfile.clients || []}
+              onAddClient={(c) => ctrl.updateRootProfile({ ...ctrl.rootProfile, clients: [...(ctrl.rootProfile.clients||[]), c] })}
+              onSelectClient={(id) => { ctrl.setViewingProfileId(id); ctrl.setView(AppView.Dashboard); }}
+              language={ctrl.rootProfile.language || 'en'}
+            />
+        )}
+
+        {ctrl.view === AppView.ExerciseManager && (
+            <ExerciseManager profile={ctrl.activeProfile} onUpdateProfile={ctrl.saveProfile} onBack={() => ctrl.setView(AppView.Settings)} />
+        )}
+      </Suspense>
 
       <CycleTransition isOpen={ctrl.showCycleTransition} profile={ctrl.activeProfile} history={ctrl.activeHistory} onConfirm={ctrl.confirmCycleTransition} onCancel={() => ctrl.setShowCycleTransition(false)} />
       
@@ -185,12 +222,22 @@ const App: React.FC = () => {
               </div>
               <h3 className="text-xl font-bold text-white">Unlock {PROGRAMS[ctrl.activeProfile.selectedProgram]?.name}</h3>
               <p className="text-slate-400 text-sm">Upgrade to access FSL, Monolith, Advanced Analytics, and more.</p>
-              <button onClick={() => { ctrl.saveProfile({ ...ctrl.activeProfile, isPremium: true }); ctrl.setShowPremiumWall(false); alert("Upgrade Successful! (Demo)"); }} className="w-full bg-gradient-to-r from-amber-500 to-yellow-500 py-3 rounded-xl text-black font-bold">Unlock Premium (Free Demo)</button>
+              <button onClick={() => { ctrl.saveProfile({ ...ctrl.activeProfile, isPremium: true }); ctrl.setShowPremiumWall(false); showToast("Premium Unlocked (Demo)", "success"); }} className="w-full bg-gradient-to-r from-amber-500 to-yellow-500 py-3 rounded-xl text-black font-bold">Unlock Premium (Free Demo)</button>
               <button onClick={() => ctrl.setShowPremiumWall(false)} className="text-slate-500 text-sm hover:text-white">Maybe Later</button>
           </div>
       </Modal>
     </Layout>
   );
 };
+
+const App: React.FC = () => {
+  return (
+    <ErrorBoundary>
+      <UIProvider>
+        <AppContent />
+      </UIProvider>
+    </ErrorBoundary>
+  );
+}
 
 export default App;

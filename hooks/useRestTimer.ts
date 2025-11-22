@@ -1,6 +1,6 @@
 
 import { useState, useEffect, useRef } from 'react';
-import { speak, playBeep } from '../services/audioService';
+import { speak, playBeep } from '../services/platform/audioService';
 
 interface UseRestTimerProps {
     defaultTime: number;
@@ -27,6 +27,27 @@ export const useRestTimer = ({ defaultTime, soundEnabled, voiceEnabled, onComple
     const adjust = (delta: number) => {
         setTimeLeft(prev => Math.max(0, prev + delta));
     };
+
+    // Wake Lock Effect
+    useEffect(() => {
+        let wakeLock: any = null;
+        const requestWakeLock = async () => {
+            if (isRunning && 'wakeLock' in navigator) {
+                try {
+                    // @ts-ignore
+                    wakeLock = await navigator.wakeLock.request('screen');
+                } catch (err) {
+                    console.log('Wake Lock rejected', err);
+                }
+            }
+        };
+
+        requestWakeLock();
+
+        return () => {
+            if (wakeLock) wakeLock.release();
+        };
+    }, [isRunning]);
 
     useEffect(() => {
         if (isRunning && timeLeft > 0) {

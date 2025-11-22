@@ -1,8 +1,9 @@
 
 import React from 'react';
-import { Activity, Calendar, User, MessageSquare, Dumbbell, Calculator, Users, Utensils } from 'lucide-react';
+import { Activity, Calendar, User, MessageSquare, Dumbbell, Calculator, Users, Utensils, WifiOff } from 'lucide-react';
 import { AppView } from '../types';
 import { TRANSLATIONS } from '../translations';
+import { useUI } from '../context/UIContext';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -24,6 +25,7 @@ export const Layout: React.FC<LayoutProps> = ({
   language = 'en'
 }) => {
   const t = TRANSLATIONS[language];
+  const { isOffline } = useUI();
 
   const navItems = [
     { id: AppView.Dashboard, icon: Activity, label: t.nav_home },
@@ -42,6 +44,14 @@ export const Layout: React.FC<LayoutProps> = ({
 
   return (
     <div className="h-[100dvh] bg-darker text-slate-100 flex flex-col max-w-md mx-auto shadow-2xl overflow-hidden relative border-x border-slate-900">
+      
+      {/* Offline Banner */}
+      {isOffline && (
+        <div className="bg-slate-700 text-slate-300 text-[10px] py-1 text-center font-bold uppercase tracking-wider flex items-center justify-center space-x-1 z-50">
+           <WifiOff size={10} /> <span>Offline Mode</span>
+        </div>
+      )}
+
       {/* Client View Banner */}
       {isClientView && (
           <div className="bg-amber-600 px-4 py-1 text-xs font-bold text-black flex justify-between items-center z-50">
@@ -49,6 +59,7 @@ export const Layout: React.FC<LayoutProps> = ({
               <button 
                 onClick={onExitClientView} 
                 className="bg-black/20 hover:bg-black/40 px-2 py-0.5 rounded text-[10px] uppercase transition-colors"
+                aria-label="Exit Client View"
               >
                   {t.coach_exit_client}
               </button>
@@ -56,15 +67,15 @@ export const Layout: React.FC<LayoutProps> = ({
       )}
 
       {/* Main Content Area */}
-      <main className={`flex-1 overflow-y-auto pb-safe scrollbar-thin ${isClientView ? 'border-2 border-amber-600/30' : ''}`}>
-        {/* Add substantial padding bottom to account for fixed nav and allow full scroll */}
-        <div className="pb-40 min-h-full">
+      <main className={`flex-1 overflow-y-auto pb-safe scrollbar-thin ${isClientView ? 'border-2 border-amber-600/30' : ''}`} id="main-content">
+        {/* Reduced padding to prevent large gaps while still allowing scroll past nav */}
+        <div className="pb-28 min-h-full">
             {children}
         </div>
       </main>
 
       {/* Bottom Navigation */}
-      <nav className="absolute bottom-0 left-0 right-0 bg-card/95 backdrop-blur-xl border-t border-slate-800 px-1 py-2 pb-safe z-40">
+      <nav className="absolute bottom-0 left-0 right-0 bg-card/95 backdrop-blur-xl border-t border-slate-800 px-1 py-2 pb-safe z-40" aria-label="Main Navigation">
         <div className="flex justify-around items-center">
           {navItems.map((item) => {
             const isActive = currentView === item.id;
@@ -76,8 +87,10 @@ export const Layout: React.FC<LayoutProps> = ({
                   isActive ? 'text-theme bg-theme-soft translate-y-[-2px]' : 'text-slate-500 hover:text-slate-300'
                 }`}
                 style={{ minWidth: '16%' }}
+                aria-label={item.label}
+                aria-current={isActive ? 'page' : undefined}
               >
-                <item.icon size={18} strokeWidth={isActive ? 2.5 : 2} />
+                <item.icon size={18} strokeWidth={isActive ? 2.5 : 2} aria-hidden="true" />
                 <span className="text-[9px] mt-1 font-medium truncate w-full text-center">{item.label}</span>
               </button>
             );

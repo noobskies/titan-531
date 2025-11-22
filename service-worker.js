@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'titan-531-v1';
+const CACHE_NAME = 'titan-531-v3'; // Increment version to force update for new file structure
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -15,10 +15,10 @@ self.addEventListener('install', (event) => {
       return cache.addAll(ASSETS_TO_CACHE);
     })
   );
-  self.skipWaiting(); // Activate immediately
+  self.skipWaiting();
 });
 
-// Activate event - clean up old caches
+// Activate event
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -34,37 +34,41 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch event - cache first strategy
+// Fetch event - Stale While Revalidate for assets, Network First for navigation
 self.addEventListener('fetch', (event) => {
-  // Skip cross-origin requests if needed, but for now we try to cache everything we can
   if (event.request.method !== 'GET') return;
 
+  // Network First for HTML navigation to ensure app updates
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .catch(() => {
+          return caches.match('/index.html');
+        })
+    );
+    return;
+  }
+
+  // Stale While Revalidate for other resources
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
-      // Return cached response if found
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-
-      // Otherwise fetch from network
-      return fetch(event.request).then((response) => {
+      const fetchPromise = fetch(event.request).then((networkResponse) => {
         // Check if valid response
-        if (!response || response.status !== 200 || response.type !== 'basic') {
-          return response;
+        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+          return networkResponse;
         }
 
-        // Clone response to put in cache
-        const responseToCache = response.clone();
-
+        const responseToCache = networkResponse.clone();
         caches.open(CACHE_NAME).then((cache) => {
           cache.put(event.request, responseToCache);
         });
 
-        return response;
+        return networkResponse;
       }).catch(() => {
-          // If offline and resource not cached, we could return a fallback page here
-          // For now, we rely on the cached index.html
+         // Network failed, do nothing (we hopefully have cache)
       });
+
+      return cachedResponse || fetchPromise;
     })
   );
 });

@@ -2,11 +2,11 @@
 import { useState, useEffect } from 'react';
 import { AppView, UserProfile, LiftType, WorkoutSession, ConditioningData } from '../types';
 import { useLocalStorage } from './useLocalStorage';
-import { generateWorkoutTip } from '../services/geminiService';
-import { scheduleWorkoutReminder } from '../services/notificationService';
-import { generateWorkout } from '../services/workoutLogic';
-import { processFinishedSession } from '../services/profileLogic';
-import { checkAchievements } from '../services/achievementLogic';
+import { generateWorkoutTip } from '../services/api/geminiService';
+import { scheduleWorkoutReminder } from '../services/platform/notificationService';
+import { generateWorkout } from '../services/core/workoutLogic';
+import { processFinishedSession } from '../services/core/profileLogic';
+import { checkAchievements } from '../services/analytics/achievementLogic';
 import { DEFAULT_TM, DEFAULT_TIMER_SETTINGS, DEFAULT_ASSISTANCE_SETTINGS, DEFAULT_ASSISTANCE, THEME_COLORS } from '../constants';
 import { PROGRAMS } from '../constants';
 
