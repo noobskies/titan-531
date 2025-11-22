@@ -36,20 +36,41 @@
 
 ### UI & Styling
 
-#### TailwindCSS (via inline styles)
+#### TailwindCSS 4.1.17
 
+- **Version**: v4 (migrated from CDN in November 2025)
+- **Integration**: @tailwindcss/postcss plugin with PostCSS
 - **Usage**: Utility-first CSS classes
 - **Pattern**: Inline className strings with Tailwind utilities
-- **Theme System**: CSS custom properties for dynamic theming
+- **Theme System**: @theme directive with CSS custom properties
 
 ```css
-:root {
-  --theme-primary: #3b82f6;
-  --theme-secondary: #1e40af;
-  --theme-accent: #60a5fa;
-  --theme-soft: rgba(59, 130, 246, 0.1);
+/* src/index.css */
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #3b82f6;
+  --color-secondary: #ef4444;
+  --color-dark: #0f172a;
+  --color-darker: #020617;
+  --color-card: #1e293b;
+
+  --font-family-sans: "Inter", sans-serif;
 }
 ```
+
+**Configuration**:
+
+- `postcss.config.js`: PostCSS configuration with @tailwindcss/postcss
+- `tailwind.config.js`: Content paths for file scanning
+- Build process integrated with Vite
+
+**Migration Notes**:
+
+- Migrated from CDN to build process for production readiness
+- Tailwind v4 uses modern @theme directive instead of JavaScript config
+- Cleaner CSS with single @import statement
+- Better performance and smaller bundle size
 
 #### Lucide React 0.554.0
 
@@ -86,6 +107,36 @@
   - Chat conversations (follow-up questions)
 - **Model**: gemini-1.5-flash (fast, cost-effective)
 - **Authentication**: User-provided API key stored in localStorage
+
+### Cloud Sync Integration (Optional)
+
+#### Supabase 2.84.0 (@supabase/supabase-js)
+
+- **Purpose**: Optional cloud sync for cross-device data access
+- **Why Chosen**:
+  - No backend code needed (client-only architecture maintained)
+  - Built-in authentication (email/password + OAuth)
+  - Row-level security at database level
+  - PostgreSQL database (can self-host)
+  - Real-time subscriptions available (future feature)
+  - Generous free tier (50k MAU, 500MB database)
+- **Integration Status**: Phase 3 Complete (Data Migration Service)
+- **Architecture**: Hybrid approach (guest mode localStorage, authenticated mode Supabase)
+
+#### Supabase Auth UI 0.4.7 (@supabase/auth-ui-react)
+
+- **Purpose**: Pre-built authentication UI components
+- **Features**:
+  - Email/password forms
+  - OAuth provider buttons (Google, GitHub, etc.)
+  - Themed components matching app design
+  - Automatic form validation
+- **Usage**: Integrated in `components/AuthModal.tsx`
+
+#### Supabase Auth UI Shared 0.1.8 (@supabase/auth-ui-shared)
+
+- **Purpose**: Shared utilities and themes for auth UI
+- **Features**: Theme system (ThemeSupa), common auth utilities
 
 ### Development Dependencies
 
@@ -888,6 +939,272 @@ No environment variables needed (API key user-provided)
 />
 ```
 
+## Native Mobile Architecture (Capacitor)
+
+### Capacitor 7.4.4
+
+- **Purpose**: Native mobile wrapper for PWA
+- **Why Chosen**:
+  - Wraps existing PWA without code changes
+  - Minimal configuration required
+  - Official Google Play support via Trusted Web Activity
+  - Better than Cordova (modern architecture)
+  - No need for React Native rewrite
+- **Platform**: Android (iOS support available but not implemented)
+
+### Capacitor Integration
+
+#### Core Dependencies
+
+```json
+{
+  "dependencies": {
+    "@capacitor/core": "^7.4.4",
+    "@capacitor/android": "^7.4.4",
+    "@capacitor/splash-screen": "^7.0.3",
+    "@capacitor/status-bar": "^7.0.3",
+    "@capacitor/keyboard": "^7.0.3"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.4.4"
+  }
+}
+```
+
+#### Configuration (capacitor.config.ts)
+
+```typescript
+import type { CapacitorConfig } from "@capacitor/cli";
+
+const config: CapacitorConfig = {
+  appId: "com.titan.workout",
+  appName: "Titan 531",
+  webDir: "dist",
+  server: {
+    androidScheme: "https", // Secure context for APIs
+  },
+  plugins: {
+    SplashScreen: {
+      launchShowDuration: 2000,
+      backgroundColor: "#020617",
+      showSpinner: false,
+    },
+    StatusBar: {
+      style: "dark",
+      backgroundColor: "#020617",
+    },
+  },
+};
+
+export default config;
+```
+
+#### Platform Detection Utilities
+
+```typescript
+// src/utils/platformDetection.ts
+import { Capacitor } from "@capacitor/core";
+
+export const isNativeApp = (): boolean => {
+  return Capacitor.isNativePlatform();
+};
+
+export const isAndroid = (): boolean => {
+  return Capacitor.getPlatform() === "android";
+};
+
+export const isWeb = (): boolean => {
+  return Capacitor.getPlatform() === "web";
+};
+
+export const getPlatform = (): string => {
+  return Capacitor.getPlatform();
+};
+```
+
+### Android Build Process
+
+#### Development Workflow
+
+```bash
+# Build web assets
+npm run build
+
+# Sync to Android
+npx cap sync android
+
+# Open in Android Studio
+npx cap open android
+
+# Or run with live reload
+npm run android:dev
+```
+
+#### Project Structure
+
+```
+android/
+├── app/
+│   ├── src/
+│   │   └── main/
+│   │       ├── AndroidManifest.xml
+│   │       ├── assets/
+│   │       │   └── public/  # Web assets copied here
+│   │       ├── java/com/titan/workout/
+│   │       └── res/         # Android resources
+│   ├── build.gradle         # App-level build config
+│   └── capacitor.build.gradle
+├── gradle/
+├── build.gradle             # Project-level build config
+├── settings.gradle
+└── variables.gradle
+```
+
+#### Build Configuration
+
+**Vite Config for Capacitor**:
+
+```typescript
+export default defineConfig(({ mode }) => {
+  return {
+    base: "", // Important: Empty base for Capacitor
+    build: {
+      outDir: "dist",
+      sourcemap: false, // Disable for production
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ["react", "react-dom"],
+            charts: ["recharts"],
+            icons: ["lucide-react"],
+          },
+        },
+      },
+    },
+  };
+});
+```
+
+#### Conditional Service Worker
+
+Service worker registration is conditional to avoid conflicts:
+
+```typescript
+// index.html
+if ("serviceWorker" in navigator && window.location.protocol !== "capacitor:") {
+  // Only register on web, not in Capacitor
+  navigator.serviceWorker.register("/service-worker.js");
+}
+```
+
+### Android Build Commands
+
+```bash
+# Development
+npm run android:dev          # Live reload on device
+npx cap run android          # Run on connected device
+
+# Build & Test
+npm run build                # Build web assets
+npm run android:sync         # Sync to Android
+npm run android:build        # Build + sync + open Android Studio
+
+# Production
+cd android
+./gradlew assembleRelease    # Build APK
+./gradlew bundleRelease      # Build AAB for Play Store
+```
+
+### Android Studio Requirements
+
+- **Android Studio**: Latest stable version
+- **Android SDK**: API 24+ (Android 7.0+)
+- **Java**: JDK 17+
+- **Gradle**: 8.x (included)
+
+### Capacitor Plugins
+
+#### Splash Screen Plugin
+
+```typescript
+import { SplashScreen } from "@capacitor/splash-screen";
+
+// Show splash
+await SplashScreen.show();
+
+// Hide splash
+await SplashScreen.hide();
+```
+
+#### Status Bar Plugin
+
+```typescript
+import { StatusBar, Style } from "@capacitor/status-bar";
+
+// Set style
+await StatusBar.setStyle({ style: Style.Dark });
+
+// Set background color
+await StatusBar.setBackgroundColor({ color: "#020617" });
+```
+
+#### Keyboard Plugin
+
+```typescript
+import { Keyboard } from "@capacitor/keyboard";
+
+// Listen to keyboard events
+Keyboard.addListener("keyboardWillShow", (info) => {
+  console.log("Keyboard height:", info.keyboardHeight);
+});
+
+// Hide keyboard
+await Keyboard.hide();
+```
+
+### Deployment Targets
+
+#### Web Deployment
+
+- **Build**: `npm run build`
+- **Output**: `dist/` directory
+- **Hosting**: Vercel, Netlify, etc.
+- **Features**: Full PWA capabilities
+
+#### Android Deployment
+
+- **Build**: `npm run android:build`
+- **Output**: `android/app/build/outputs/`
+- **Format**: APK or AAB (App Bundle)
+- **Target**: Google Play Store
+
+### Dual Deployment Architecture
+
+The app supports both web and native Android simultaneously:
+
+1. **Shared Codebase**: Same React components and logic
+2. **Platform Detection**: Runtime checks for native features
+3. **Conditional Features**:
+   - Service worker: Web only
+   - Native plugins: Android only
+4. **Storage**: localStorage works in both environments
+5. **APIs**: All external APIs (Gemini, Supabase) work in both
+
+### Build Output Sizes
+
+**Web Build**:
+
+- Initial bundle: ~200KB
+- Main chunk: 461.88 KB (116.25 KB gzipped)
+- Charts chunk: 355.83 KB (105.06 KB gzipped)
+- Lazy-loaded features: ~4-22KB each
+
+**Android APK** (estimated):
+
+- Debug APK: ~50-60MB
+- Release APK: ~40-50MB (with ProGuard/R8)
+- AAB (App Bundle): ~30-40MB
+
 ## Known Technical Limitations
 
 1. **localStorage Size**: 5-10MB limit (especially tight on Safari)
@@ -896,6 +1213,8 @@ No environment variables needed (API key user-provided)
 4. **API Costs**: Gemini API has usage limits/costs
 5. **Image Storage**: Base64 in localStorage is storage-intensive
 6. **No Offline AI**: AI features require internet connection
+7. **Android Studio Required**: Full Android development needs Android Studio
+8. **Play Store Submission**: Requires Google Play Developer account ($25 one-time)
 
 ## Future Technical Considerations
 

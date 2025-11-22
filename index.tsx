@@ -1,8 +1,14 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import "./src/index.css";
 
-const rootElement = document.getElementById('root');
+// Only import test connection in development
+if (import.meta.env.DEV) {
+  import("./services/database/testConnection");
+}
+
+const rootElement = document.getElementById("root");
 if (!rootElement) {
   throw new Error("Could not find root element to mount to");
 }
