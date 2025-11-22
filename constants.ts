@@ -16,9 +16,9 @@ export const WEEK_REPS = {
 };
 
 export const WARMUP_SETS = [
-  { percent: 0.40, reps: 5 },
-  { percent: 0.50, reps: 5 },
-  { percent: 0.60, reps: 3 },
+  { percentage: 0.40, reps: 5 },
+  { percentage: 0.50, reps: 5 },
+  { percentage: 0.60, reps: 3 },
 ];
 
 export const DEFAULT_TM: Record<LiftType, number> = {

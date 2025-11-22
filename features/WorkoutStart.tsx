@@ -13,8 +13,9 @@ interface WorkoutStartProps {
 export const WorkoutStart: React.FC<WorkoutStartProps> = ({ profile, onStartWorkout, completedLifts }) => {
     const t = TRANSLATIONS[profile.language || 'en'];
     
-    // Determine next lift
-    const allLifts = Object.values(LiftType);
+    // Determine next lift based on user preference or default
+    const allLifts = profile.liftOrder && profile.liftOrder.length === 4 ? profile.liftOrder : Object.values(LiftType);
+    
     const remainingLifts = allLifts.filter(l => !completedLifts.includes(l));
     const nextLift = remainingLifts.length > 0 ? remainingLifts[0] : null;
 

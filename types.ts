@@ -45,6 +45,11 @@ export interface AssistanceSettings {
     reps: number;
 }
 
+export interface WarmupSetSetting {
+    percentage: number; // 0.4 for 40%
+    reps: number;
+}
+
 export type ThemeColor = 'blue' | 'purple' | 'green' | 'orange' | 'red';
 
 // --- Nutrition Types ---
@@ -97,6 +102,8 @@ export interface UserProfile {
   defaultRestTimer: number; // Deprecated in favor of timerSettings
   timerSettings: TimerSettings;
   assistanceSettings: AssistanceSettings;
+  warmupSettings?: WarmupSetSetting[]; // New custom warmups
+  liftOrder?: LiftType[]; // New custom lift order
 
   customAssistance: Record<LiftType, string[]>;
   achievements: string[];

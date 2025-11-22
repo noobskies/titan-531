@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, RotateCcw, Settings, Volume2 } from 'lucide-react';
+import { Play, Pause, RotateCcw, Settings } from 'lucide-react';
 import { Button } from '../components/Button';
+import { playBeep } from '../services/audioService';
 
 export const IntervalTimer: React.FC = () => {
   const [workTime, setWorkTime] = useState(20);
@@ -15,25 +16,6 @@ export const IntervalTimer: React.FC = () => {
 
   const timerRef = useRef<number | null>(null);
 
-  const playBeep = (freq = 880, duration = 0.1) => {
-    try {
-        const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-        if (!AudioContext) return;
-        const ctx = new AudioContext();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.frequency.value = freq;
-        osc.type = 'square';
-        gain.gain.value = 0.1;
-        osc.start();
-        setTimeout(() => osc.stop(), duration * 1000);
-    } catch (e) {
-        console.error(e);
-    }
-  };
-
   const startTimer = () => {
     setIsActive(true);
     setShowSettings(false);
@@ -41,7 +23,7 @@ export const IntervalTimer: React.FC = () => {
         setPhase('Work');
         setCurrentRound(1);
         setTimeLeft(workTime);
-        playBeep(1200, 0.2);
+        playBeep(1200, 0.2, 'square');
     }
   };
 
@@ -66,23 +48,21 @@ export const IntervalTimer: React.FC = () => {
             if (currentRound >= rounds) {
                 setPhase('Done');
                 setIsActive(false);
-                playBeep(880, 0.5); // Long beep for done
+                playBeep(880, 0.5, 'square'); // Long beep for done
             } else {
                 setPhase('Rest');
                 setTimeLeft(restTime);
-                playBeep(440, 0.3); // Low beep for rest
+                playBeep(440, 0.3, 'square'); // Low beep for rest
             }
         } else if (phase === 'Rest') {
             setPhase('Work');
             setCurrentRound(r => r + 1);
             setTimeLeft(workTime);
-            playBeep(1200, 0.3); // High beep for work
+            playBeep(1200, 0.3, 'square'); // High beep for work
         }
     }
 
-    return () => {
-        if (timerRef.current) clearInterval(timerRef.current);
-    }
+    return () => { if (timerRef.current) clearInterval(timerRef.current); }
   }, [isActive, timeLeft, phase, rounds, restTime, workTime, currentRound]);
 
   const formatTime = (s: number) => {
