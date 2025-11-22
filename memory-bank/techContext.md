@@ -108,6 +108,36 @@
 - **Model**: gemini-1.5-flash (fast, cost-effective)
 - **Authentication**: User-provided API key stored in localStorage
 
+### Cloud Sync Integration (Optional)
+
+#### Supabase 2.84.0 (@supabase/supabase-js)
+
+- **Purpose**: Optional cloud sync for cross-device data access
+- **Why Chosen**:
+  - No backend code needed (client-only architecture maintained)
+  - Built-in authentication (email/password + OAuth)
+  - Row-level security at database level
+  - PostgreSQL database (can self-host)
+  - Real-time subscriptions available (future feature)
+  - Generous free tier (50k MAU, 500MB database)
+- **Integration Status**: Phase 3 Complete (Data Migration Service)
+- **Architecture**: Hybrid approach (guest mode localStorage, authenticated mode Supabase)
+
+#### Supabase Auth UI 0.4.7 (@supabase/auth-ui-react)
+
+- **Purpose**: Pre-built authentication UI components
+- **Features**:
+  - Email/password forms
+  - OAuth provider buttons (Google, GitHub, etc.)
+  - Themed components matching app design
+  - Automatic form validation
+- **Usage**: Integrated in `components/AuthModal.tsx`
+
+#### Supabase Auth UI Shared 0.1.8 (@supabase/auth-ui-shared)
+
+- **Purpose**: Shared utilities and themes for auth UI
+- **Features**: Theme system (ThemeSupa), common auth utilities
+
 ### Development Dependencies
 
 #### @vitejs/plugin-react 5.0.0

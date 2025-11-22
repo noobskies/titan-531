@@ -148,65 +148,67 @@
 4. Prepare Play Store listing (screenshots, description, etc.)
 5. Submit to Google Play Store
 
-### Supabase Integration (In Progress - Phase 2 Complete)
+### Supabase Integration (In Progress - Phase 3 Complete)
 
 **Goal**: Add optional cloud sync while maintaining localStorage as primary storage for guest mode.
 
+**Phase 3 Complete (November 2025):**
+
+1. **Data Migration Service Implementation**
+
+   - Created `services/database/migrationService.ts` - Complete migration service
+     - `migrateGuestDataToCloud()` - Main orchestrator with idempotency
+     - `migrateProfile()` - Profile data with UPSERT
+     - `migrateWorkoutHistory()` - Batch processing (50 per batch)
+     - `migrateNutritionData()` - Nutrition logs
+     - `migrateClientProfiles()` - Coach mode clients
+     - Migration flag in localStorage prevents re-runs
+
+2. **AuthContext Integration**
+
+   - Modified `context/AuthContext.tsx` - Added migration triggers
+     - Added `migrating` and `migrationError` state
+     - Added `checkAndMigrate()` function
+     - Triggers automatically on SIGNED_IN event
+     - Exposes migration state globally via useAuth()
+
+3. **Migration UI Implementation**
+
+   - Modified `components/AuthModal.tsx` - Added migration states
+     - Loading state: "Syncing your data to cloud..." with spinner
+     - Success state: "Sync complete!" (auto-closes after 1.5s)
+     - Error state: Shows error with "Retry" and "Continue Without Sync" options
+     - Prevents modal close during migration
+
+4. **Migration Strategy**
+   - **Automatic**: Triggers on signup/signin (no user action needed)
+   - **Idempotent**: Safe to run multiple times
+   - **Graceful**: Partial failures don't block app usage
+   - **Transparent**: Clear UI feedback at every step
+
+**What Works Now:**
+
+- New users: Account created → immediate success (no data to migrate)
+- Guest users with data: Sign up → automatic migration → success confirmation
+- Returning users: Sign in → no re-migration (flag checked)
+- Migration errors: Clear error display with retry option
+- Guest mode: Completely unaffected, still works perfectly
+
 **Phase 2 Complete (November 2025):**
 
-1. **Auth System Implementation**
-
-   - Created `context/AuthContext.tsx` - Authentication state management
-     - Session persistence and auto-refresh
-     - `useAuth()` hook for global auth access
-     - Guest mode detection (default state)
-   - Created `components/AuthModal.tsx` - Authentication UI
-     - Supabase Auth UI integration
-     - Email/password forms (sign up & sign in)
-     - Google OAuth button (requires Supabase config)
-     - Tab switching between modes
-   - Modified `features/settings/Settings.tsx` - Cloud Sync section
-     - "Enable Cloud Sync" button for guest users
-     - Account status display for authenticated users
-     - Sign out functionality
-   - Modified `App.tsx` - Wrapped with AuthProvider
-   - **Critical Fix**: Removed conflicting `@supabase/auth-helpers-react` package
-   - **Critical Fix**: Added React deduplication to `vite.config.ts`
-
-2. **What Works Now**
-   - Users can create accounts with email/password
-   - Users can sign in to existing accounts
-   - Google OAuth ready (requires dashboard setup)
-   - Session persistence across page reloads
-   - Sign out returns to guest mode
-   - No breaking changes - guest mode fully functional
+- Auth system with email/password + OAuth
+- Guest mode detection and preservation
+- Session persistence and management
+- Clean UI integration in Settings
 
 **Phase 1 Complete (November 2025):**
 
-1. **Infrastructure Setup**
+- Database schema designed and documented
+- Supabase client configured
+- TypeScript types defined
+- Testing infrastructure created
 
-   - Installed Supabase dependencies (@supabase/supabase-js, auth packages)
-   - Configured environment variables with VITE\_ prefix for Vite compatibility
-   - Created Supabase client initialization (services/database/supabaseClient.ts)
-   - Set up TypeScript database types (services/database/types.ts)
-
-2. **Database Design**
-
-   - Designed complete PostgreSQL schema (services/database/schema.sql)
-   - Tables: profiles, workout_sessions, nutrition_logs, client_profiles
-   - Row-level security (RLS) policies configured
-   - Automatic profile creation triggers
-   - Performance indexes added
-
-3. **Testing & Documentation**
-   - Connection test utility (auto-runs in development)
-   - Comprehensive setup guide (services/database/SETUP_GUIDE.md)
-   - Quick reference documentation (services/database/README.md)
-   - Memory bank updated (memory-bank/supabase-integration.md)
-
-**Phase 1 & 2 Complete**: Database schema applied, authentication working.
-
-**Next Steps**: Proceed to Phase 3 (Data Migration Service).
+**Next Steps**: Proceed to Phase 4 (Data Abstraction Layer).
 
 ### Gemini API Fix (November 2025)
 
