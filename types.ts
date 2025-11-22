@@ -145,18 +145,29 @@ export interface Exercise {
   notes?: string;
 }
 
+export interface ConditioningData {
+    activity: string;
+    distance?: number;
+    distanceUnit?: 'mi' | 'km' | 'm';
+    durationSeconds: number;
+    intensity: 'Easy' | 'Moderate' | 'Hard';
+    notes?: string;
+}
+
 export interface WorkoutSession {
   id: string;
   date: string;
-  title: string; // e.g. "Cycle 1 - Week 2 - Squat"
+  title: string; // e.g. "Cycle 1 - Week 2 - Squat" or "Morning Run"
   cycle: number; 
   week: number;  
-  lift: LiftType; 
-  exercises: Exercise[];
+  lift: LiftType | 'Conditioning'; 
+  type: 'Strength' | 'Conditioning'; // New discriminator
+  exercises: Exercise[]; // Empty for conditioning
+  conditioningData?: ConditioningData; // Only for conditioning
   completed: boolean;
   durationSeconds: number;
   notes?: string;
-  programType: ProgramType;
+  programType: ProgramType | 'N/A';
   profileId?: string; // Link session to specific profile/client
 }
 
@@ -169,6 +180,7 @@ export interface ChatMessage {
 export enum AppView {
   Dashboard = 'Dashboard',
   Workout = 'Workout',
+  Conditioning = 'Conditioning', // New View
   Nutrition = 'Nutrition',
   History = 'History',
   Profile = 'Profile',

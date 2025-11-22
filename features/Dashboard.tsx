@@ -2,12 +2,13 @@
 import React from 'react';
 import { UserProfile, LiftType } from '../types';
 import { Button } from '../components/Button';
-import { Dumbbell, Trophy, Play, CheckCircle, Circle, ArrowRight, MessageCircle, Calendar, Settings, Edit3 } from 'lucide-react';
+import { Dumbbell, Trophy, Play, CheckCircle, Circle, ArrowRight, MessageCircle, Calendar, Settings, Edit3, Activity } from 'lucide-react';
 import { TRANSLATIONS } from '../translations';
 
 interface DashboardProps {
   profile: UserProfile;
   onStartWorkout: (lift: LiftType) => void;
+  onStartConditioning?: () => void;
   tip: string;
   completedLiftsThisWeek: LiftType[];
   onFinishWeek: () => void;
@@ -18,6 +19,7 @@ interface DashboardProps {
 export const Dashboard: React.FC<DashboardProps> = ({ 
   profile, 
   onStartWorkout, 
+  onStartConditioning,
   tip, 
   completedLiftsThisWeek, 
   onFinishWeek, 
@@ -79,6 +81,19 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <div className="text-xs text-theme font-bold uppercase">{t.dashboard_cycle} {profile.currentCycle}</div>
             <div className="text-[10px] text-slate-400">{profile.selectedProgram}</div>
         </div>
+      </div>
+
+      {/* Actions Row */}
+      <div className="grid grid-cols-2 gap-3">
+           {/* Main Action Button - Logic handled by list below usually, but a Quick Start is nice */}
+           <Button variant="secondary" onClick={() => onStartConditioning && onStartConditioning()} className="bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 h-14 shadow-lg">
+               <Activity size={20} className="mr-2 text-green-400" />
+               <span>Log Cardio</span>
+           </Button>
+           <div className="bg-card rounded-xl border border-slate-800 flex flex-col items-center justify-center p-2">
+                <span className="text-xs text-slate-500 uppercase">Streak</span>
+                <span className="font-bold text-white flex items-center"><span className="text-orange-500 mr-1">🔥</span> {profile.achievements.includes('consistency') ? 'Active' : '0 Days'}</span>
+           </div>
       </div>
 
       {/* Progress/Cycle Status */}

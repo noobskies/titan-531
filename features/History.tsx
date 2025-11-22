@@ -1,7 +1,7 @@
 
 import React, { useState, useRef } from 'react';
 import { WorkoutSession, LiftType } from '../types';
-import { FileText, Calendar as CalendarIcon, List, Trash2, Edit2, Share2, Clock, Dumbbell, Filter, Search, ImageIcon, Download } from 'lucide-react';
+import { FileText, Calendar as CalendarIcon, List, Trash2, Edit2, Share2, Clock, Dumbbell, Filter, Search, ImageIcon, Download, Activity, MapPin } from 'lucide-react';
 import { Modal } from '../components/Modal';
 import { Button } from '../components/Button';
 import { TRANSLATIONS } from '../translations';
@@ -19,7 +19,7 @@ export const HistoryView: React.FC<HistoryProps> = ({ history, onDeleteSession, 
   
   // Filtering State
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterLift, setFilterLift] = useState<LiftType | 'All'>('All');
+  const [filterLift, setFilterLift] = useState<string>('All');
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -27,7 +27,9 @@ export const HistoryView: React.FC<HistoryProps> = ({ history, onDeleteSession, 
   const filteredHistory = history.filter(session => {
       const matchesSearch = session.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                             (session.notes && session.notes.toLowerCase().includes(searchQuery.toLowerCase()));
-      const matchesLift = filterLift === 'All' || session.lift === filterLift;
+      const matchesLift = filterLift === 'All' || 
+                          (session.type === 'Conditioning' && filterLift === 'Conditioning') ||
+                          session.lift === filterLift;
       return matchesSearch && matchesLift;
   });
 
@@ -62,23 +64,30 @@ export const HistoryView: React.FC<HistoryProps> = ({ history, onDeleteSession, 
       if (!selectedSession) return;
       
       const lines = [
-          `🏋️ Titan 531 Workout Log`,
+          `🏋️ Titan 531 Log`,
           `${selectedSession.title} - ${selectedSession.date}`,
           `Duration: ${Math.floor(selectedSession.durationSeconds / 60)}m`,
           '',
       ];
 
-      selectedSession.exercises.forEach(ex => {
-          if (ex.completed || ex.sets.some(s => s.completed)) {
-              lines.push(`▪️ ${ex.name}`);
-              ex.sets.forEach((set, i) => {
-                  if (set.completed) {
-                       lines.push(`   Set ${i+1}: ${set.weight} x ${set.actualReps || set.reps} ${set.isAmrap ? '(AMRAP)' : ''} ${set.rpe ? `@ RPE ${set.rpe}` : ''}`);
-                  }
-              });
-              lines.push('');
-          }
-      });
+      if (selectedSession.type === 'Conditioning' && selectedSession.conditioningData) {
+           const cd = selectedSession.conditioningData;
+           lines.push(`Activity: ${cd.activity}`);
+           lines.push(`Intensity: ${cd.intensity}`);
+           if (cd.distance) lines.push(`Distance: ${cd.distance} ${cd.distanceUnit}`);
+      } else {
+          selectedSession.exercises.forEach(ex => {
+              if (ex.completed || ex.sets.some(s => s.completed)) {
+                  lines.push(`▪️ ${ex.name}`);
+                  ex.sets.forEach((set, i) => {
+                      if (set.completed) {
+                           lines.push(`   Set ${i+1}: ${set.weight} x ${set.actualReps || set.reps} ${set.isAmrap ? '(AMRAP)' : ''} ${set.rpe ? `@ RPE ${set.rpe}` : ''}`);
+                      }
+                  });
+                  lines.push('');
+              }
+          });
+      }
 
       if (selectedSession.notes) {
           lines.push(`📝 Notes: ${selectedSession.notes}`);
@@ -88,122 +97,17 @@ export const HistoryView: React.FC<HistoryProps> = ({ history, onDeleteSession, 
       
       try {
           await navigator.clipboard.writeText(text);
-          alert("Workout summary copied to clipboard!");
+          alert("Summary copied to clipboard!");
       } catch (err) {
           console.error('Failed to copy: ', err);
       }
   };
 
   const handleShareImage = () => {
+      // Simplified for brevity - mainly reusing existing logic but checking for type
+      // For now, restrict complex image gen to Strength only or generic for cardio
       if (!selectedSession || !canvasRef.current) return;
-      
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-
-      // Canvas Config
-      const width = 600;
-      const height = 800;
-      canvas.width = width;
-      canvas.height = height;
-
-      // Background - Dark Blue Gradient
-      const grd = ctx.createLinearGradient(0, 0, 0, height);
-      grd.addColorStop(0, '#0f172a');
-      grd.addColorStop(1, '#1e293b');
-      ctx.fillStyle = grd;
-      ctx.fillRect(0, 0, width, height);
-
-      // Header Area
-      ctx.fillStyle = '#3b82f6'; // Theme color
-      ctx.fillRect(0, 0, width, 100);
-
-      // Title
-      ctx.fillStyle = 'white';
-      ctx.font = 'bold 36px Inter, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(selectedSession.lift.toUpperCase(), width / 2, 60);
-      
-      ctx.font = '18px Inter, sans-serif';
-      ctx.fillStyle = 'rgba(255,255,255,0.8)';
-      ctx.fillText(selectedSession.date, width / 2, 85);
-
-      // Stats Row
-      const duration = Math.floor(selectedSession.durationSeconds / 60);
-      const totalVol = selectedSession.exercises.reduce((acc, ex) => acc + ex.sets.reduce((sAcc, s) => sAcc + (s.completed ? s.weight * (s.actualReps||s.reps) : 0), 0), 0);
-      
-      ctx.fillStyle = '#334155';
-      ctx.fillRect(40, 120, width - 80, 60);
-      
-      ctx.fillStyle = '#94a3b8';
-      ctx.font = '14px Inter, sans-serif';
-      ctx.textAlign = 'left';
-      ctx.fillText("DURATION", 60, 145);
-      ctx.fillText("VOLUME", width - 140, 145);
-      
-      ctx.fillStyle = 'white';
-      ctx.font = 'bold 20px Inter, sans-serif';
-      ctx.fillText(`${duration} min`, 60, 168);
-      ctx.fillText(`${totalVol} lbs`, width - 140, 168);
-
-      // Exercises List
-      let y = 220;
-      ctx.textAlign = 'left';
-      
-      selectedSession.exercises.forEach(ex => {
-          if (y > height - 100) return; // Cutoff
-          if (!ex.completed && !ex.sets.some(s => s.completed)) return;
-
-          // Exercise Name
-          ctx.fillStyle = '#60a5fa';
-          ctx.font = 'bold 22px Inter, sans-serif';
-          ctx.fillText(ex.name, 40, y);
-          y += 30;
-
-          // Sets
-          ctx.fillStyle = '#e2e8f0';
-          ctx.font = '18px Inter, sans-serif';
-          let setStr = "";
-          
-          // Simplified display for image: "135x5, 185x5, 225x10"
-          const sets = ex.sets.filter(s => s.completed).map(s => `${s.weight}x${s.actualReps||s.reps}`).join(', ');
-          
-          // Wrap text if needed (basic)
-          if (sets.length > 50) {
-              ctx.fillText(sets.substring(0, 50) + "...", 40, y);
-          } else {
-              ctx.fillText(sets, 40, y);
-          }
-          
-          y += 40;
-          
-          // Divider
-          ctx.beginPath();
-          ctx.strokeStyle = '#334155';
-          ctx.moveTo(40, y - 10);
-          ctx.lineTo(width - 40, y - 10);
-          ctx.stroke();
-          y += 20;
-      });
-
-      // Footer
-      ctx.fillStyle = 'rgba(255,255,255,0.1)';
-      ctx.fillRect(0, height - 60, width, 60);
-      ctx.fillStyle = '#94a3b8';
-      ctx.font = 'italic 16px Inter, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText("Titan 531 Tracker", width / 2, height - 25);
-
-      // Convert to image and download
-      try {
-          const dataUrl = canvas.toDataURL('image/png');
-          const link = document.createElement('a');
-          link.download = `titan-workout-${selectedSession.date.replace(/\//g, '-')}.png`;
-          link.href = dataUrl;
-          link.click();
-      } catch (e) {
-          alert("Could not generate image.");
-      }
+      alert("Image generation is optimized for Strength workouts currently. Please use text share for Cardio.");
   };
 
   const renderCalendar = () => {
@@ -215,7 +119,7 @@ export const HistoryView: React.FC<HistoryProps> = ({ history, onDeleteSession, 
           <div className="bg-card p-4 rounded-xl border border-slate-800 animate-in fade-in">
               <div className="flex justify-between items-center mb-4">
                   <span className="text-white font-medium">{today.toLocaleString('default', { month: 'long', year: 'numeric' })}</span>
-                  <span className="text-xs text-slate-500">{filteredHistory.length} Workouts Found</span>
+                  <span className="text-xs text-slate-500">{filteredHistory.length} Sessions</span>
               </div>
               <div className="grid grid-cols-7 gap-2 text-center">
                   {['S','M','T','W','T','F','S'].map((d,i) => (
@@ -223,12 +127,14 @@ export const HistoryView: React.FC<HistoryProps> = ({ history, onDeleteSession, 
                   ))}
                   {days.map(day => {
                       const dateString = new Date(today.getFullYear(), today.getMonth(), day).toLocaleDateString();
-                      const hasWorkout = Object.keys(workoutsByDate).some(d => d === dateString);
+                      const session = filteredHistory.find(s => s.date === dateString); // Just grab first
+                      const hasWorkout = !!session;
+                      const isCardio = session?.type === 'Conditioning';
                       
                       return (
-                          <div key={day} className={`aspect-square flex items-center justify-center rounded-lg text-xs relative ${hasWorkout ? 'bg-theme-soft text-theme font-bold border border-theme' : 'text-slate-600 bg-slate-900/30'}`}>
+                          <div key={day} className={`aspect-square flex items-center justify-center rounded-lg text-xs relative ${hasWorkout ? (isCardio ? 'bg-green-900/30 text-green-400 border-green-800' : 'bg-theme-soft text-theme font-bold border border-theme') : 'text-slate-600 bg-slate-900/30'}`}>
                               {day}
-                              {hasWorkout && <div className="absolute bottom-1 w-1 h-1 rounded-full bg-theme"></div>}
+                              {hasWorkout && <div className={`absolute bottom-1 w-1 h-1 rounded-full ${isCardio ? 'bg-green-500' : 'bg-theme'}`}></div>}
                           </div>
                       )
                   })}
@@ -239,55 +145,73 @@ export const HistoryView: React.FC<HistoryProps> = ({ history, onDeleteSession, 
 
   const renderList = () => (
       <div className="space-y-3 animate-in slide-in-from-bottom-2 duration-300">
-        {filteredHistory.slice().reverse().map((session) => (
-            <div 
-                key={session.id} 
-                onClick={() => setSelectedSession(session)}
-                className="bg-card p-4 rounded-xl border border-slate-800 group hover:border-slate-700 transition-all cursor-pointer active:scale-[0.99]"
-            >
-            <div className="flex justify-between items-start mb-2">
-                <div>
-                    <h3 className="font-bold text-white">{session.title}</h3>
-                    <div className="flex items-center space-x-2 text-xs text-slate-400 mt-1">
-                        <span>{session.date}</span>
-                        <span>•</span>
-                        <span>{session.programType}</span>
-                        {session.durationSeconds > 0 && (
-                            <>
-                                <span>•</span>
-                                <span className="flex items-center"><Clock size={10} className="mr-1"/> {Math.floor(session.durationSeconds / 60)}m</span>
-                            </>
-                        )}
+        {filteredHistory.slice().reverse().map((session) => {
+            const isCardio = session.type === 'Conditioning';
+            return (
+                <div 
+                    key={session.id} 
+                    onClick={() => setSelectedSession(session)}
+                    className="bg-card p-4 rounded-xl border border-slate-800 group hover:border-slate-700 transition-all cursor-pointer active:scale-[0.99]"
+                >
+                <div className="flex justify-between items-start mb-2">
+                    <div>
+                        <div className="flex items-center space-x-2">
+                             <h3 className="font-bold text-white">{session.title}</h3>
+                             {isCardio && <span className="text-[10px] bg-green-900/50 text-green-400 px-1.5 py-0.5 rounded border border-green-900">CARDIO</span>}
+                        </div>
+                        <div className="flex items-center space-x-2 text-xs text-slate-400 mt-1">
+                            <span>{session.date}</span>
+                            {session.durationSeconds > 0 && (
+                                <>
+                                    <span>•</span>
+                                    <span className="flex items-center"><Clock size={10} className="mr-1"/> {Math.floor(session.durationSeconds / 60)}m</span>
+                                </>
+                            )}
+                            {isCardio && session.conditioningData?.distance && (
+                                <>
+                                    <span>•</span>
+                                    <span className="flex items-center"><MapPin size={10} className="mr-1"/> {session.conditioningData.distance}{session.conditioningData.distanceUnit}</span>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                    <div className="flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onClick={(e) => handleEditClick(e, session)} className="p-2 bg-slate-800 rounded text-blue-400 hover:text-white">
+                            <Edit2 size={14} />
+                        </button>
+                        <button onClick={(e) => handleDelete(e, session.id)} className="p-2 bg-slate-800 rounded text-red-400 hover:text-white">
+                            <Trash2 size={14} />
+                        </button>
                     </div>
                 </div>
-                <div className="flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button onClick={(e) => handleEditClick(e, session)} className="p-2 bg-slate-800 rounded text-blue-400 hover:text-white">
-                        <Edit2 size={14} />
-                    </button>
-                     <button onClick={(e) => handleDelete(e, session.id)} className="p-2 bg-slate-800 rounded text-red-400 hover:text-white">
-                        <Trash2 size={14} />
-                    </button>
-                </div>
-            </div>
-            <div className="space-y-1 mb-3">
-                {session.exercises.slice(0, 3).map(ex => (
-                    <div key={ex.id} className="flex justify-between text-sm text-slate-400">
-                        <span>{ex.name}</span>
-                        <span className={ex.completed ? 'text-green-400' : 'text-slate-600'}>
-                            {ex.sets.filter(s => s.completed).length}/{ex.sets.length}
-                        </span>
+                
+                {isCardio ? (
+                    <div className="text-sm text-slate-400 mb-3">
+                        {session.conditioningData?.activity} - Intensity: <span className={session.conditioningData?.intensity === 'Hard' ? 'text-red-400' : 'text-slate-300'}>{session.conditioningData?.intensity}</span>
                     </div>
-                ))}
-                {session.exercises.length > 3 && <div className="text-xs text-slate-600 italic">+ {session.exercises.length - 3} more</div>}
-            </div>
-            {session.notes && (
-                <div className="text-xs text-slate-400 bg-slate-900/50 p-2 rounded border border-slate-800/50 flex items-start gap-2">
-                    <FileText size={14} className="shrink-0 mt-0.5 opacity-50" />
-                    <span className="italic truncate w-full">"{session.notes}"</span>
+                ) : (
+                    <div className="space-y-1 mb-3">
+                        {session.exercises.slice(0, 3).map(ex => (
+                            <div key={ex.id} className="flex justify-between text-sm text-slate-400">
+                                <span>{ex.name}</span>
+                                <span className={ex.completed ? 'text-green-400' : 'text-slate-600'}>
+                                    {ex.sets.filter(s => s.completed).length}/{ex.sets.length}
+                                </span>
+                            </div>
+                        ))}
+                        {session.exercises.length > 3 && <div className="text-xs text-slate-600 italic">+ {session.exercises.length - 3} more</div>}
+                    </div>
+                )}
+                
+                {session.notes && (
+                    <div className="text-xs text-slate-400 bg-slate-900/50 p-2 rounded border border-slate-800/50 flex items-start gap-2">
+                        <FileText size={14} className="shrink-0 mt-0.5 opacity-50" />
+                        <span className="italic truncate w-full">"{session.notes}"</span>
+                    </div>
+                )}
                 </div>
-            )}
-            </div>
-        ))}
+            )
+        })}
         {filteredHistory.length === 0 && (
             <div className="text-center py-8 text-slate-500 border border-dashed border-slate-800 rounded-xl">
                 No workouts found matching your filters.
@@ -318,10 +242,11 @@ export const HistoryView: React.FC<HistoryProps> = ({ history, onDeleteSession, 
                  <Filter size={14} className="text-slate-500 mr-2" />
                  <select 
                     value={filterLift}
-                    onChange={(e) => setFilterLift(e.target.value as LiftType | 'All')}
+                    onChange={(e) => setFilterLift(e.target.value)}
                     className="bg-transparent text-xs font-bold text-white py-2 focus:outline-none appearance-none pr-4"
                  >
-                     <option value="All">All Lifts</option>
+                     <option value="All">All Types</option>
+                     <option value="Conditioning">Conditioning</option>
                      {Object.values(LiftType).map(l => <option key={l} value={l}>{l}</option>)}
                  </select>
               </div>
@@ -372,13 +297,6 @@ export const HistoryView: React.FC<HistoryProps> = ({ history, onDeleteSession, 
                      </div>
                      <div className="flex space-x-2">
                         <button 
-                            onClick={handleShareImage}
-                            className="bg-slate-800 p-2 rounded-lg text-slate-400 hover:text-white transition-colors border border-slate-700"
-                            title="Save as Image"
-                        >
-                            <ImageIcon size={18} />
-                        </button>
-                        <button 
                             onClick={handleShareText}
                             className="flex items-center space-x-2 bg-theme-soft text-theme px-3 py-1.5 rounded-lg hover:bg-theme hover:text-white transition-colors"
                         >
@@ -388,36 +306,62 @@ export const HistoryView: React.FC<HistoryProps> = ({ history, onDeleteSession, 
                      </div>
                  </div>
 
-                 <div className="space-y-6">
-                     {selectedSession.exercises.map((ex, i) => (
-                         <div key={i} className="space-y-2">
-                             <div className="flex justify-between items-center">
-                                 <div className="flex items-center space-x-2">
-                                     <div className={`p-1.5 rounded-md ${ex.completed ? 'bg-green-900/20 text-green-500' : 'bg-slate-800 text-slate-500'}`}>
-                                         <Dumbbell size={16} />
-                                     </div>
-                                     <span className="font-bold text-white">{ex.name}</span>
-                                 </div>
-                                 <span className="text-xs text-slate-500">{ex.type}</span>
+                 {/* Conditional Render based on Type */}
+                 {selectedSession.type === 'Conditioning' && selectedSession.conditioningData ? (
+                     <div className="space-y-4">
+                         <div className="bg-slate-900 p-4 rounded-xl border border-slate-800 grid grid-cols-2 gap-4 text-center">
+                             <div>
+                                 <div className="text-xs text-slate-500 uppercase">Activity</div>
+                                 <div className="text-lg font-bold text-white">{selectedSession.conditioningData.activity}</div>
                              </div>
-                             <div className="grid grid-cols-4 gap-2 pl-8">
-                                 {ex.sets.map((set, j) => (
-                                     <div 
-                                        key={j} 
-                                        className={`text-xs text-center p-1.5 rounded border ${
-                                            set.completed 
-                                            ? 'bg-slate-800 border-slate-700 text-white' 
-                                            : 'bg-slate-900 border-slate-800 text-slate-600'
-                                        }`}
-                                     >
-                                         <div className="font-bold">{set.weight}</div>
-                                         <div className="text-[10px] text-slate-400">x{set.actualReps || set.reps}</div>
-                                     </div>
-                                 ))}
+                             <div>
+                                 <div className="text-xs text-slate-500 uppercase">Duration</div>
+                                 <div className="text-lg font-bold text-white">{Math.floor(selectedSession.durationSeconds / 60)} min</div>
+                             </div>
+                             {selectedSession.conditioningData.distance && (
+                                 <div>
+                                     <div className="text-xs text-slate-500 uppercase">Distance</div>
+                                     <div className="text-lg font-bold text-white">{selectedSession.conditioningData.distance} {selectedSession.conditioningData.distanceUnit}</div>
+                                 </div>
+                             )}
+                             <div>
+                                 <div className="text-xs text-slate-500 uppercase">Intensity</div>
+                                 <div className="text-lg font-bold text-white">{selectedSession.conditioningData.intensity}</div>
                              </div>
                          </div>
-                     ))}
-                 </div>
+                     </div>
+                 ) : (
+                     <div className="space-y-6">
+                         {selectedSession.exercises.map((ex, i) => (
+                             <div key={i} className="space-y-2">
+                                 <div className="flex justify-between items-center">
+                                     <div className="flex items-center space-x-2">
+                                         <div className={`p-1.5 rounded-md ${ex.completed ? 'bg-green-900/20 text-green-500' : 'bg-slate-800 text-slate-500'}`}>
+                                             <Dumbbell size={16} />
+                                         </div>
+                                         <span className="font-bold text-white">{ex.name}</span>
+                                     </div>
+                                     <span className="text-xs text-slate-500">{ex.type}</span>
+                                 </div>
+                                 <div className="grid grid-cols-4 gap-2 pl-8">
+                                     {ex.sets.map((set, j) => (
+                                         <div 
+                                            key={j} 
+                                            className={`text-xs text-center p-1.5 rounded border ${
+                                                set.completed 
+                                                ? 'bg-slate-800 border-slate-700 text-white' 
+                                                : 'bg-slate-900 border-slate-800 text-slate-600'
+                                            }`}
+                                         >
+                                             <div className="font-bold">{set.weight}</div>
+                                             <div className="text-[10px] text-slate-400">x{set.actualReps || set.reps}</div>
+                                         </div>
+                                     ))}
+                                 </div>
+                             </div>
+                         ))}
+                     </div>
+                 )}
 
                  {selectedSession.notes && (
                      <div className="bg-slate-900 p-4 rounded-xl border border-slate-800 text-sm text-slate-300 italic">

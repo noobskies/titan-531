@@ -14,7 +14,7 @@ export const PlateCalculator: React.FC<PlateCalculatorProps> = ({ targetWeight =
   const isKg = unit === 'kg';
   const barWeight = customBarWeight !== undefined ? customBarWeight : (isKg ? BAR_WEIGHT_KG : BAR_WEIGHT_LBS);
 
-  const plates = calculatePlates(weight, unit, customBarWeight, inventory);
+  const plates = calculatePlates(weight, unit as 'lbs' | 'kg', customBarWeight, inventory);
 
   // Helper for height visual
   const getPlateHeight = (p: number) => {
@@ -35,7 +35,7 @@ export const PlateCalculator: React.FC<PlateCalculatorProps> = ({ targetWeight =
 
   // Map utility color class to simplified bg for the bar visual
   const getVisualColor = (p: number) => {
-      const colorClass = getPlateColor(p, unit);
+      const colorClass = getPlateColor(p, unit as 'lbs' | 'kg');
       // Extract just the bg- class
       return colorClass.split(' ').find(c => c.startsWith('bg-')) || 'bg-slate-600';
   }
@@ -101,7 +101,7 @@ export const PlateCalculator: React.FC<PlateCalculatorProps> = ({ targetWeight =
         <p className="text-slate-400 text-sm mb-2">Per Side:</p>
         <div className="flex flex-wrap justify-center gap-2">
             {plates.length > 0 ? plates.map((p, i) => (
-                <span key={i} className={`px-2 py-1 rounded text-xs font-mono font-bold border ${getPlateColor(p, unit)}`}>
+                <span key={i} className={`px-2 py-1 rounded text-xs font-mono font-bold border ${getPlateColor(p, unit as 'lbs' | 'kg')}`}>
                     {p}
                 </span>
             )) : <span className="text-slate-600 italic">Empty Bar</span>}

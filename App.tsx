@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Layout } from './components/Layout';
-import { AppView, UserProfile, LiftType, WorkoutSession, Exercise, SetData } from './types';
+import { AppView, UserProfile, LiftType, WorkoutSession, Exercise, SetData, ConditioningData } from './types';
 import { ActiveWorkout } from './features/ActiveWorkout';
 import { Onboarding } from './features/Onboarding';
 import { ToolsView } from './features/Tools';
@@ -13,6 +13,7 @@ import { AICoachView } from './features/AICoach';
 import { CoachDashboard } from './features/CoachDashboard';
 import { ExerciseManager } from './features/ExerciseManager';
 import { Nutrition } from './features/Nutrition';
+import { Conditioning } from './features/Conditioning';
 import { WorkoutStart } from './features/WorkoutStart';
 import { generateWorkoutTip } from './services/geminiService';
 import { WEEK_MULTIPLIERS, WEEK_REPS, DEFAULT_TM, WARMUP_SETS, PROGRAMS, DEFAULT_ASSISTANCE, ACHIEVEMENTS, DEFAULT_TIMER_SETTINGS, DEFAULT_ASSISTANCE_SETTINGS, THEME_COLORS } from './constants';
@@ -126,6 +127,7 @@ const generateWorkout = (profile: UserProfile, lift: LiftType): WorkoutSession =
     cycle: currentCycle,
     week: currentWeek,
     lift: lift,
+    type: 'Strength',
     exercises: exercises,
     completed: false,
     durationSeconds: 0,
@@ -336,8 +338,8 @@ const App: React.FC = () => {
             ex.sets.forEach(set => {
                 if (set.completed) {
                     const est = Math.round(set.weight * (1 + (set.actualReps || set.reps) / 30));
-                    if (est > updatedMaxes[completedSession.lift]) {
-                        updatedMaxes[completedSession.lift] = est;
+                    if (est > updatedMaxes[completedSession.lift as LiftType]) {
+                        updatedMaxes[completedSession.lift as LiftType] = est;
                         maxesChanged = true;
                     }
                 }
@@ -353,6 +355,30 @@ const App: React.FC = () => {
 
     checkAchievements(updatedProfile, updatedHistory);
     setView(AppView.Dashboard);
+  };
+
+  const handleSaveConditioning = (data: ConditioningData) => {
+      const session: WorkoutSession = {
+          id: `cardio-${Date.now()}`,
+          date: new Date().toLocaleDateString(),
+          title: data.activity,
+          cycle: activeProfile.currentCycle,
+          week: activeProfile.currentWeek,
+          lift: 'Conditioning',
+          type: 'Conditioning',
+          exercises: [],
+          conditioningData: data,
+          completed: true,
+          durationSeconds: data.durationSeconds,
+          notes: data.notes,
+          programType: activeProfile.selectedProgram,
+          profileId: activeProfile.id
+      };
+
+      const updatedHistory = [...history, session];
+      setHistory(updatedHistory);
+      localStorage.setItem('titan_history', JSON.stringify(updatedHistory));
+      setView(AppView.History);
   };
 
   const handleDeleteWorkout = (sessionId: string) => {
@@ -412,8 +438,8 @@ const App: React.FC = () => {
   
   const getCompletedLiftsForWeek = (): LiftType[] => {
       return history
-        .filter(s => (s.profileId === activeProfile.id) && s.cycle === activeProfile.currentCycle && s.week === activeProfile.currentWeek)
-        .map(s => s.lift);
+        .filter(s => (s.profileId === activeProfile.id) && s.cycle === activeProfile.currentCycle && s.week === activeProfile.currentWeek && s.type !== 'Conditioning')
+        .map(s => s.lift as LiftType);
   };
 
   const handleFinishWeek = () => {
@@ -473,7 +499,8 @@ const App: React.FC = () => {
       });
   };
 
-  const getCurrentPR = (lift: LiftType): number => {
+  const getCurrentPR = (lift: LiftType | 'Conditioning'): number => {
+      if (lift === 'Conditioning') return 0;
       let max = activeProfile.oneRepMaxes[lift];
       return Math.round(max);
   };
@@ -521,12 +548,23 @@ const App: React.FC = () => {
       );
     }
 
+    if (view === AppView.Conditioning) {
+        return (
+            <Conditioning 
+                onSave={handleSaveConditioning}
+                onCancel={() => setView(AppView.Dashboard)}
+                unit={activeProfile.unit}
+            />
+        )
+    }
+
     switch (view) {
       case AppView.Dashboard:
         return (
             <Dashboard 
                 profile={activeProfile} 
                 onStartWorkout={handleStartWorkout} 
+                onStartConditioning={() => setView(AppView.Conditioning)}
                 tip={dailyTip}
                 completedLiftsThisWeek={getCompletedLiftsForWeek()}
                 onFinishWeek={handleFinishWeek}

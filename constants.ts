@@ -71,6 +71,19 @@ export const THEME_COLORS: Record<ThemeColor, { primary: string, secondary: stri
     red: { primary: '#ef4444', secondary: '#b91c1c', accent: '#f87171', soft: 'rgba(239, 68, 68, 0.1)' },
 };
 
+export const CONDITIONING_ACTIVITIES = [
+    'Running',
+    'Weighted Walk / Ruck',
+    'Prowler / Sled',
+    'Hill Sprints',
+    'Assault Bike',
+    'Rowing',
+    'Jump Rope',
+    'Cycling',
+    'Swimming',
+    'Walking'
+];
+
 // --- Exercise Database ---
 
 export interface ExerciseInfo {
