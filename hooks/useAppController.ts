@@ -87,6 +87,12 @@ export const useAppController = () => {
       }
   };
 
+  // Bulk update for imports
+  const replaceAllData = (newProfile: UserProfile, newHistory: WorkoutSession[]) => {
+      setRootProfile(newProfile);
+      setHistory(newHistory);
+  };
+
   const startWorkout = (lift: LiftType) => {
     if (PROGRAMS[activeProfile.selectedProgram].isPremium && !activeProfile.isPremium) {
         setShowPremiumWall(true);
@@ -151,7 +157,7 @@ export const useAppController = () => {
   return {
     view, setView,
     rootProfile, updateRootProfile,
-    activeProfile, saveProfile,
+    activeProfile, saveProfile, replaceAllData,
     activeHistory, history,
     activeSession, setActiveSession,
     dailyTip,

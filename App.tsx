@@ -73,14 +73,18 @@ const AppContent: React.FC = () => {
       reader.onload = (e) => {
           try {
               const data = JSON.parse(e.target?.result as string);
-              if (data.profile && data.history) {
-                  ctrl.updateRootProfile(data.profile);
-                  // Trigger reload to ensure all hooks sync
+              // Validate basic structure
+              if (data.profile && Array.isArray(data.history)) {
+                  ctrl.replaceAllData(data.profile, data.history);
                   showToast("Data imported! Reloading...", "success");
-                  setTimeout(() => window.location.reload(), 1000);
+                  // Small delay to allow state save before reload
+                  setTimeout(() => window.location.reload(), 1500);
+              } else {
+                 throw new Error("Invalid file format");
               }
           } catch (err) { 
-            showToast("Error parsing file", "error"); 
+            console.error(err);
+            showToast("Error parsing backup file", "error"); 
           }
       };
       reader.readAsText(file);
@@ -124,7 +128,7 @@ const AppContent: React.FC = () => {
       `}</style>
 
       <Suspense fallback={
-        <div className="flex h-[50vh] items-center justify-center text-slate-500">
+        <div className="flex h-full items-center justify-center text-slate-500">
            <Loader className="animate-spin mr-2" /> Loading...
         </div>
       }>

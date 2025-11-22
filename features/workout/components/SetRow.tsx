@@ -18,7 +18,8 @@ interface SetRowProps {
     t: any;
 }
 
-export const SetRow: React.FC<SetRowProps> = ({
+// Wrapped in Memo to prevent re-renders on every parent timer tick
+export const SetRow: React.FC<SetRowProps> = React.memo(({
     set, index, isActive, unit, plateInventory, onToggle, onUpdateReps, onUpdateRpe, onShowPlates, formattedTime, t
 }) => {
     return (
@@ -123,4 +124,4 @@ export const SetRow: React.FC<SetRowProps> = ({
             )}
         </div>
     );
-};
+});
