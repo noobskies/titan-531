@@ -2,11 +2,55 @@
 
 ## Current Status
 
-**Project State**: Feature-complete MVP at v1.2.1  
+**Project State**: Feature-complete MVP at v1.2.1 + Cloud Sync Development  
 **Last Major Update**: November 2025  
-**Focus**: Maintenance, stability, potential enhancements
+**Focus**: Supabase Integration for Optional Cloud Sync
 
 ## Recent Work
+
+### Supabase Integration (In Progress - Phase 1 Complete)
+
+**Goal**: Add optional cloud sync while maintaining localStorage as primary storage for guest mode.
+
+**Phase 1 Complete (November 2025):**
+
+1. **Infrastructure Setup**
+
+   - Installed Supabase dependencies (@supabase/supabase-js, auth packages)
+   - Configured environment variables with VITE\_ prefix for Vite compatibility
+   - Created Supabase client initialization (services/database/supabaseClient.ts)
+   - Set up TypeScript database types (services/database/types.ts)
+
+2. **Database Design**
+
+   - Designed complete PostgreSQL schema (services/database/schema.sql)
+   - Tables: profiles, workout_sessions, nutrition_logs, client_profiles
+   - Row-level security (RLS) policies configured
+   - Automatic profile creation triggers
+   - Performance indexes added
+
+3. **Testing & Documentation**
+   - Connection test utility (auto-runs in development)
+   - Comprehensive setup guide (services/database/SETUP_GUIDE.md)
+   - Quick reference documentation (services/database/README.md)
+   - Memory bank updated (memory-bank/supabase-integration.md)
+
+**Next Steps**: User must apply database schema in Supabase dashboard, then proceed to Phase 2 (Auth System).
+
+### Gemini API Fix (November 2025)
+
+**Critical Bug Fixed**: App was crashing on startup due to incorrect API key access.
+
+**Problem**: Service used `process.env.API_KEY` which doesn't work in browser with Vite.
+
+**Solution**:
+
+- Changed to `import.meta.env.VITE_GEMINI_API_KEY` (Vite-compatible)
+- Implemented lazy initialization (client created only when needed)
+- Added proper error handling with helpful messages
+- Made AI features optional (won't crash if no key provided)
+
+**Impact**: App now starts successfully, AI features gracefully degrade if not configured.
 
 ### Latest Changes (v1.2.1)
 
@@ -201,11 +245,25 @@ If development resumes, these areas were identified as enhancement opportunities
    - **Theme**: Dynamic colors via CSS custom properties
 
 4. **No Testing Framework (Yet)**
+
    - **Decision**: No automated tests in v1
    - **Rationale**:
      - MVP speed priority
      - Manual testing sufficient for v1
    - **Future**: Add Jest + RTL when stability needed
+
+5. **Supabase Over Prisma** (New - November 2025)
+   - **Decision**: Use Supabase for optional cloud sync
+   - **Rationale**:
+     - No backend code needed (Prisma requires Node.js server)
+     - Built-in authentication (email/password + OAuth)
+     - Row-level security at database level
+     - Real-time subscriptions available (future feature)
+     - Generous free tier (50k MAU, 500MB database)
+     - Client libraries handle everything
+     - Still PostgreSQL underneath (can self-host later)
+   - **Trade-off**: Vendor dependency (though data is exportable)
+   - **Deployment**: Works with Vercel (first-class integration)
 
 ## Key Patterns & Preferences
 
