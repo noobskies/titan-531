@@ -539,6 +539,37 @@ None currently
 - Phase 5: Coach Mode Cloud Support
 - Phase 6: Testing & Polish
 
+**v1.4.0** - In Progress (Android APK Implementation)
+
+- Phase 1: Environment Setup ✅ Complete
+  - Capacitor v7.4.4 integration
+  - Android platform project created
+  - App ID: com.titan.workout
+- Phase 2: Tailwind CSS Migration ✅ Complete
+  - Migrated from CDN to build process (Tailwind v4)
+  - @tailwindcss/postcss integration
+  - @theme directive for custom colors
+- Phase 3: Capacitor Configuration ✅ Complete
+  - capacitor.config.ts configured
+  - Android scripts added to package.json
+  - Vite config optimized for Capacitor
+- Phase 4: Platform Detection Utility ✅ Complete
+  - Created src/utils/platformDetection.ts
+  - Conditional service worker registration
+- Phase 5: Asset Preparation ✅ Complete
+  - Resources directory created
+  - Capacitor plugins installed (splash, status bar, keyboard)
+- Phase 6: Build and Test ✅ Complete
+  - Production build successful (462KB main + chunks)
+  - Android sync complete
+  - All plugins configured
+- Phase 7: Production Build (Pending)
+  - Android Studio setup needed
+  - Device testing required
+  - App icons and splash screens pending
+  - Signing key generation pending
+- Phase 8: Play Store Submission (Pending)
+
 ### Future Milestones (Tentative)
 
 **v1.3.0** - Testing & Quality

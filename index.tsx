@@ -1,7 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import "./services/database/testConnection";
+import "./src/index.css";
+
+// Only import test connection in development
+if (import.meta.env.DEV) {
+  import("./services/database/testConnection");
+}
 
 const rootElement = document.getElementById("root");
 if (!rootElement) {
