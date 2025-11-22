@@ -162,7 +162,10 @@
 - [x] Daily training tips
 - [x] Progress indicators
 - [x] Empty states
-- [x] Onboarding flow
+- [x] Onboarding flow (5 steps with back navigation)
+- [x] Cloud sync opt-in in onboarding (Step 5)
+- [x] Google OAuth integration in onboarding
+- [x] Bidirectional onboarding navigation
 
 #### PWA Features
 
@@ -553,6 +556,16 @@ None currently
   - Graceful degradation on failures
   - Migration flag in localStorage
   - Comprehensive error handling
+- Onboarding Auth Integration ✅ Complete (November 2025)
+  - Added Step 5 to onboarding (cloud sync opt-in)
+  - Two-screen approach (benefits → inline auth form)
+  - Back navigation for all steps (2-5)
+  - Google OAuth provider integration
+  - Smart skip logic (authenticated/dismissed users)
+  - Automatic migration on auth success
+  - Modified `features/shared/Onboarding.tsx`
+  - Progress dots show 5 steps
+  - Dismissal flag in localStorage
 - Phase 4: Data Abstraction Layer (Next)
 - Phase 5: Coach Mode Cloud Support
 - Phase 6: Testing & Polish

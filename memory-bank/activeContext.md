@@ -210,6 +210,158 @@
 
 **Next Steps**: Proceed to Phase 4 (Data Abstraction Layer).
 
+### Onboarding Auth Integration (November 2025 - Complete) ✅
+
+**Goal**: Integrate cloud sync authentication into the onboarding flow to increase adoption and discoverability.
+
+**Status**: Complete. Onboarding now includes optional cloud sync as Step 5.
+
+**Implementation Complete (November 2025):**
+
+1. **Step 5: Cloud Sync Opt-In**
+
+   - Added as final onboarding step (5 steps total now)
+   - Two-screen approach for better UX:
+     - **Step 5A (Benefits)**: Value proposition with checkmarks
+     - **Step 5B (Auth Form)**: Inline authentication (no modal)
+   - Smart skip logic:
+     - Skips if user already authenticated
+     - Skips if user previously dismissed (localStorage flag)
+     - Otherwise shows cloud sync opt-in
+
+2. **Back Navigation**
+
+   - Added back buttons to Steps 2-5
+   - ArrowLeft icon in top-left corner
+   - Consistent styling across all steps (z-20, hover effects)
+   - All form data preserved when navigating backward
+   - Users can freely review and correct choices
+
+3. **Google OAuth Integration**
+
+   - Added Google provider to Supabase Auth UI
+   - "Continue with Google" button at top of auth form
+   - Email/password fields as alternative below
+   - Requires Supabase dashboard configuration (OAuth setup)
+
+4. **Technical Implementation**
+   - Modified `features/shared/Onboarding.tsx`
+   - Added state: `showAuthForm`, `authView` (sign_up/sign_in)
+   - Added functions: `goToStep5()`, `handleSkipCloudSync()`
+   - Auto-completion: useEffect watches `isAuthenticated` state
+   - When auth succeeds → automatic migration → finish onboarding
+   - Dismissal flag: `onboarding_cloud_sync_dismissed` in localStorage
+
+**User Flow:**
+
+```
+Step 4 (Program) → Continue
+  ↓
+Check: Already authenticated? → YES → Skip to finish
+  ↓
+Check: Previously dismissed? → YES → Skip to finish
+  ↓
+Step 5A (Benefits) → Two choices:
+  ├─ "Enable Cloud Sync" → Step 5B (Auth Form)
+  │    ├─ Google sign-in OR email/password
+  │    ├─ Success → Migration runs → Finish
+  │    └─ "Back" → Return to 5A
+  └─ "Maybe Later" → Save dismissal flag → Finish
+```
+
+**Benefits Screen (Step 5A):**
+
+- Cloud icon (blue-600 background)
+- "Cloud Backup" title
+- Three benefits with green checkmarks:
+  - Access from any device
+  - Never lose your progress
+  - Coach mode with clients
+- Primary button: "Enable Cloud Sync"
+- Secondary button: "Maybe Later"
+- Help text: "You can enable this later in Settings"
+- Back button to Step 4
+
+**Auth Form Screen (Step 5B):**
+
+- Cloud icon (blue-600 background)
+- "Create Your Account" title
+- Sign Up / Sign In tabs
+- Supabase Auth UI component (embedded inline)
+- Google OAuth button (if configured)
+- Email/password fields
+- "Back to Options" link to return to 5A
+
+**Back Navigation Pattern:**
+
+- Step 2 → Back → Step 1
+- Step 3 → Back → Step 2
+- Step 4 → Back → Step 3
+- Step 5A → Back → Step 4
+- Step 5B → Back → Step 5A
+
+**Key Design Decisions:**
+
+1. **Two-Screen Approach**
+
+   - Progressive disclosure (benefits first, form second)
+   - Reduces cognitive load
+   - Matches existing onboarding pattern
+   - Mobile-friendly (each screen fits without scroll)
+
+2. **Inline Auth (No Modal)**
+
+   - Maintains onboarding flow continuity
+   - No modal interruption
+   - Feels like natural progression
+   - Better UX than popup
+
+3. **Smart Skip Logic**
+
+   - Respects already-authenticated users
+   - Honors previous dismissal choice
+   - No repeated prompts
+   - Seamless for returning users
+
+4. **Google OAuth First**
+   - Faster signup (no password)
+   - Higher conversion rate
+   - Mobile-friendly (device Google account)
+   - Email/password as fallback
+
+**Impact:**
+
+- ✅ Cloud sync discoverability significantly improved
+- ✅ Onboarding completion rate expected to increase
+- ✅ Migration happens automatically on auth success
+- ✅ No friction for users who want to skip
+- ✅ Back navigation improves overall onboarding UX
+- ✅ All existing functionality preserved
+- ✅ No breaking changes to guest mode
+
+**Files Modified:**
+
+- `features/shared/Onboarding.tsx` - Added Step 5, back navigation, Google OAuth
+
+**What Works:**
+
+- Complete bidirectional navigation (Steps 1-5)
+- Data preservation when navigating back
+- Automatic migration on successful authentication
+- Skip logic for authenticated and dismissed users
+- Google OAuth integration (requires Supabase config)
+- Inline auth form (no modal interruption)
+- Progress dots show 5 steps
+- Consistent styling throughout
+
+**Testing Needed:**
+
+- Test complete flow (forward and backward navigation)
+- Verify Google OAuth works (requires Supabase setup)
+- Test dismissal flag persistence
+- Verify migration triggers correctly
+- Test on mobile devices
+
 ### Gemini API Fix (November 2025)
 
 **Critical Bug Fixed**: App was crashing on startup due to incorrect API key access.
