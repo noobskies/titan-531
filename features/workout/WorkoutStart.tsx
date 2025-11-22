@@ -3,6 +3,7 @@ import React from 'react';
 import { LiftType, UserProfile } from '../../types';
 import { Dumbbell, Play, CheckCircle } from 'lucide-react';
 import { TRANSLATIONS } from '../../translations';
+import { initAudio } from '../../services/platform/audioService';
 
 interface WorkoutStartProps {
     profile: UserProfile;
@@ -18,6 +19,11 @@ export const WorkoutStart: React.FC<WorkoutStartProps> = ({ profile, onStartWork
     
     const remainingLifts = allLifts.filter(l => !completedLifts.includes(l));
     const nextLift = remainingLifts.length > 0 ? remainingLifts[0] : null;
+
+    const handleStart = (lift: LiftType) => {
+        initAudio(); // Unlock audio context
+        onStartWorkout(lift);
+    };
 
     return (
         <div className="p-4 space-y-6 animate-in fade-in">
@@ -43,7 +49,7 @@ export const WorkoutStart: React.FC<WorkoutStartProps> = ({ profile, onStartWork
                         <p className="text-slate-400 text-sm mb-6">Training Max: {profile.trainingMaxes[nextLift]} {profile.unit}</p>
                         
                         <button 
-                            onClick={() => onStartWorkout(nextLift)}
+                            onClick={() => handleStart(nextLift)}
                             className="w-full bg-theme hover:bg-theme-secondary text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-900/20 transition-all flex items-center justify-center"
                         >
                             <Play size={20} className="mr-2 fill-current" />
@@ -68,7 +74,7 @@ export const WorkoutStart: React.FC<WorkoutStartProps> = ({ profile, onStartWork
                         return (
                             <button
                                 key={lift}
-                                onClick={() => onStartWorkout(lift)}
+                                onClick={() => handleStart(lift)}
                                 disabled={isDone}
                                 className={`flex items-center justify-between p-4 rounded-xl border transition-all ${
                                     isDone 

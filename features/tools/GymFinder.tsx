@@ -42,7 +42,7 @@ export const GymFinder: React.FC = () => {
   };
 
   return (
-    <div className="p-4 bg-card rounded-xl border border-slate-800 shadow-xl h-full overflow-y-auto">
+    <div className="p-4 bg-card rounded-xl border border-slate-800 shadow-xl">
       <div className="text-center mb-6">
         <div className="bg-theme-soft w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3 border border-theme">
           <MapPin size={32} className="text-theme" />

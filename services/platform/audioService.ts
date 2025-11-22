@@ -45,3 +45,22 @@ export const playBeep = (freq: number = 880, duration: number = 0.1, type: Oscil
         console.error("Audio play failed", e);
     }
 };
+
+// Initialize Audio Context on user interaction (Start Workout) to unlock iOS audio
+export const initAudio = () => {
+    try {
+        const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        // Play a silent sound to unlock the context
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        gain.gain.value = 0.00001; // Effectively silent
+        osc.start();
+        osc.stop(ctx.currentTime + 0.1);
+    } catch (e) {
+        console.error("Failed to init audio", e);
+    }
+};

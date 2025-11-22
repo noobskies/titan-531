@@ -67,7 +67,7 @@ export const ExerciseManager: React.FC<ExerciseManagerProps> = ({ profile, onUpd
   };
 
   return (
-    <div className="p-4 space-y-6 animate-in slide-in-from-right duration-300 h-full flex flex-col">
+    <div className="p-4 space-y-6 animate-in slide-in-from-right duration-300">
        <div className="flex items-center justify-between mb-2">
         <div className="flex items-center space-x-4">
             <button onClick={onBack} className="p-2 hover:bg-slate-800 rounded-full text-slate-400">
@@ -91,7 +91,7 @@ export const ExerciseManager: React.FC<ExerciseManagerProps> = ({ profile, onUpd
           />
       </div>
 
-      <div className="flex-1 overflow-y-auto space-y-2 pr-1 scrollbar-thin">
+      <div className="space-y-2">
           {filtered.map((ex, i) => {
               const isCustom = customExercises.some(c => c.name === ex.name);
               return (

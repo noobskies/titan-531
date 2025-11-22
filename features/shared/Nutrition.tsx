@@ -151,124 +151,122 @@ export const Nutrition: React.FC<NutritionProps> = ({ profile, onUpdateProfile }
     if (totals.calories === 0) pieData.push({ name: 'Empty', value: 1, color: '#1e293b' });
 
     return (
-        <div className="h-full overflow-y-auto">
-            <div className="p-4 space-y-6">
-                <div className="flex justify-between items-start">
+        <div className="p-4 space-y-6">
+            <div className="flex justify-between items-start">
+                <div>
+                    <h2 className="text-2xl font-bold text-white">Nutrition</h2>
+                    <p className="text-xs text-slate-400">AI-Powered Tracking</p>
+                </div>
+                <button 
+                    onClick={() => setIsModalOpen(true)}
+                    className="bg-slate-800 p-2 rounded-lg text-slate-400 hover:text-white border border-slate-700"
+                >
+                    <Target size={20} />
+                </button>
+            </div>
+
+            {/* Summary Card */}
+            <div className="bg-card rounded-xl border border-slate-800 p-4 shadow-lg">
+                <div className="flex items-center justify-between mb-4">
                     <div>
-                        <h2 className="text-2xl font-bold text-white">Nutrition</h2>
-                        <p className="text-xs text-slate-400">AI-Powered Tracking</p>
+                        <div className="text-3xl font-bold text-white">{totals.calories}</div>
+                        <div className="text-xs text-slate-500">of {targets.calories} kcal</div>
                     </div>
-                    <button 
-                        onClick={() => setIsModalOpen(true)}
-                        className="bg-slate-800 p-2 rounded-lg text-slate-400 hover:text-white border border-slate-700"
-                    >
-                        <Target size={20} />
-                    </button>
+                    <div className="w-16 h-16">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <PieChart>
+                                <Pie 
+                                    data={pieData} 
+                                    innerRadius={20} 
+                                    outerRadius={30} 
+                                    paddingAngle={5} 
+                                    dataKey="value"
+                                    stroke="none"
+                                >
+                                    {pieData.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={entry.color} />
+                                    ))}
+                                </Pie>
+                            </PieChart>
+                        </ResponsiveContainer>
+                    </div>
                 </div>
 
-                {/* Summary Card */}
-                <div className="bg-card rounded-xl border border-slate-800 p-4 shadow-lg">
-                    <div className="flex items-center justify-between mb-4">
-                        <div>
-                            <div className="text-3xl font-bold text-white">{totals.calories}</div>
-                            <div className="text-xs text-slate-500">of {targets.calories} kcal</div>
-                        </div>
-                        <div className="w-16 h-16">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <PieChart>
-                                    <Pie 
-                                        data={pieData} 
-                                        innerRadius={20} 
-                                        outerRadius={30} 
-                                        paddingAngle={5} 
-                                        dataKey="value"
-                                        stroke="none"
-                                    >
-                                        {pieData.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={entry.color} />
-                                        ))}
-                                    </Pie>
-                                </PieChart>
-                            </ResponsiveContainer>
-                        </div>
-                    </div>
+                {renderProgressBar('Protein', totals.protein, targets.protein, 'bg-blue-500')}
+                {renderProgressBar('Carbs', totals.carbs, targets.carbs, 'bg-green-500')}
+                {renderProgressBar('Fats', totals.fats, targets.fats, 'bg-amber-500')}
+            </div>
 
-                    {renderProgressBar('Protein', totals.protein, targets.protein, 'bg-blue-500')}
-                    {renderProgressBar('Carbs', totals.carbs, targets.carbs, 'bg-green-500')}
-                    {renderProgressBar('Fats', totals.fats, targets.fats, 'bg-amber-500')}
-                </div>
-
-                {/* Input Area */}
-                <div className="space-y-3">
-                     <h3 className="text-sm font-bold text-slate-500 uppercase">Log Meal</h3>
-                     <div className="flex gap-2">
-                         <div className="relative flex-1">
-                            <input 
-                                type="text"
-                                value={textInput}
-                                onChange={(e) => setTextInput(e.target.value)}
-                                placeholder={isOffline ? "Offline" : "e.g. 2 eggs and toast"}
-                                className="w-full bg-slate-900 border border-slate-800 rounded-xl py-3 pl-4 pr-10 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
-                                onKeyDown={(e) => e.key === 'Enter' && handleAnalyzeText()}
-                                disabled={isOffline}
-                            />
-                            <button 
-                                onClick={handleAnalyzeText}
-                                disabled={loading || !textInput || isOffline}
-                                className="absolute right-2 top-2 p-1.5 bg-blue-600 rounded-lg text-white disabled:opacity-50"
-                            >
-                                {loading ? <Loader size={14} className="animate-spin"/> : isOffline ? <WifiOff size={14} /> : <Plus size={14} />}
-                            </button>
-                         </div>
-                         <button 
-                            onClick={() => fileInputRef.current?.click()}
-                            disabled={isOffline}
-                            className="bg-slate-800 border border-slate-700 rounded-xl w-12 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                         >
-                             <Camera size={20} />
-                         </button>
-                         <input 
-                            type="file" 
-                            ref={fileInputRef} 
-                            onChange={handleImageUpload} 
-                            className="hidden" 
-                            accept="image/*" 
+            {/* Input Area */}
+            <div className="space-y-3">
+                    <h3 className="text-sm font-bold text-slate-500 uppercase">Log Meal</h3>
+                    <div className="flex gap-2">
+                        <div className="relative flex-1">
+                        <input 
+                            type="text"
+                            value={textInput}
+                            onChange={(e) => setTextInput(e.target.value)}
+                            placeholder={isOffline ? "Offline" : "e.g. 2 eggs and toast"}
+                            className="w-full bg-slate-900 border border-slate-800 rounded-xl py-3 pl-4 pr-10 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                            onKeyDown={(e) => e.key === 'Enter' && handleAnalyzeText()}
                             disabled={isOffline}
                         />
-                     </div>
-                </div>
+                        <button 
+                            onClick={handleAnalyzeText}
+                            disabled={loading || !textInput || isOffline}
+                            className="absolute right-2 top-2 p-1.5 bg-blue-600 rounded-lg text-white disabled:opacity-50"
+                        >
+                            {loading ? <Loader size={14} className="animate-spin"/> : isOffline ? <WifiOff size={14} /> : <Plus size={14} />}
+                        </button>
+                        </div>
+                        <button 
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={isOffline}
+                        className="bg-slate-800 border border-slate-700 rounded-xl w-12 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            <Camera size={20} />
+                        </button>
+                        <input 
+                        type="file" 
+                        ref={fileInputRef} 
+                        onChange={handleImageUpload} 
+                        className="hidden" 
+                        accept="image/*" 
+                        disabled={isOffline}
+                    />
+                    </div>
+            </div>
 
-                {/* Meal List */}
-                <div className="space-y-3">
-                    <h3 className="text-sm font-bold text-slate-500 uppercase">Today's Log</h3>
-                    {todaysMeals.length === 0 && (
-                        <div className="text-center py-8 border-2 border-dashed border-slate-800 rounded-xl text-slate-600 text-sm">
-                            No meals logged today.
-                        </div>
-                    )}
-                    {todaysMeals.slice().reverse().map(meal => (
-                        <div key={meal.id} className="bg-slate-900/50 rounded-xl border border-slate-800 p-3 flex items-center justify-between animate-in slide-in-from-bottom-2">
-                             <div className="flex items-center space-x-3">
-                                 {meal.photoUrl ? (
-                                     <img src={meal.photoUrl} alt={meal.name} className="w-10 h-10 rounded-lg object-cover bg-slate-800" />
-                                 ) : (
-                                     <div className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center">
-                                         <Utensils size={16} className="text-slate-500" />
-                                     </div>
-                                 )}
-                                 <div>
-                                     <div className="font-bold text-white text-sm">{meal.name}</div>
-                                     <div className="text-xs text-slate-500">
-                                         {meal.macros.calories} kcal • {meal.macros.protein}g P • {meal.macros.carbs}g C • {meal.macros.fats}g F
-                                     </div>
-                                 </div>
-                             </div>
-                             <button onClick={() => deleteMeal(meal.id)} className="text-slate-600 hover:text-red-500 p-2">
-                                 <Trash2 size={16} />
-                             </button>
-                        </div>
-                    ))}
-                </div>
+            {/* Meal List */}
+            <div className="space-y-3">
+                <h3 className="text-sm font-bold text-slate-500 uppercase">Today's Log</h3>
+                {todaysMeals.length === 0 && (
+                    <div className="text-center py-8 border-2 border-dashed border-slate-800 rounded-xl text-slate-600 text-sm">
+                        No meals logged today.
+                    </div>
+                )}
+                {todaysMeals.slice().reverse().map(meal => (
+                    <div key={meal.id} className="bg-slate-900/50 rounded-xl border border-slate-800 p-3 flex items-center justify-between animate-in slide-in-from-bottom-2">
+                            <div className="flex items-center space-x-3">
+                                {meal.photoUrl ? (
+                                    <img src={meal.photoUrl} alt={meal.name} className="w-10 h-10 rounded-lg object-cover bg-slate-800" />
+                                ) : (
+                                    <div className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center">
+                                        <Utensils size={16} className="text-slate-500" />
+                                    </div>
+                                )}
+                                <div>
+                                    <div className="font-bold text-white text-sm">{meal.name}</div>
+                                    <div className="text-xs text-slate-500">
+                                        {meal.macros.calories} kcal • {meal.macros.protein}g P • {meal.macros.carbs}g C • {meal.macros.fats}g F
+                                    </div>
+                                </div>
+                            </div>
+                            <button onClick={() => deleteMeal(meal.id)} className="text-slate-600 hover:text-red-500 p-2">
+                                <Trash2 size={16} />
+                            </button>
+                    </div>
+                ))}
             </div>
 
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Calorie Calculator">

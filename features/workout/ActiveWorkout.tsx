@@ -50,6 +50,7 @@ export const ActiveWorkout: React.FC<ActiveWorkoutProps> = ({
   // Active Set Tracking
   const [activeSetId, setActiveSetId] = useState<{ex: number, s: number} | null>(null);
   const [activeSetDuration, setActiveSetDuration] = useState(0);
+  const [activeSetStartTime, setActiveSetStartTime] = useState<number | null>(null);
   const activeSetTimerRef = useRef<number | null>(null);
 
   // Session Timer
@@ -83,14 +84,17 @@ export const ActiveWorkout: React.FC<ActiveWorkoutProps> = ({
 
   // Active Set Stopwatch Effect
   useEffect(() => {
-      if (activeSetId) {
-          activeSetTimerRef.current = window.setInterval(() => setActiveSetDuration(d => d + 1), 1000);
+      if (activeSetId && activeSetStartTime) {
+          activeSetTimerRef.current = window.setInterval(() => {
+              // Use timestamp delta to prevent drift if tab is backgrounded
+              const seconds = Math.floor((Date.now() - activeSetStartTime) / 1000);
+              setActiveSetDuration(seconds);
+          }, 1000);
       } else {
-          setActiveSetDuration(0);
           if (activeSetTimerRef.current) clearInterval(activeSetTimerRef.current);
       }
       return () => { if (activeSetTimerRef.current) clearInterval(activeSetTimerRef.current); }
-  }, [activeSetId]);
+  }, [activeSetId, activeSetStartTime]);
 
   // Load AI Image Effect
   useEffect(() => {
@@ -119,10 +123,14 @@ export const ActiveWorkout: React.FC<ActiveWorkoutProps> = ({
     if (set.completed) {
         set.completed = false;
         restTimer.stop();
+        setActiveSetId(null);
+        setActiveSetStartTime(null);
     } else if (activeSetId?.ex === exIdx && activeSetId?.s === setIdx) {
         // Finish Set
         set.completed = true;
         setActiveSetId(null);
+        setActiveSetStartTime(null);
+        setActiveSetDuration(0);
         
         if (set.isAmrap || (set.weight > personalRecord * 0.8)) {
             checkPR(set.weight, set.actualReps || set.reps);
@@ -136,6 +144,8 @@ export const ActiveWorkout: React.FC<ActiveWorkoutProps> = ({
     } else {
         // Start Set
         setActiveSetId({ ex: exIdx, s: setIdx });
+        setActiveSetStartTime(Date.now());
+        setActiveSetDuration(0);
         restTimer.stop();
     }
 
@@ -168,6 +178,12 @@ export const ActiveWorkout: React.FC<ActiveWorkoutProps> = ({
       exercise.completed = false;
       onUpdateSession(newSession);
       setShowSwap(null);
+  };
+
+  const handleFinishWorkout = () => {
+      if (window.confirm("Are you sure you are finished with this workout?")) {
+          onComplete({ ...session, durationSeconds: elapsedSeconds });
+      }
   };
 
   const currentExercise = session.exercises[activeExerciseIdx];
@@ -299,7 +315,7 @@ export const ActiveWorkout: React.FC<ActiveWorkoutProps> = ({
         {activeExerciseIdx < session.exercises.length - 1 ? (
            <Button fullWidth variant="primary" onClick={() => setActiveExerciseIdx(prev => prev + 1)} className="flex items-center justify-center space-x-2 h-12"><span>{t.workout_next}</span><ChevronRight size={18} /></Button>
         ) : (
-            <Button fullWidth variant="primary" size="lg" onClick={() => onComplete({ ...session, durationSeconds: elapsedSeconds })} className="h-12 bg-green-600 hover:bg-green-700 border-0">{t.workout_finish}</Button>
+            <Button fullWidth variant="primary" size="lg" onClick={handleFinishWorkout} className="h-12 bg-green-600 hover:bg-green-700 border-0">{t.workout_finish}</Button>
         )}
       </div>
     </div>

@@ -5,6 +5,7 @@ import { Button } from '../../components/Button';
 import { Dumbbell, Trophy, Play, CheckCircle, Circle, ArrowRight, MessageCircle, Calendar, Edit3, Activity } from 'lucide-react';
 import { TRANSLATIONS } from '../../translations';
 import { getNextTrainingDate } from '../../services/core/scheduleService';
+import { initAudio } from '../../services/platform/audioService';
 
 interface DashboardProps {
   profile: UserProfile;
@@ -35,6 +36,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
   // Use user's preferred order or fallback to default enum order
   const liftOrder = profile.liftOrder && profile.liftOrder.length === 4 ? profile.liftOrder : Object.values(LiftType);
   const trainingDays = (profile.trainingDays && profile.trainingDays.length > 0) ? profile.trainingDays : [1, 3, 5]; 
+
+  const handleStart = (lift: LiftType) => {
+      initAudio();
+      onStartWorkout(lift);
+  };
 
   return (
     <div className="p-4 space-y-6 animate-in fade-in duration-500">
@@ -145,7 +151,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
              return (
                 <button
                     key={lift}
-                    onClick={() => onStartWorkout(lift)}
+                    onClick={() => handleStart(lift)}
                     className="flex items-center justify-between bg-card hover:bg-slate-800 p-4 rounded-xl border border-slate-800 transition-all group shadow-sm hover:shadow-md"
                 >
                 <div className="flex items-center space-x-4">

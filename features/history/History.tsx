@@ -50,7 +50,7 @@ export const HistoryView: React.FC<HistoryProps> = ({ history, onDeleteSession, 
   };
 
   return (
-    <div className="p-4 space-y-4 h-full flex flex-col">
+    <div className="p-4 space-y-4">
       {/* Search and Filters */}
       <div className="bg-card p-3 rounded-xl border border-slate-800 space-y-3">
           <div className="relative">
