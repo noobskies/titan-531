@@ -766,129 +766,140 @@ npx cap open android
 'titan531_onboarding_complete' - Boolean flag
 ```
 
-### SQLite Schema (Phase 3 - Future)
+### Supabase Schema (Phase 3 - Premium Sync)
 
 **Tables:**
 
 ```sql
--- Users table (minimal, most from Supabase Auth)
-CREATE TABLE users (
-  id TEXT PRIMARY KEY,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- Profiles table (extends Supabase Auth)
+CREATE TABLE public.profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  email TEXT NOT NULL,
+  display_name TEXT,
+  unit_system TEXT DEFAULT 'imperial', -- 'imperial' or 'metric'
+  premium_status BOOLEAN DEFAULT FALSE,
+  premium_expires_at TIMESTAMP,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
 );
 
 -- Training Maxes
-CREATE TABLE training_maxes (
-  id TEXT PRIMARY KEY,
-  user_id TEXT NOT NULL,
+CREATE TABLE public.training_maxes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
   lift TEXT NOT NULL, -- 'Squat', 'Bench', 'Deadlift', 'Press'
-  weight REAL NOT NULL,
+  weight DECIMAL(6,2) NOT NULL,
   unit TEXT DEFAULT 'lbs',
-  date TEXT NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users(id)
+  date DATE NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW(),
+  UNIQUE(user_id, lift, date)
 );
 
 -- Cycles
-CREATE TABLE cycles (
-  id TEXT PRIMARY KEY,
-  user_id TEXT NOT NULL,
-  program_name TEXT NOT NULL,
-  start_date TEXT NOT NULL,
-  end_date TEXT,
+CREATE TABLE public.cycles (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  program_name TEXT NOT NULL, -- 'Original 5/3/1', 'BBB', 'FSL', etc.
+  start_date DATE NOT NULL,
+  end_date DATE,
   status TEXT DEFAULT 'active', -- 'active', 'completed', 'paused'
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users(id)
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
 );
 
 -- Workouts
-CREATE TABLE workouts (
-  id TEXT PRIMARY KEY,
-  user_id TEXT NOT NULL,
-  cycle_id TEXT,
+CREATE TABLE public.workouts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  cycle_id UUID REFERENCES public.cycles(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   week INTEGER NOT NULL,
   day INTEGER NOT NULL,
+  main_lift TEXT NOT NULL,
   completed BOOLEAN DEFAULT FALSE,
   completed_at TIMESTAMP,
-  duration INTEGER, -- seconds
-  total_volume REAL, -- lbs
+  duration_seconds INTEGER,
+  total_volume_lbs DECIMAL(10,2),
   notes TEXT,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users(id),
-  FOREIGN KEY (cycle_id) REFERENCES cycles(id)
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
 );
 
--- Exercises
-CREATE TABLE exercises (
-  id TEXT PRIMARY KEY,
-  name TEXT NOT NULL,
-  category TEXT, -- 'main', 'supplemental', 'assistance'
-  muscle_groups TEXT, -- JSON array
-  equipment TEXT, -- JSON array
-  custom BOOLEAN DEFAULT FALSE,
-  user_id TEXT, -- NULL for default exercises
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- Workout Exercises (details of exercises in a workout)
+CREATE TABLE public.workout_exercises (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  workout_id UUID NOT NULL REFERENCES public.workouts(id) ON DELETE CASCADE,
+  exercise_name TEXT NOT NULL,
+  exercise_type TEXT NOT NULL, -- 'main', 'supplemental', 'assistance'
+  order_index INTEGER NOT NULL,
+  target_sets INTEGER,
+  target_reps INTEGER,
+  target_weight DECIMAL(6,2),
+  is_amrap BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT NOW()
 );
 
 -- Sets
-CREATE TABLE sets (
-  id TEXT PRIMARY KEY,
-  workout_id TEXT NOT NULL,
-  exercise_id TEXT NOT NULL,
+CREATE TABLE public.sets (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  workout_exercise_id UUID NOT NULL REFERENCES public.workout_exercises(id) ON DELETE CASCADE,
   set_number INTEGER NOT NULL,
-  target_reps INTEGER,
-  actual_reps INTEGER,
-  weight REAL,
-  rpe INTEGER, -- Premium feature
-  is_amrap BOOLEAN DEFAULT FALSE,
+  actual_reps INTEGER NOT NULL,
+  weight DECIMAL(6,2) NOT NULL,
+  rpe INTEGER, -- Premium feature: Rate of Perceived Exertion (1-10)
   is_warmup BOOLEAN DEFAULT FALSE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (workout_id) REFERENCES workouts(id),
-  FOREIGN KEY (exercise_id) REFERENCES exercises(id)
+  notes TEXT,
+  created_at TIMESTAMP DEFAULT NOW()
 );
 
--- Personal Records
-CREATE TABLE personal_records (
-  id TEXT PRIMARY KEY,
-  user_id TEXT NOT NULL,
-  exercise_id TEXT NOT NULL,
-  record_type TEXT NOT NULL, -- '1RM', '5RM', '10RM', 'volume'
-  value REAL NOT NULL,
-  date TEXT NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users(id),
-  FOREIGN KEY (exercise_id) REFERENCES exercises(id)
+-- Personal Records (auto-generated)
+CREATE TABLE public.personal_records (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  exercise_name TEXT NOT NULL,
+  lift TEXT, -- For main lifts: 'Squat', 'Bench', etc.
+  record_type TEXT NOT NULL, -- '1RM_estimate', '5RM', '10RM', 'max_volume_day'
+  value DECIMAL(10,2) NOT NULL,
+  date DATE NOT NULL,
+  workout_id UUID REFERENCES public.workouts(id),
+  created_at TIMESTAMP DEFAULT NOW(),
+  UNIQUE(user_id, exercise_name, record_type, date)
 );
 
 -- Settings
-CREATE TABLE settings (
-  user_id TEXT PRIMARY KEY,
-  unit_system TEXT DEFAULT 'imperial',
-  bar_weight REAL DEFAULT 45,
-  available_plates TEXT, -- JSON array
-  rounding_preference TEXT DEFAULT '2.5',
-  theme TEXT DEFAULT 'dark',
-  rest_timer_main INTEGER DEFAULT 300,
+CREATE TABLE public.settings (
+  user_id UUID PRIMARY KEY REFERENCES public.profiles(id) ON DELETE CASCADE,
+  bar_weight DECIMAL(5,2) DEFAULT 45,
+  available_plates JSONB DEFAULT '[45, 35, 25, 10, 5, 2.5]'::jsonb,
+  rounding_increment DECIMAL(4,2) DEFAULT 2.5,
+  rest_timer_main INTEGER DEFAULT 300, -- seconds
   rest_timer_supplemental INTEGER DEFAULT 180,
   rest_timer_assistance INTEGER DEFAULT 90,
   notifications_enabled BOOLEAN DEFAULT TRUE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users(id)
+  theme TEXT DEFAULT 'dark',
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Body Metrics (Premium feature)
+CREATE TABLE public.body_metrics (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  date DATE NOT NULL,
+  weight DECIMAL(5,2),
+  body_fat_percentage DECIMAL(4,2),
+  notes TEXT,
+  created_at TIMESTAMP DEFAULT NOW(),
+  UNIQUE(user_id, date)
 );
 ```
 
-### Supabase Schema (Premium - Cloud Sync)
+### Row Level Security (RLS)
 
-**Same structure as SQLite, with:**
-
-- Row Level Security policies
-- Automatic timestamps
-- Foreign key constraints
-- Indexes on frequently queried columns
-- Realtime subscriptions for multi-device sync
+- All tables have RLS enabled.
+- Policies ensure users can only SELECT, INSERT, UPDATE, DELETE their own data (`auth.uid() = user_id`).
+- Public read access is NOT allowed.
 
 ## Performance Optimization
 
@@ -938,7 +949,7 @@ CREATE TABLE settings (
 - Async reads when possible
 - Size limit awareness (5-10MB typically)
 
-**SQLite (future):**
+**SQLite (future for local cache):**
 
 - Indexed columns for fast queries
 - Prepared statements

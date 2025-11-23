@@ -8,6 +8,7 @@ import type {
   WeightUnit,
 } from "../types/workout";
 import { generateCycle } from "../services/programGenerator";
+import { syncService } from "../services/syncService";
 
 interface ProgramContextType {
   trainingMaxes: TrainingMax[];
@@ -78,6 +79,9 @@ export function ProgramProvider({ children }: { children: React.ReactNode }) {
         STORAGE_KEYS.TRAINING_MAXES,
         JSON.stringify(trainingMaxes)
       );
+
+      // Trigger sync for updated TMs
+      trainingMaxes.forEach((tm) => syncService.syncTrainingMax(tm));
     }
   }, [trainingMaxes, loading]);
 
@@ -89,11 +93,32 @@ export function ProgramProvider({ children }: { children: React.ReactNode }) {
           STORAGE_KEYS.CURRENT_CYCLE,
           JSON.stringify(currentCycle)
         );
+
+        // Trigger sync for updated Cycle
+        syncService.syncCycle(currentCycle);
       } else {
         localStorage.removeItem(STORAGE_KEYS.CURRENT_CYCLE);
       }
     }
   }, [currentCycle, loading]);
+
+  // Initial cloud sync on load
+  useEffect(() => {
+    if (!loading) {
+      const performCloudSync = async () => {
+        const cloudData = await syncService.pullFromCloud();
+        if (cloudData) {
+          // Merge strategy:
+          // For TMs: Use cloud data if it exists (cloud is source of truth for premium)
+          // For Cycles: MVP implementation doesn't merge cycles yet
+          if (cloudData.trainingMaxes.length > 0) {
+            setTrainingMaxes(cloudData.trainingMaxes);
+          }
+        }
+      };
+      performCloudSync();
+    }
+  }, [loading]);
 
   const updateTM = (
     lift: LiftType,
@@ -140,6 +165,7 @@ export function ProgramProvider({ children }: { children: React.ReactNode }) {
 
     const newCycle = generateCycle(programId, trainingMaxes, startDate);
     setCurrentCycle(newCycle);
+    syncService.syncCycle(newCycle);
   };
 
   const updateSet = (
@@ -186,6 +212,8 @@ export function ProgramProvider({ children }: { children: React.ReactNode }) {
           // Replace entire workout with updated one
           updatedCycle.weeks[weekIndex][workoutIndex] = updatedWorkout;
           setCurrentCycle(updatedCycle);
+          // Don't sync on every set update to avoid spamming network
+          // We rely on completeWorkout for final sync
         }
       }
     }
@@ -212,12 +240,18 @@ export function ProgramProvider({ children }: { children: React.ReactNode }) {
         (w) => w.id === workout.id
       );
       if (workoutIndex >= 0) {
-        updatedCycle.weeks[weekIndex][workoutIndex] = {
+        const completedWorkout = {
           ...workout,
           completed: true,
           completedAt: new Date().toISOString(),
         };
+        updatedCycle.weeks[weekIndex][workoutIndex] = completedWorkout;
         setCurrentCycle(updatedCycle);
+
+        // Sync the completed workout
+        if (currentCycle.id) {
+          syncService.syncWorkout(completedWorkout, currentCycle.id);
+        }
       }
     }
 

@@ -2,13 +2,35 @@
 
 ## Current Focus
 
-**Phase Status:** Phase 2b (Workout Interface) Complete → Phase 3 (Premium Features) Next
+**Phase Status:** Phase 3a (Database & Sync Foundation) Complete → Phase 3b (Analytics) Next
 
-**Immediate Priority:** Begin planning and implementing Premium Features (Cloud Sync, Analytics, Customization).
+**Immediate Priority:** Build the Analytics service and dashboard for Premium users.
 
-**Active Work Stream:** Preparing for Phase 3.
+**Active Work Stream:** Implementing Premium Features (Phase 3).
 
 ## Recent Changes
+
+### Phase 3a: Database & Sync Foundation (✅ Complete)
+
+**What Was Built:**
+
+1. **Supabase Schema Design** (`memory-bank/techContext.md` & `supabase_schema.sql`)
+
+   - Comprehensive SQL schema for user data
+   - Tables: profiles, training_maxes, cycles, workouts, workout_exercises, sets, personal_records, settings
+   - Row Level Security (RLS) policies for data protection
+
+2. **Sync Service** (`src/services/syncService.ts`)
+
+   - **Offline-First Architecture:** Local storage queue for offline operations
+   - **Bidirectional Sync:** Logic to push local changes and pull cloud data
+   - **Premium Gating:** Checks premium status before syncing
+   - **Queue Management:** Retries failed operations when back online
+
+3. **Program Context Integration** (`src/context/ProgramContext.tsx`)
+   - **Auto-Sync:** Triggers sync on TMs update, cycle creation, and workout completion
+   - **Cloud Pull:** Fetches and merges cloud data on app initialization
+   - **Seamless UX:** Sync happens in background without blocking UI
 
 ### Phase 2b Polish & Completion (✅ Complete)
 
@@ -47,58 +69,41 @@
    - Added `/workout/active` and `/workout/complete` routes
    - Integrated new screens into the app flow
 
-**Current State:**
-
-- Full workout flow is operational:
-  - Dashboard → Start Workout (PreWorkout)
-  - PreWorkout → ActiveWorkout (starts timer)
-  - ActiveWorkout → Log Sets (updates context)
-  - ActiveWorkout → Complete → WorkoutComplete (shows stats)
-  - WorkoutComplete → Finish → Home (updates cycle progress)
-
-### Phase 2b Initial Implementation (✅ Complete)
-
-**What Was Built:**
-
-1. **Pre-Workout Screen** (`src/pages/PreWorkout.tsx`)
-
-   - Workout overview with main lift, week, day
-   - Exercise list preview
-   - Navigation to active workout
-
-2. **Active Workout Interface** (`src/pages/ActiveWorkout.tsx`)
-
-   - Full-screen immersive UI
-   - Exercise and set navigation logic
-   - Integrated Rest Timer and Set Logger
-   - Exit confirmation dialog
-
-3. **Workout Components**
-   - `RestTimer.tsx`: Visual countdown with CircularProgress
-   - `SetLogger.tsx`: Interface for logging sets
-   - `useRestTimer.ts`: Custom hook for timer logic
-
 ## Next Steps
 
-### Phase 3: Premium Features (Upcoming)
+### Phase 3b: Analytics (Upcoming)
 
-**1. Cloud Sync**
+**1. Analytics Service**
 
-- Connect `ProgramContext` to Supabase database
-- Create database schema for TMs, Cycles, Workouts, Sets
-- Implement sync logic (local-first with cloud backup)
+- Implement `calculateE1RM` (Estimated 1-Rep Max) logic
+- Implement volume progression calculation
+- Implement PR history tracking
 
-**2. Analytics**
+**2. Visualization Components**
 
-- Visualize progress over time (e1RM graphs)
-- Volume progression charts
-- PR history view
+- Integrate `recharts` library
+- Create `E1RMChart` component
+- Create `VolumeChart` component
+- Create `PRHistoryList` component
 
-**3. Customization**
+**3. Analytics Dashboard**
+
+- Create `src/pages/Analytics.tsx`
+- Connect to `ProgramContext` / `SyncService` for data
+- Implement date range filtering
+
+### Phase 3c: Customization & Premium UI (Follow-up)
+
+**1. Customization**
 
 - Allow editing exercises (swap main/assistance)
 - Custom plate inventory for calculator
-- Dark/Light mode toggle (currently dark only)
+- Dark/Light mode toggle
+
+**2. Premium Feature Gating**
+
+- Implement paywall UI for non-premium users
+- Create "Upgrade to Premium" screen
 
 ## Active Patterns & Preferences
 
@@ -170,6 +175,17 @@ src/
 
 ## Key Learnings & Insights
 
+### From Phase 3a Implementation
+
+**1. Offline-First Sync is Complex:**
+
+- Handling the queue for offline operations requires careful state management.
+- Bidirectional sync needs a clear "source of truth" strategy (we chose Cloud wins for TMs, Local wins for unsynced new data).
+
+**2. Type Safety:**
+
+- Sharing types between frontend and backend (via Supabase interface mirroring) is crucial to prevent bugs.
+
 ### From Phase 2b Implementation
 
 **1. Context State Management:**
@@ -182,22 +198,17 @@ src/
 - `useRestTimer` hook cleanly separates logic from UI
 - `setInterval` needs careful cleanup in `useEffect`
 
-**3. Navigation Flow:**
-
-- `PreWorkout` -> `ActiveWorkout` -> `WorkoutComplete` -> `Home` loop works well
-- Using `activeWorkout` state in context allows preserving session even if user navigates away temporarily
-
 ## Open Questions
 
-**For Phase 3:**
+**For Phase 3b:**
 
-- Database Schema: Should we use a relational structure (users -> cycles -> workouts) or a document-like structure (JSON columns)?
-- Sync Strategy: Optimistic UI updates with background sync, or blocking sync on critical actions?
+- Chart Library: Recharts vs Victory? (Leaning Recharts for React 19 compatibility)
+- Performance: How much historical data should we load at once for analytics?
 
 ## Context for Next Session
 
 **When resuming work, remember:**
 
-1. Phase 2b is fully complete. The app is usable for tracking workouts locally.
-2. Next major step is Phase 3 (Premium Features).
-3. Start by designing the Supabase schema in `techContext.md` or a new design doc.
+1. Phase 3a is complete. The app now has a database schema and basic sync capability.
+2. Next step is Phase 3b (Analytics).
+3. Start by installing `recharts` (checking docs first!) and building the analytics service.
