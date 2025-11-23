@@ -1,3 +1,25 @@
+# Dependencies
+node_modules
+package-lock.json.lock
+yarn.lock.lock
+pnpm-lock.yaml.lock
+
+# Build outputs
+dist
+dist-ssr
+*.local
+.tsbuildinfo
+*.tsbuildinfo
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.test
+.env.staging
+
 # Logs
 logs
 *.log
@@ -7,23 +29,95 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Testing
+coverage
+*.lcov
+.nyc_output
+.coverage
+.jest
+test-results
 
-# Environment variables
-.env
-.env.local
-.env.*.local
+# Capacitor
+android/app/build
+android/build
+android/.gradle
+android/local.properties
+android/captures
+android/.externalNativeBuild
+android/.cxx
+android/*.iml
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# Android signing keys (CRITICAL - DO NOT COMMIT)
+*.jks
+*.keystore
+release/
+
+# iOS (if you add it later)
+ios/App/build
+ios/App/Pods
+ios/App/App.xcworkspace
+ios/App/*.ipa
+ios/App/fastlane/report.xml
+ios/App/fastlane/Preview.html
+ios/App/fastlane/screenshots
+ios/App/fastlane/test_output
+
+# TypeScript
+*.tsbuildinfo
+*.d.ts.map
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
+!.vscode/settings.json
 .idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# OS files
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Temporary files
+*.swp
+*.swo
+*~
+.tmp
+tmp/
+temp/
+
+# Debug files
+*.stackdump
+*.log.*
+
+# Cache directories
+.cache
+.parcel-cache
+.vite
+.eslintcache
+.stylelintcache
+
+# Misc
+*.orig
+*.rej
+*.bak
+*.backup
+*.diff
+*.patch
+*.err
