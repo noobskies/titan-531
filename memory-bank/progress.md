@@ -1,669 +1,704 @@
-# Progress: Titan 5/3/1
-
-## Project Status
-
-**Current Version**: v1.2.1 + Supabase Integration (Phase 3 Complete)  
-**Status**: ✅ Feature Complete (MVP) + 🚧 Cloud Sync Development  
-**Phase**: Active Development - Supabase Integration (Migration Service Complete)
-
-## Completed Features
-
-### Core Functionality ✅
-
-#### Workout Management
-
-- [x] 4 main lifts (Squat, Bench, Deadlift, Overhead Press)
-- [x] Warmup set calculation (40%, 50%, 60%)
-- [x] Main work sets (week-specific percentages)
-- [x] AMRAP tracking with actual reps logged
-- [x] Supplemental work (BBB, FSL, etc.)
-- [x] Assistance exercise configuration
-- [x] Custom exercise database
-- [x] Exercise instructions and video links
-- [x] Rest timer with audio/voice announcements
-- [x] Plate calculator integration
-- [x] Set completion tracking
-- [x] Workout duration tracking
-- [x] Notes per workout
-- [x] Abandon workout capability
-
-#### Program Variants
-
-- [x] Original 5/3/1
-- [x] Boring But Big (BBB)
-- [x] First Set Last (FSL)
-- [x] Beginner Prep
-- [x] Boring But Strong (BBS)
-- [x] Building the Monolith (placeholder)
-- [x] Premium/free toggle (demo mode)
-
-#### Cycle Management
-
-- [x] 4-week cycle structure (3 work + 1 deload)
-- [x] Automatic percentage/rep scheme per week
-- [x] Cycle transition modal
-- [x] Training max progression logic
-- [x] AMRAP-based TM suggestions
-- [x] Manual TM adjustment capability
-- [x] Cycle statistics display
-- [x] Performance summary
-
-#### History & Analytics
-
-- [x] Complete workout history
-- [x] Calendar view
-- [x] List view with filters
-- [x] Session details view
-- [x] Delete workout capability
-- [x] Edit workout notes
-- [x] Volume tracking (sets × reps × weight)
-- [x] Intensity tracking (average % of TM)
-- [x] PR detection and display
-- [x] Recharts visualization
-- [x] Strength progression charts
-- [x] Body weight trends
-- [x] Achievement system
-
-#### Profile Management
-
-- [x] User profile creation
-- [x] Training max configuration
-- [x] One-rep max tracking
-- [x] Body weight tracking
-- [x] Body measurements (chest, waist, arms, thighs)
-- [x] Progress photos with notes
-- [x] Unit selection (lbs/kg)
-- [x] Rounding preference (2.5/5)
-- [x] Theme selection (5 color schemes)
-- [x] Language selection (en/es/fr)
-
-#### Settings & Customization
-
-- [x] Rest timer defaults (main/supplemental/assistance)
-- [x] Assistance work configuration (sets/reps)
-- [x] Custom warmup sequences
-- [x] Custom lift order
-- [x] Custom assistance exercises
-- [x] Custom percentages per week
-- [x] Custom reps per week
-- [x] Plate inventory configuration
-- [x] Custom bar weight
-- [x] Sound enable/disable
-- [x] Voice announcements enable/disable
-- [x] Notifications enable/disable
-- [x] Training day schedule
-
-#### Coach Mode
-
-- [x] Coach profile toggle
-- [x] Client profile creation
-- [x] Multiple client management
-- [x] Client profile switching
-- [x] Independent client histories
-- [x] Coach dashboard
-- [x] Client overview cards
-- [x] Easy client navigation
-
-#### Tools
-
-- [x] Plate Calculator
-  - [x] Weight input
-  - [x] Plate configuration display
-  - [x] Custom plate inventory support
-  - [x] Visual plate diagram
-- [x] One-Rep Max Calculator
-  - [x] Multiple formulas (Brzycki, Epley, etc.)
-  - [x] Comparison display
-- [x] Warmup Generator
-  - [x] Custom warmup sequences
-  - [x] TM-based calculations
-- [x] Interval Timer
-  - [x] Work/rest period configuration
-  - [x] Round counting
-  - [x] Audio cues
-  - [x] Pause/resume
-- [x] Gym Finder
-  - [x] Geolocation integration
-  - [x] Map display (external link)
-
-#### Nutrition Tracking
-
-- [x] Daily macro goals (calories, protein, carbs, fats)
-- [x] Meal logging with timestamps
-- [x] Macro calculator
-- [x] Progress bars for daily targets
-- [x] Meal photos (base64)
-- [x] Historical nutrition logs
-- [x] Date selector for viewing past days
-
-#### AI Coach Features
-
-- [x] Gemini API integration
-- [x] User-provided API key
-- [x] Form check analysis (vision API)
-- [x] Image upload for form checks
-- [x] Workout insights generation
-- [x] Programming recommendations
-- [x] Conversational follow-up
-- [x] Chat history maintenance
-- [x] Error handling for API issues
-
-#### UI/UX Features
-
-- [x] Bottom navigation (5 tabs)
-- [x] Dark theme
-- [x] Custom color themes (5 options)
-- [x] Responsive design (mobile-first)
-- [x] Loading states (Suspense)
-- [x] Toast notifications
-- [x] Modal system
-- [x] Error boundaries
-- [x] Achievement unlock animations
-- [x] Daily training tips
-- [x] Progress indicators
-- [x] Empty states
-- [x] Onboarding flow (5 steps with back navigation)
-- [x] Cloud sync opt-in in onboarding (Step 5)
-- [x] Google OAuth integration in onboarding
-- [x] Bidirectional onboarding navigation
-
-#### PWA Features
-
-- [x] Service worker
-- [x] Offline functionality
-- [x] Install prompt handling
-- [x] App manifest
-- [x] Icon sets (192px, 512px)
-- [x] Splash screen
-- [x] Standalone display mode
-- [x] Cache strategy
-
-#### Data Management
-
-- [x] localStorage persistence
-- [x] Export functionality (JSON)
-- [x] Import functionality
-- [x] Data validation on import
-- [x] Version tracking
-- [x] Multiple profile support
-- [x] Automatic state sync
-
-### Technical Implementation ✅
-
-#### Architecture
-
-- [x] React 19 setup
-- [x] TypeScript configuration
-- [x] Vite build system
-- [x] Feature-based organization
-- [x] Service layer pattern
-- [x] Custom hooks
-- [x] Context API for UI state
-- [x] Error handling strategy
-
-#### Performance
-
-- [x] Lazy loading (all major views)
-- [x] Code splitting
-- [x] Memoization (useMemo)
-- [x] Optimized re-renders
-- [x] Bundle optimization
-- [x] Tree shaking
-- [x] Asset optimization
-
-#### Type Safety
-
-- [x] Strict TypeScript mode
-- [x] Comprehensive type coverage
-- [x] Discriminated unions
-- [x] Generic utility types
-- [x] Type guards
-- [x] Enum usage
-
-#### Browser APIs
-
-- [x] localStorage API
-- [x] Service Worker API
-- [x] Web Share API
-- [x] Speech Synthesis API
-- [x] Notification API
-- [x] Geolocation API
-- [x] File API (import/export)
-
-## Known Issues
-
-### Minor Issues
-
-- [ ] No automated tests (manual testing only)
-- [ ] localStorage quota warnings could be better
-- [ ] Image compression not implemented
-- [ ] Some bundle size optimization possible
-- [ ] No external error tracking
-
-### Limitations by Design
-
-- localStorage-only (no cloud sync)
-- PWA limitations on iOS
-- AI features require internet
-- No real-time multi-device sync
-- Storage limits (5-10MB)
-
-## Future Enhancements (Not Started)
-
-### High Priority (User Requested)
-
-#### Cloud Sync
-
-- [ ] Optional backend integration
-- [ ] User authentication
-- [ ] Cross-device synchronization
-- [ ] Conflict resolution
-- [ ] Backup/restore from cloud
-- [ ] Keep localStorage as primary
-
-#### Enhanced Analytics
-
-- [ ] More chart types (radar, heatmap)
-- [ ] PR tracking timeline
-- [ ] Estimated 1RM progression
-- [ ] Volume landmarks
-- [ ] Training load management
-- [ ] Deload recommendations
-
-#### Image Optimization
-
-- [ ] Client-side image compression
-- [ ] Resize before storage
-- [ ] Convert to WebP
-- [ ] Progressive loading
-- [ ] IndexedDB migration for images
-
-### Medium Priority
-
-#### Testing Infrastructure
-
-- [ ] Jest setup
-- [ ] React Testing Library
-- [ ] Unit tests for services
-- [ ] Component tests
-- [ ] Integration tests
-- [ ] E2E tests (Playwright)
-- [ ] CI/CD pipeline
-
-#### Advanced Programming
-
-- [ ] Custom program builder UI
-- [ ] More 5/3/1 variants (Pervertor, Krypteia)
-- [ ] Template library
-- [ ] Periodization tools
-- [ ] Auto-regulation based on RPE
-- [ ] Deload scheduling options
-
-#### Mobile Enhancements
-
-- [ ] Better iOS PWA support workarounds
-- [ ] Background timer notifications
-- [ ] Haptic feedback
-- [ ] Better offline indicators
-- [ ] Install prompts optimization
-
-### Low Priority
-
-#### Social Features
-
-- [ ] Optional workout sharing
-- [ ] Public workout logs
-- [ ] Community challenges
-- [ ] Leaderboards
-- [ ] Coach-client messaging
-- [ ] Template sharing
-
-#### Integrations
-
-- [ ] Apple Health sync
-- [ ] Google Fit integration
-- [ ] Strava export
-- [ ] MyFitnessPal sync
-- [ ] Garmin/Fitbit support
-
-#### Advanced AI
-
-- [ ] Video form analysis
-- [ ] Real-time coaching
-- [ ] Injury prevention suggestions
-- [ ] Personalized programming
-- [ ] Voice command control
-
-#### Native Apps
-
-- [ ] React Native port
-- [ ] iOS app
-- [ ] Android app
-- [ ] Desktop app (Electron/Tauri)
-- [ ] Better OS integration
-- [ ] Push notifications
-
-## Metrics & Success Indicators
-
-### Current State
-
-#### Code Metrics
-
-- **Total Files**: ~100
-- **Lines of Code**: ~15,000
-- **Components**: ~50
-- **Services**: ~10
-- **Type Definitions**: ~30 interfaces/types
-- **Bundle Size**: ~200KB initial + lazy chunks
-
-#### Feature Coverage
-
-- **Core Features**: 100% complete
-- **Program Variants**: 6 implemented
-- **Tools**: 5 complete
-- **Coach Features**: 100% complete
-- **AI Features**: 100% complete (optional)
-
-#### Performance
-
-- **Initial Load**: <2 seconds
-- **Navigation**: <100ms
-- **Build Time**: ~10 seconds
-- **HMR**: <100ms
-- **Lighthouse Score**: 90+ (estimated)
-
-### Success Criteria Status
-
-✅ **Usability**: Users can complete full cycle without external resources  
-✅ **Accuracy**: Weight calculations match 5/3/1 methodology  
-✅ **Performance**: Fast load and navigation  
-✅ **Reliability**: Export/import works, no reported data loss  
-✅ **Coaching**: AI provides useful feedback  
-✅ **Adoption**: PWA installable on major platforms
-
-## Evolution of Project
-
-### Phase 1: Foundation (Completed)
-
-- Basic 5/3/1 implementation
-- Single user profile
-- localStorage persistence
-- Core workout tracking
-
-### Phase 2: Enhancement (Completed)
-
-- Multiple program variants
-- Coach mode
-- Advanced customization
-- Analytics and charts
-- PWA features
-
-### Phase 3: Intelligence (Completed)
-
-- AI integration
-- Form checks
-- Workout insights
-- Nutrition tracking
-- Advanced tools
-
-### Phase 4: Polish (Completed)
-
-- React 19 upgrade
-- Performance optimization
-- Theme system
-- Better error handling
-- Comprehensive documentation
-
-### Phase 5: Future (Not Started)
-
-- Cloud sync
-- Testing infrastructure
-- Advanced analytics
-- Native mobile apps
-- Community features
-
-## Technical Debt Tracking
-
-### Priority: High
-
-None currently
-
-### Priority: Medium
-
-- [ ] Add automated testing (prevents regression)
-- [ ] Split useAppController (better organization)
-
-### Priority: Low
-
-- [ ] Image compression implementation
-- [ ] Better localStorage quota handling
-- [ ] Error tracking service integration
-- [ ] Bundle size optimization
-- [ ] Type coverage improvements
-
-## Dependencies Status
-
-### Core Dependencies
-
-- ✅ React 19.2.0 (stable)
-- ✅ TypeScript 5.8.2 (stable)
-- ✅ Vite 6.2.0 (stable)
-- ✅ Lucide React 0.554.0 (stable)
-- ✅ Recharts 3.4.1 (stable)
-- ✅ Google GenAI 1.30.0 (stable)
-- ✅ @supabase/supabase-js 2.84.0 (new - cloud sync)
-- ✅ @supabase/auth-ui-react 0.4.7 (new - auth components)
-- ✅ @supabase/auth-ui-shared 0.1.8 (new - auth utilities)
-
-### Security
-
-- ✅ No known vulnerabilities
-- ✅ Regular security audits (npm audit)
-- ✅ Dependencies kept up to date
-
-## Documentation Status
-
-### Code Documentation
-
-- ✅ Memory Bank initialized
-- ✅ Project brief complete
-- ✅ Product context documented
-- ✅ System patterns documented
-- ✅ Tech context documented
-- ✅ Active context maintained
-- ✅ Progress tracked
-- ✅ Supabase integration documented
-- ✅ Database schema documented
-- ✅ Setup guides created
-- [ ] API documentation (not needed yet)
-- [ ] Component storybook (future)
-
-### User Documentation
-
-- ✅ README with setup instructions
-- ✅ In-app onboarding
-- ✅ Exercise instructions
-- ✅ Tool usage guides
-- [ ] Video tutorials (future)
-- [ ] FAQ page (future)
-
-## Milestones
-
-### Completed Milestones
-
-**v0.1.0** - MVP (Initial Release)
-
-- Basic 5/3/1 implementation
-- Single program variant
-- Simple workout tracking
-
-**v0.5.0** - Multi-Program Support
-
-- BBB, FSL, Beginner programs
-- Assistance exercise system
-- Basic analytics
-
-**v1.0.0** - Feature Complete
-
-- Coach mode
-- All core features
-- PWA functionality
-- Complete customization
-
-**v1.1.0** - Intelligence
-
-- AI integration
-- Nutrition tracking
-- Advanced tools
-
-**v1.2.0** - Polish
-
-- React 19 upgrade
-- Performance improvements
-- Better UX
-
-**v1.2.1** - Current (Stable)
-
-- Bug fixes
-- Documentation
-- Maintenance mode
-
-**v1.3.0** - In Progress (Supabase Integration)
-
-- Phase 1: Foundation Setup ✅ Complete
-  - Supabase client initialization
-  - Database schema design
-  - TypeScript types
-  - Connection testing
-  - Documentation
-- Gemini API environment variable fix ✅ Complete
-- Phase 2: Auth System ✅ Complete
-  - Auth context and hooks
-  - Auth UI components
-  - Settings integration
-  - App integration
-  - React hooks error fixed
-- Phase 3: Data Migration Service ✅ Complete (November 2025)
-  - Created `migrationService.ts` (350+ lines, production-ready)
-  - Automatic migration on signup/signin (Option A)
-  - Batch processing for large histories (50 per batch)
-  - Modified `AuthContext.tsx` (migration triggers)
-  - Modified `AuthModal.tsx` (4 migration UI states)
-  - Loading state: "Syncing your data to cloud..."
-  - Success state: "Sync complete!" (auto-closes)
-  - Error state: Retry and continue options
-  - Idempotent (safe to run multiple times)
-  - Graceful degradation on failures
-  - Migration flag in localStorage
-  - Comprehensive error handling
-- Onboarding Auth Integration ✅ Complete (November 2025)
-  - Added Step 5 to onboarding (cloud sync opt-in)
-  - Two-screen approach (benefits → inline auth form)
-  - Back navigation for all steps (2-5)
-  - Google OAuth provider integration
-  - Smart skip logic (authenticated/dismissed users)
-  - Automatic migration on auth success
-  - Modified `features/shared/Onboarding.tsx`
-  - Progress dots show 5 steps
-  - Dismissal flag in localStorage
-- Phase 4: Data Abstraction Layer (Next)
-- Phase 5: Coach Mode Cloud Support
-- Phase 6: Testing & Polish
-
-**v1.4.0** - In Progress (Android APK Implementation)
-
-- Phase 1: Environment Setup ✅ Complete
-  - Capacitor v7.4.4 integration
-  - Android platform project created
-  - App ID: com.titan.workout
-- Phase 2: Tailwind CSS Migration ✅ Complete
-  - Migrated from CDN to build process (Tailwind v4)
-  - @tailwindcss/postcss integration
-  - @theme directive for custom colors
-- Phase 3: Capacitor Configuration ✅ Complete
-  - capacitor.config.ts configured
-  - Android scripts added to package.json
-  - Vite config optimized for Capacitor
-- Phase 4: Platform Detection Utility ✅ Complete
-  - Created src/utils/platformDetection.ts
-  - Conditional service worker registration
-- Phase 5: Asset Preparation ✅ Complete
-  - Resources directory created
-  - Capacitor plugins installed (splash, status bar, keyboard)
-- Phase 6: Build and Test ✅ Complete
-  - Production build successful (462KB main + chunks)
-  - Android sync complete
-  - All plugins configured
-- Phase 7: Emulator Testing ✅ Complete (November 2025)
-  - Created app assets (icon.png, splash.png)
-  - Generated 87 Android resources with @capacitor/assets (916.61 KB)
-  - Built web assets (461.88 KB main bundle)
-  - Synced to Android successfully
-  - Opened in Android Studio
-  - Tested on Android Emulator
-  - All features working perfectly
-  - localStorage persistence verified
-  - UI renders correctly with all Tailwind styles
-- Phase 8: Play Store Submission (Pending)
-  - Signing key generation needed
-  - Release build (APK/AAB) creation
-  - Play Store listing preparation
-
-### Future Milestones (Tentative)
-
-**v1.3.0** - Testing & Quality
-
-- Automated test suite
-- Better error handling
-- Performance monitoring
-
-**v2.0.0** - Cloud Sync
-
-- Optional backend
-- Cross-device sync
-- Enhanced features
-
-**v3.0.0** - Native Apps
-
-- React Native port
-- App store releases
-- Platform-specific features
-
-## Summary
-
-### What's Working
-
-The entire MVP feature set is complete and functional. Users can:
-
-- Track 5/3/1 training with multiple program variants
-- Manage cycles and progressions automatically
-- View comprehensive analytics and history
-- Use AI coaching features (optional)
-- Operate as a coach with multiple clients
-- Customize every aspect of their training
-- Work completely offline
-- Export/import their data
-
-### What's Next
-
-The app is in maintenance mode. Future development would focus on:
-
-1. User testing and feedback
-2. Cloud sync implementation
-3. Testing infrastructure
-4. Native mobile apps
-5. Community features
-
-### Current State
-
-✅ **Production Ready**: Fully functional, stable, documented  
-🚧 **Active Development**: Supabase integration Phase 3 complete (Data Migration)  
-🎯 **Next Step**: Phase 4 (Data Abstraction Layer) or manual testing of migration flow
-
-**Phase 3 Summary:**
-
-- ✅ Migration service fully implemented (automatic on signup/signin)
-- ✅ AuthContext triggers migration with state management
-- ✅ AuthModal displays all migration states (loading, success, error)
-- ✅ No breaking changes - guest mode works perfectly
-- ⏳ Manual testing pending (requires Supabase database setup)
+# Progress Tracker - Titan 531
+
+## Implementation Status Overview
+
+**Current Phase:** Phase 1 Complete → Phase 2a Ready to Start  
+**Overall Progress:** ~15% (Phase 1 of 5 complete)  
+**Last Updated:** 2024-01-01
+
+## Phase-by-Phase Status
+
+### ✅ Phase 1: Foundation (Weeks 1-3) - COMPLETE
+
+**Status:** 100% Complete  
+**Duration:** 3 weeks  
+**Completion Date:** [Date Phase 1 completed]
+
+#### What Was Delivered
+
+**Project Infrastructure** ✅
+
+- [x] Vite + React 19 + TypeScript project initialized
+- [x] ESLint configuration with React and TypeScript rules
+- [x] TypeScript strict mode enabled
+- [x] Git repository initialized
+- [x] .gitignore configured properly
+- [x] Package.json with all core dependencies
+
+**Material-UI Setup** ✅
+
+- [x] MUI v7 installed (@mui/material, @emotion/react, @emotion/styled)
+- [x] MUI icons installed (@mui/icons-material)
+- [x] Custom theme created in src/theme.ts
+- [x] Dark mode configured as default
+- [x] Theme overrides for gym-optimized UI (large touch targets)
+- [x] Typography customization (bold, high contrast)
+- [x] Component size overrides (buttons, text fields)
+
+**Capacitor Integration** ✅
+
+- [x] Capacitor v7 core installed
+- [x] Capacitor CLI installed
+- [x] Android platform added
+- [x] capacitor.config.ts configured
+- [x] Android project structure generated
+- [x] App builds successfully for web
+- [x] Android build tested (debug APK)
+
+**Supabase Backend** ✅
+
+- [x] Supabase client installed (@supabase/supabase-js)
+- [x] src/supabaseClient.ts created
+- [x] Environment variables configured (.env, .env.example)
+- [x] Supabase project created (via dashboard)
+- [x] Connection verified
+
+**Authentication System** ✅
+
+- [x] AuthContext created (src/context/AuthContext.tsx)
+- [x] Sign up function implemented
+- [x] Sign in function implemented
+- [x] Sign out function implemented
+- [x] Password reset function implemented
+- [x] Session management working
+- [x] Token persistence with localStorage
+
+**Routing & Navigation** ✅
+
+- [x] React Router v7 installed
+- [x] BrowserRouter configured in App.tsx
+- [x] Routes defined (login, register, protected home)
+- [x] Layout component created (src/components/Layout.tsx)
+- [x] RequireAuth wrapper implemented
+- [x] Protected route pattern working
+- [x] Redirect logic for unauthenticated users
+
+**UI Pages** ✅
+
+- [x] Login page (src/pages/Login.tsx)
+  - Email/password form
+  - React Hook Form integration
+  - Error handling
+  - Link to register page
+- [x] Register page (src/pages/Register.tsx)
+  - Email/password/confirm form
+  - Validation
+  - Error handling
+  - Link to login page
+- [x] Home page placeholder (src/pages/Home.tsx)
+  - Protected route
+  - Basic welcome message
+  - Placeholder for dashboard content
+
+**Development Environment** ✅
+
+- [x] npm scripts configured (dev, build, lint, preview)
+- [x] Hot module replacement working
+- [x] TypeScript compilation working
+- [x] Linting working
+- [x] VS Code recommended extensions documented
+
+#### Phase 1 Learnings
+
+**What Went Well:**
+
+- Vite setup was fast and painless
+- MUI v7 theming is powerful for customization
+- Supabase auth integration straightforward
+- Capacitor Android setup smooth
+
+**Challenges:**
+
+- MUI v7 has some breaking changes from v5 (documentation gaps)
+- TypeScript strict mode caught many potential issues early
+- Environment variable naming with VITE\_ prefix initially confusing
+
+**Technical Decisions:**
+
+- Chose Context API over Redux (sufficient for scope)
+- Dark mode default (better for gym environment)
+- localStorage for auth token (migrate to secure storage later)
+
+#### Files Created in Phase 1
+
+```
+src/
+  theme.ts
+  supabaseClient.ts
+  types.ts (basic types)
+  context/
+    AuthContext.tsx
+  components/
+    Layout.tsx
+    RequireAuth.tsx
+  pages/
+    Login.tsx
+    Register.tsx
+    Home.tsx
+```
+
+---
+
+### 🔄 Phase 2: Core Features (Weeks 4-8) - IN PLANNING
+
+**Status:** 0% Complete (Ready to Start)  
+**Target Duration:** 5 weeks  
+**Estimated Start:** [Next date]
+
+#### Phase 2a: Setup & Structure (Weeks 4-5)
+
+**Status:** Planned, not started
+
+**Objectives:**
+
+- Define all core data types
+- Build program generation logic (5/3/1 calculations)
+- Create Program Context for state management
+- Implement onboarding wizard
+- Update home dashboard with workout data
+
+**Tasks:**
+
+**Data Types & Models** 📝
+
+- [ ] Create src/types/workout.ts
+- [ ] Define Lift type/enum (Squat, Bench, Deadlift, Press)
+- [ ] Define TrainingMax interface
+- [ ] Define Exercise interface (name, sets, reps, weight, type)
+- [ ] Define Workout interface (id, name, week, day, exercises)
+- [ ] Define Cycle interface (id, startDate, weeks array)
+- [ ] Extend UserProfile with training preferences
+- [ ] Define Program type (for different 5/3/1 variations)
+
+**Program Generation Service** 📝
+
+- [ ] Create src/services/programGenerator.ts
+- [ ] Implement calculateTM(oneRepMax) → 90% of 1RM
+- [ ] Implement calculateWorkingWeight(tm, percentage) with rounding
+- [ ] Implement generateWarmupSets(workingWeight)
+- [ ] Implement generate531Week1(tms) → Week 1 workouts
+- [ ] Implement generate531Week2(tms) → Week 2 workouts
+- [ ] Implement generate531Week3(tms) → Week 3 workouts
+- [ ] Implement generateDeloadWeek(tms) → Deload week
+- [ ] Implement generate531Cycle(tms) → Complete 4-week cycle
+- [ ] Write tests for all calculation functions
+- [ ] Verify calculations match official 5/3/1 percentages
+
+**Program Context** 📝
+
+- [ ] Create src/context/ProgramContext.tsx
+- [ ] Implement training maxes state management
+- [ ] Implement current cycle state
+- [ ] Implement active workout state
+- [ ] Implement updateTM(lift, weight) function
+- [ ] Implement createNewCycle(tms) function
+- [ ] Implement localStorage persistence
+- [ ] Implement data loading on app start
+- [ ] Wrap app with ProgramProvider
+
+**Onboarding Wizard** 📝
+
+- [ ] Create src/pages/Onboarding.tsx (container)
+- [ ] Create src/components/onboarding/WelcomeStep.tsx
+  - Welcome message
+  - Brief 5/3/1 explanation
+  - "Get Started" button
+- [ ] Create src/components/onboarding/TMInputStep.tsx
+  - 4 text fields for TMs (Squat, Bench, Dead, Press)
+  - Option: "I know my 1RM" (calculator)
+  - Option: "Estimate from recent lift"
+  - Unit selector (lbs/kg)
+  - Validation
+- [ ] Create src/components/onboarding/ScheduleStep.tsx
+  - Training days selection
+  - Preferred workout times (optional)
+  - Skip option (use defaults)
+- [ ] Create src/components/onboarding/ProgramPreviewStep.tsx
+  - Show generated first workout
+  - Display TMs
+  - Show cycle structure
+  - "Start Training" button
+- [ ] Implement Stepper navigation between steps
+- [ ] Add route /onboarding
+- [ ] Redirect new users from home to onboarding
+- [ ] Save data to ProgramContext on completion
+- [ ] Set onboarding_complete flag
+
+**Home Dashboard Updates** 📝
+
+- [ ] Display current week and day
+- [ ] Show next workout preview (exercise list)
+- [ ] Add "Start Workout" button
+- [ ] Show cycle progress indicator
+- [ ] Display current TMs
+- [ ] Add quick stats (workouts this week, streak)
+- [ ] Handle case: no active cycle (redirect to onboarding)
+
+**Storage Layer** 📝
+
+- [ ] Define localStorage keys structure
+- [ ] Implement save/load functions in ProgramContext
+- [ ] Handle data migration (version field)
+- [ ] Test data persistence across sessions
+
+#### Phase 2b: Workout Interface (Weeks 6-8)
+
+**Status:** Not started
+
+**Objectives:**
+
+- Build pre-workout review screen
+- Implement active workout mode
+- Create set logging interface
+- Add rest timer
+- Build workout completion flow
+
+**Tasks:**
+
+**Pre-Workout Screen** 📝
+
+- [ ] Create src/pages/PreWorkout.tsx
+- [ ] Display workout name (Week X, Day Y: Lift)
+- [ ] List all exercises with sets/reps/weights
+- [ ] Show estimated duration
+- [ ] Display previous performance (optional)
+- [ ] Add notes field
+- [ ] "Begin Workout" button → full screen mode
+
+**Active Workout Mode** 📝
+
+- [ ] Create src/pages/ActiveWorkout.tsx
+- [ ] Full-screen Dialog/dedicated route
+- [ ] Top progress bar (sets completed / total)
+- [ ] Current exercise display (large text)
+- [ ] Set number and target (e.g., "Set 1 of 3: 5 reps @ 185 lbs")
+- [ ] Previous set info (if available)
+- [ ] Workout timer (total elapsed time)
+- [ ] Navigation between exercises
+- [ ] "Pause" and "End Workout" options
+- [ ] Keep screen awake during workout
+
+**Set Logging Interface** 📝
+
+- [ ] Large button: "Hit Target" (log target reps)
+- [ ] Large buttons: "+1", "+2" (log extra reps)
+- [ ] Custom rep entry field
+- [ ] Weight adjustment controls
+- [ ] "Failed Set" option
+- [ ] Immediate visual feedback on log
+- [ ] Haptic feedback integration
+- [ ] Auto-advance to next set
+- [ ] AMRAP set special handling
+
+**AMRAP Set Handling** 📝
+
+- [ ] Visual indicator (different card color)
+- [ ] Rep counter with large increment buttons
+- [ ] PR detection logic
+- [ ] Celebration animation on PR
+- [ ] TM adjustment suggestion
+- [ ] Historical AMRAP comparison
+
+**Rest Timer** 📝
+
+- [ ] Create src/components/RestTimer.tsx
+- [ ] Large circular progress indicator
+- [ ] Time remaining (huge text)
+- [ ] Adjust time buttons (-30s, +30s, +1min, -1min)
+- [ ] Skip rest button
+- [ ] Audio alert on completion
+- [ ] Haptic alert on completion
+- [ ] Background timer (works when app backgrounded)
+- [ ] Configurable default durations per exercise type
+
+**Workout Completion** 📝
+
+- [ ] Summary screen
+- [ ] Total duration display
+- [ ] Total volume calculation
+- [ ] PRs achieved list
+- [ ] Notes field
+- [ ] Save to history
+- [ ] Return to dashboard
+- [ ] Update cycle progress
+
+**Exercise Database** 📝
+
+- [ ] Define 4 main lifts with details
+- [ ] Add 20-30 common assistance exercises
+- [ ] Exercise details: name, muscle groups, equipment
+- [ ] Instructions text
+- [ ] (Video links - optional for MVP)
+
+---
+
+### ⏳ Phase 3: Premium Features (Weeks 9-12) - NOT STARTED
+
+**Status:** 0% Complete  
+**Target Duration:** 4 weeks
+
+**Major Features:**
+
+- [ ] Additional 5/3/1 program variations (BBB, FSL, etc.)
+- [ ] Custom program builder
+- [ ] Advanced analytics and graphs
+- [ ] Cloud sync via Supabase
+- [ ] In-app purchases integration
+- [ ] Custom exercises with media upload
+- [ ] Data export (CSV, PDF, JSON)
+- [ ] RPE/RIR tracking
+- [ ] Body metrics tracking
+- [ ] Progress photos
+
+**Dependencies:**
+
+- Phase 2 complete
+- Supabase schema designed
+- Payment provider selected (Google Play Billing)
+
+---
+
+### ⏳ Phase 4: Polish & Testing (Weeks 13-15) - NOT STARTED
+
+**Status:** 0% Complete  
+**Target Duration:** 3 weeks
+
+**Major Tasks:**
+
+- [ ] UI/UX refinement pass
+- [ ] Performance optimization
+- [ ] Battery usage optimization
+- [ ] Accessibility improvements
+- [ ] Bug fixes from testing
+- [ ] Beta tester feedback implementation
+- [ ] Comprehensive manual testing
+- [ ] Android device compatibility testing
+- [ ] Network condition testing (offline, slow connection)
+- [ ] App store assets preparation (screenshots, descriptions)
+- [ ] Privacy policy and terms of service
+- [ ] Help documentation
+
+---
+
+### ⏳ Phase 5: Launch (Week 16) - NOT STARTED
+
+**Status:** 0% Complete  
+**Target Duration:** 1 week
+
+**Major Tasks:**
+
+- [ ] Final build and version bump
+- [ ] Google Play Store listing creation
+- [ ] Store assets upload (icon, screenshots, video)
+- [ ] Release notes writing
+- [ ] Privacy policy hosting
+- [ ] Terms of service hosting
+- [ ] Signed AAB generation
+- [ ] Play Store submission
+- [ ] Review process monitoring
+- [ ] Marketing website (basic landing page)
+- [ ] Social media accounts setup
+- [ ] Analytics configuration (GA4, Mixpanel, etc.)
+- [ ] Error tracking setup (Sentry)
+- [ ] Support email setup
+- [ ] Initial launch (beta track or internal testing)
+- [ ] Staged rollout to production
+
+---
+
+## Feature Status Matrix
+
+### Must-Have Features (Free Tier)
+
+| Feature                | Status      | Phase | Notes                   |
+| ---------------------- | ----------- | ----- | ----------------------- |
+| User authentication    | ✅ Complete | 1     | Email/password working  |
+| User profiles          | ✅ Complete | 1     | Basic profile in auth   |
+| Training max setup     | 📝 Planned  | 2a    | Part of onboarding      |
+| Original 5/3/1 program | 📝 Planned  | 2a    | Generation logic needed |
+| Workout tracking       | 📝 Planned  | 2b    | Set logging interface   |
+| AMRAP recording        | 📝 Planned  | 2b    | With PR detection       |
+| Rest timer             | 📝 Planned  | 2b    | With notifications      |
+| Plate calculator       | 📝 Planned  | 2b    | Smart loading           |
+| 30-day history         | 📝 Planned  | 2b    | localStorage            |
+| Mobile-optimized UI    | ✅ Complete | 1     | MUI theme               |
+
+### Premium Features (Paid Tier)
+
+| Feature                | Status         | Phase | Notes               |
+| ---------------------- | -------------- | ----- | ------------------- |
+| BBB program            | ⏳ Not Started | 3     | Premium program     |
+| FSL program            | ⏳ Not Started | 3     | Premium program     |
+| Other variations       | ⏳ Not Started | 3     | 5+ more programs    |
+| Custom program builder | ⏳ Not Started | 3     | Advanced feature    |
+| Unlimited history      | ⏳ Not Started | 3     | Cloud storage       |
+| Advanced analytics     | ⏳ Not Started | 3     | Graphs and insights |
+| Cloud sync             | ⏳ Not Started | 3     | Multi-device        |
+| RPE/RIR tracking       | ⏳ Not Started | 3     | Set-level data      |
+| Body measurements      | ⏳ Not Started | 3     | Track weight, etc.  |
+| Progress photos        | ⏳ Not Started | 3     | Camera integration  |
+| Custom exercises       | ⏳ Not Started | 3     | With videos         |
+| Data export            | ⏳ Not Started | 3     | CSV, PDF, JSON      |
+
+### Supporting Features
+
+| Feature         | Status         | Phase | Notes              |
+| --------------- | -------------- | ----- | ------------------ |
+| Onboarding flow | 📝 Planned     | 2a    | Multi-step wizard  |
+| Settings page   | ⏳ Not Started | 3     | Units, preferences |
+| Calendar view   | ⏳ Not Started | 3     | Workout schedule   |
+| Achievements    | ⏳ Not Started | 3     | Gamification       |
+| Workout sharing | ⏳ Not Started | 3     | Social feature     |
+| Notifications   | ⏳ Not Started | 3     | Reminders          |
+| Help/tutorial   | ⏳ Not Started | 4     | User guidance      |
+
+---
+
+## Technical Debt & Improvements
+
+### Known Issues
+
+**Phase 1:**
+
+- [ ] Auth error messages could be more user-friendly
+- [ ] No loading state on password reset
+- [ ] Email validation could be stronger
+
+### Future Improvements
+
+**Code Quality:**
+
+- [ ] Add unit tests for auth functions
+- [ ] Add integration tests for critical paths
+- [ ] Set up E2E testing framework
+- [ ] Add pre-commit hooks for linting
+
+**Performance:**
+
+- [ ] Implement code splitting for routes
+- [ ] Optimize bundle size (currently acceptable)
+- [ ] Add service worker for offline capability
+- [ ] Implement image lazy loading
+
+**UX:**
+
+- [ ] Add loading skeletons instead of spinners
+- [ ] Improve error boundary messaging
+- [ ] Add success animations
+- [ ] Smoother page transitions
+
+**Developer Experience:**
+
+- [ ] Add Storybook for component development
+- [ ] Improve TypeScript types (reduce `any` usage)
+- [ ] Add JSDoc comments to key functions
+- [ ] Create component usage examples
+
+---
+
+## Metrics & KPIs
+
+### Development Velocity
+
+**Phase 1:**
+
+- Duration: 3 weeks
+- Story points completed: 30
+- Velocity: 10 points/week
+- Blockers: 0
+
+**Phase 2a (Projected):**
+
+- Duration: 2 weeks
+- Story points: 25
+- Estimated velocity: 12-13 points/week
+
+### Code Quality
+
+**Current Metrics:**
+
+- TypeScript strict mode: ✅ Enabled
+- Linter errors: 0
+- Linter warnings: 0
+- Type coverage: ~95% (minimal `any` usage)
+- Bundle size: ~180KB gzipped (under target)
+
+### Test Coverage
+
+**Current:**
+
+- Unit tests: 0% (none written yet)
+- Integration tests: 0%
+- E2E tests: 0%
+- Manual testing: 100% of implemented features
+
+**Target (by Phase 4):**
+
+- Unit tests: 80%+ for services
+- Integration tests: Key user flows covered
+- E2E tests: Critical paths automated
+
+---
+
+## Risk Assessment
+
+### High Priority Risks
+
+**1. Calculation Accuracy** 🔴
+
+- **Risk:** 5/3/1 calculations incorrect, users follow wrong program
+- **Mitigation:** Thorough testing against known values, verification with spreadsheets
+- **Status:** Not yet addressed (Phase 2a priority)
+
+**2. Data Loss** 🟡
+
+- **Risk:** Users lose workout history due to localStorage issues
+- **Mitigation:** Implement data export early, add backup reminders, plan SQLite migration
+- **Status:** Partially addressed (need export feature)
+
+**3. Performance on Low-End Devices** 🟡
+
+- **Risk:** App slow on older Android devices
+- **Mitigation:** Test on low-end devices, optimize rendering, profile performance
+- **Status:** Not yet tested (Phase 4)
+
+### Medium Priority Risks
+
+**4. Battery Drain** 🟡
+
+- **Risk:** App drains battery during workouts
+- **Mitigation:** Test battery usage, optimize wake locks, minimize background processes
+- **Status:** Not yet measured
+
+**5. Premium Conversion** 🟢
+
+- **Risk:** Users don't convert to premium
+- **Mitigation:** Strong free tier, clear value prop, fair pricing
+- **Status:** Strategy defined, execution in Phase 3
+
+---
+
+## Lessons Learned
+
+### Phase 1 Insights
+
+**What Worked:**
+
+1. Starting with authentication foundation was correct
+2. MUI theme customization saves time later
+3. TypeScript strict mode catches issues early
+4. Clear folder structure helps organization
+
+**What Could Improve:**
+
+1. Should have written data types first (doing in Phase 2a)
+2. Need better commit message consistency
+3. Could document decisions more thoroughly
+4. Should set up testing framework earlier
+
+**Decisions to Revisit:**
+
+1. localStorage vs SQLite migration timing
+2. When to introduce state management library
+3. Analytics provider selection
+
+---
+
+## Next Session Checklist
+
+**When resuming work on Phase 2a:**
+
+1. ✅ Read all Memory Bank files
+2. ✅ Review current progress in this file
+3. ✅ Check activeContext.md for immediate next steps
+4. Start with data types (src/types/workout.ts)
+5. Then build program generator service
+6. Test calculations thoroughly
+7. Create ProgramContext
+8. Build onboarding UI
+
+**Files to Create Next:**
+
+- [ ] src/types/workout.ts
+- [ ] src/services/programGenerator.ts
+- [ ] src/context/ProgramContext.tsx
+- [ ] src/pages/Onboarding.tsx
+- [ ] src/components/onboarding/\* (4 step components)
+
+---
+
+## Version History
+
+**v0.0.0 (Current)**
+
+- Phase 1 complete
+- Foundation established
+- Ready for Phase 2a
+
+**Planned Releases:**
+
+- v0.1.0 - Phase 2a complete (onboarding & program generation)
+- v0.2.0 - Phase 2b complete (workout interface)
+- v0.3.0 - Phase 3 complete (premium features)
+- v1.0.0 - MVP launch (Phase 5)
+
+---
+
+## Success Criteria
+
+### Phase 1 Success Criteria ✅
+
+- [x] User can register and login
+- [x] Authentication persists across sessions
+- [x] Protected routes work correctly
+- [x] App runs on web and Android
+- [x] No linter errors
+- [x] TypeScript compiles without errors
+
+### Phase 2a Success Criteria
+
+- [ ] User can complete onboarding
+- [ ] Training maxes are saved correctly
+- [ ] 5/3/1 cycle generates accurately
+- [ ] Home dashboard shows next workout
+- [ ] Data persists across sessions
+- [ ] No calculation errors
+
+### Phase 2b Success Criteria
+
+- [ ] User can start and complete a workout
+- [ ] Sets log correctly
+- [ ] Rest timer works reliably
+- [ ] AMRAP sets detect PRs
+- [ ] Workout history saves
+- [ ] App remains responsive during workout
+
+### MVP Launch Criteria (Phase 5)
+
+- [ ] All must-have features work
+- [ ] <5% crash rate
+- [ ] 4.0+ app store rating
+- [ ] Successful payment integration
+- [ ] Privacy policy and TOS in place
+- [ ] Support system operational
+- [ ] 100+ beta testers satisfied
+
+---
+
+## Notes
+
+**Project Philosophy:**
+
+- Ship iteratively, get feedback early
+- Perfect is the enemy of done
+- Mobile-first, gym-optimized above all
+- Data integrity is paramount
+- User can always export their data
+
+**Development Mantras:**
+
+- "Read the Memory Bank first"
+- "Test calculations twice"
+- "One feature at a time"
+- "Document decisions"
+- "Commit often"

@@ -1,9 +1,0 @@
-{
-  "name": "Titan 531",
-  "description": "A premium 5/3/1 workout tracker with AI coaching, analytics, and plate calculations.",
-  "requestFramePermissions": [
-    "camera",
-    "microphone",
-    "geolocation"
-  ]
-}

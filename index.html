@@ -1,66 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
-    <meta name="theme-color" content="#020617" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta
-      name="apple-mobile-web-app-status-bar-style"
-      content="black-translucent"
-    />
-    <meta
-      name="description"
-      content="Premium 5/3/1 workout tracker with AI coaching"
-    />
-
-    <!-- Open Graph / Social Media -->
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Titan 531 - AI Strength Tracker" />
-    <meta
-      property="og:description"
-      content="Master your strength with 5/3/1 programming, AI form checks, and smart plate math."
-    />
-    <meta
-      property="og:image"
-      content="https://cdn-icons-png.flaticon.com/512/2586/2586862.png"
-    />
-
-    <title>Titan 531</title>
-    <link rel="manifest" href="/manifest.json" />
-    <link
-      rel="apple-touch-icon"
-      href="https://cdn-icons-png.flaticon.com/512/2586/2586862.png"
-    />
-
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>titan-531</title>
   </head>
   <body>
     <div id="root"></div>
-    <script>
-      // Register service worker for offline support (only on web, not in Capacitor)
-      if (
-        "serviceWorker" in navigator &&
-        window.location.protocol !== "capacitor:"
-      ) {
-        window.addEventListener("load", () => {
-          navigator.serviceWorker
-            .register("/service-worker.js")
-            .then((registration) => {
-              console.log("SW registered: ", registration);
-            })
-            .catch((registrationError) => {
-              console.log("SW registration failed: ", registrationError);
-            });
-        });
-      }
-    </script>
-    <script type="module" src="/index.tsx"></script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

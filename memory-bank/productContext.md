@@ -1,393 +1,342 @@
-# Product Context: Titan 5/3/1
+# Product Context - Titan 531
 
-## Why This Exists
+## Why This Product Exists
 
-### The Problem
+### The 5/3/1 Problem Space
 
-Strength training programs like 5/3/1 are incredibly effective but require careful tracking and calculation:
+**5/3/1 is effective but requires significant mental overhead:**
 
-1. **Complexity Management**: Athletes must calculate percentages, track multiple cycles, manage deload weeks, and adjust training maxes
-2. **Consistency Challenge**: Following a structured program for months requires discipline and clear guidance
-3. **Progress Blindness**: Hard to visualize progress and understand if training is effective
-4. **Form Uncertainty**: Athletes often unsure if their technique is correct, risking injury
-5. **Coaching Scalability**: Personal trainers struggle to manage multiple clients' programming efficiently
-6. **Fragmented Tools**: Athletes juggle spreadsheets, notes apps, and calculators
+- Complex percentage calculations for every workout
+- Cycle planning across multiple weeks
+- Tracking progression over time
+- Managing multiple program variations
+- Recording AMRAP performances and calculating TM adjustments
+- Maintaining consistency and motivation
 
-### The Solution
+**Current solutions fall short:**
 
-Titan 5/3/1 consolidates the entire 5/3/1 training workflow into a single, intelligent application that:
+- Spreadsheets: Powerful but not mobile-friendly, require setup knowledge
+- Existing apps: Poor UX, outdated interfaces, not gym-optimized
+- Pen and paper: Slow, prone to calculation errors, no progression insights
+- Generic workout apps: Don't understand 5/3/1 methodology
 
-- **Automates Calculations**: All percentages, working weights, and progressions calculated automatically
-- **Guides Progression**: Clear indication of what to do each session, when to deload, when to progress
-- **Visualizes Progress**: Charts, history, and analytics show long-term trends
-- **Provides AI Coaching**: Real-time form feedback and programming insights
-- **Enables Coaching**: Manage unlimited clients from one interface
-- **Works Offline**: Train anywhere without internet dependency
+### The Real-World Context
 
-## How It Works
+**Gym Environment Challenges:**
 
-### User Journey: Individual Athlete
+- Sweaty hands make precise phone interactions difficult
+- Bright overhead lights or dim lighting affect screen visibility
+- Need to log data quickly between sets (rest timer running)
+- Often using phone one-handed while holding water bottle/towel
+- Distractions from other gym-goers
+- Need to reference previous performance while actively lifting
 
-#### 1. Onboarding (First Launch)
+**User Mental State:**
 
-```
-User opens app → Onboarding flow
-↓
-Enter basic info (name, gender, weight, unit preference)
-↓
-Set training maxes for 4 main lifts
-↓
-Choose program variant (BBB, FSL, etc.)
-↓
-Configure assistance work and rest timers
-↓
-Dashboard appears with first workout ready
-```
+- Fatigued during workout, cognitive load is high
+- Want to focus on lifting, not app navigation
+- Need confidence they're following program correctly
+- Anxious about progression and whether they're improving
+- Motivated by seeing progress and achieving PRs
 
-#### 2. Daily Training Session
+## Problems We Solve
 
-```
-Dashboard shows current cycle/week status
-↓
-User selects lift to train (Squat, Bench, Deadlift, Overhead)
-↓
-Warmup sets calculated automatically
-↓
-Main work: 3 working sets with prescribed reps
-↓
-AMRAP set: User logs actual reps achieved
-↓
-Supplemental work (BBB 5x10, FSL 5x5, etc.)
-↓
-Assistance exercises (pre-configured)
-↓
-Complete workout → Data saved to history
-↓
-Achievement notifications if milestones reached
-```
+### Primary Problems
 
-#### 3. Cycle Progression
+**1. Calculation Complexity**
 
-```
-Week 1 (5/5/5+) → Week 2 (3/3/3+) → Week 3 (5/3/1+) → Week 4 (Deload)
-↓
-After Week 4 completion → Cycle Transition Modal
-↓
-Review performance, adjust training maxes
-↓
-Start next cycle with increased weights
-```
+- **Problem:** Mental math during workouts leads to errors and second-guessing
+- **Solution:** Automatic weight calculation based on TM and week/set scheme
+- **Impact:** User logs "5 reps completed" and we handle the rest
 
-### User Journey: Coach
+**2. Gym Usability Crisis**
 
-#### 1. Coach Setup
+- **Problem:** Standard apps require precision taps and squinting at small text
+- **Solution:** Extra-large touch targets (64px), bold typography (60px+ for timers)
+- **Impact:** One-handed operation with sweaty hands, readable from arms-length
 
-```
-User enables "Coach Mode" in settings
-↓
-Dashboard transforms to Coach Dashboard
-↓
-Add clients with individual profiles
-```
+**3. Program Confusion**
 
-#### 2. Client Management
+- **Problem:** Jim Wendler's books present 20+ program variations - which to use when?
+- **Solution:** Guided program selection based on goals, experience, and equipment
+- **Impact:** Beginners get started confidently, advanced users find optimal variation
 
-```
-View all clients in list
-↓
-Select client → Switch to client view
-↓
-See client's dashboard, history, and analytics
-↓
-Monitor progress, achievements, nutrition
-↓
-Exit client view → Return to coach dashboard
-```
+**4. Progress Visibility**
 
-### Core Workflows
+- **Problem:** Hard to see if you're actually getting stronger over time
+- **Solution:** Visual graphs, PR detection, estimated 1RM tracking, volume analytics
+- **Impact:** Motivation through tangible proof of progress
 
-#### Workflow 1: Starting a Workout
+**5. Data Fragmentation**
 
-**Trigger**: User clicks "Start Workout" button  
-**Path**: Dashboard → Workout Selection → Active Workout
+- **Problem:** Workout logs in one place, body weight in another, photos somewhere else
+- **Solution:** Single source of truth for all training data with cloud sync
+- **Impact:** Complete training history accessible anywhere
 
-```
-1. User on Dashboard sees week/cycle status
-2. Clicks "Start Workout" button
-3. Workout Start screen shows:
-   - Available lifts for the week
-   - Already completed lifts (greyed out)
-   - Ability to start any remaining lift
-4. User selects lift (e.g., "Squat")
-5. Active Workout screen loads with:
-   - Warmup sets (40%, 50%, 60%)
-   - Main work sets (65%, 75%, 85% for Week 1)
-   - Supplemental sets (based on program)
-   - Assistance exercises (pre-configured)
-6. User works through exercises, checking off sets
-7. Rest timer auto-starts between sets
-8. User completes or abandons workout
-9. If completed, saved to history
-```
+### Secondary Problems
 
-#### Workflow 2: AI Form Check
+**6. Missed Workout Anxiety**
 
-**Trigger**: User wants technique feedback  
-**Path**: AI Coach → Upload Photo/Video → Get Analysis
+- **Problem:** Life happens, workouts get missed, users don't know how to adapt
+- **Solution:** Flexible scheduling with smart catch-up suggestions
+- **Impact:** Reduces guilt, maintains momentum even with disruptions
+
+**7. Training Max Management**
+
+- **Problem:** Knowing when and how much to adjust TMs is unclear
+- **Solution:** Automatic TM recommendations based on AMRAP performance
+- **Impact:** Optimal progression without overthinking
+
+**8. Lack of Accountability**
+
+- **Problem:** Easy to skip workouts or slack on intensity without tracking
+- **Solution:** Streak tracking, achievement system, optional sharing
+- **Impact:** External motivation and commitment device
+
+**9. Assistance Exercise Selection**
+
+- **Problem:** "50-100 reps of push/pull/single leg/core" is vague
+- **Solution:** Pre-built templates with specific exercises and rep schemes
+- **Impact:** Remove decision paralysis, get started faster
+
+**10. Equipment Limitations**
+
+- **Problem:** Home gym has limited plates, need to adapt weights
+- **Solution:** Smart plate calculator with custom plate configurations
+- **Impact:** Always know exactly what to load
+
+## How It Should Work
+
+### User Experience Principles
+
+**1. Zero Friction Setup**
+
+- Account creation in <60 seconds
+- TM input or 1RM estimation in single screen
+- Auto-generated first workout immediately available
+- No configuration required to start first workout
+
+**2. Effortless Workout Flow**
 
 ```
-1. User navigates to "AI Coach" tab
-2. Chooses "Form Check" feature
-3. Uploads photo/video of lift
-4. App sends to Gemini Vision API
-5. AI analyzes form and provides:
-   - Technique assessment
-   - Specific cues for improvement
-   - Safety concerns if any
-6. User can ask follow-up questions
-7. Conversation history maintained in session
+Open app → "Start Workout" button (64px) →
+Exercise displayed (large text) →
+Complete set → Tap target reps (large button) →
+Rest timer auto-starts →
+Repeat until workout complete →
+Summary and PR celebrations
 ```
 
-#### Workflow 3: Cycle Transition
+**3. Intelligent Defaults**
 
-**Trigger**: User completes Week 4 (Deload)  
-**Path**: Dashboard → Cycle Transition Modal → New Cycle
+- Default to last used TMs and program
+- Auto-calculate warm-up sets
+- Pre-fill weight from last time
+- Smart rest timer durations per exercise type
+- Assume imperial units unless specified
 
-```
-1. User finishes final lift of Week 4
-2. Dashboard shows "Finish Cycle" button
-3. User clicks → Cycle Transition Modal opens
-4. Modal shows:
-   - Current training maxes
-   - AMRAP performance from cycle
-   - Suggested new training maxes
-   - Volume/intensity stats
-5. User reviews and can adjust TMs
-6. Confirms → Profile updated:
-   - Cycle increments
-   - Week resets to 1
-   - Training maxes updated
-7. Dashboard refreshes with new cycle
-```
+**4. Progressive Disclosure**
 
-#### Workflow 4: Nutrition Tracking
+- Free users see Original 5/3/1 only, with subtle premium program cards
+- Advanced features hidden until user is ready (after first cycle)
+- Settings have sensible defaults, advanced options collapsed
 
-**Trigger**: User logs a meal  
-**Path**: Nutrition Tab → Add Meal → Log Macros
+**5. Celebration of Achievement**
 
-```
-1. User navigates to "Nutrition" tab
-2. Sees daily macro progress bars
-3. Clicks "Add Meal" button
-4. Enters meal details:
-   - Name
-   - Macros (calories, protein, carbs, fats)
-   - Optional photo
-5. Meal added to today's log
-6. Progress bars update
-7. History shows all meals for date selection
-```
+- PR detection happens automatically
+- Visual feedback (color flash, confetti animation)
+- Haptic feedback (strong vibration pattern)
+- Snackbar notification with specific achievement
+- Achievement unlocked badges
 
-#### Workflow 5: Tools Usage
+### Core User Journeys
 
-**Trigger**: User needs calculation or timer  
-**Path**: Tools Tab → Select Tool → Use Feature
+**New User Journey (Beginner)**
 
 ```
-Tools Available:
-- Plate Calculator: Enter weight → See plate configuration
-- 1RM Calculator: Enter weight/reps → Get estimated 1RM
-- Warmup Generator: Enter TM → Get warmup sets
-- Interval Timer: Set work/rest periods → Run timer
-- Gym Finder: Shows nearby gyms (maps integration)
+1. Download app → See hero screen with "Start Free"
+2. Quick account creation (email/Google)
+3. "New to 5/3/1?" → Tutorial explaining basics
+4. Goal selection: "Get Stronger" selected
+5. TM input: "I don't know my 1RM" → Use estimation calculator
+6. Enter recent lifts → TMs calculated automatically
+7. "Your first workout is ready!" → Week 1, Day 1: Squat
+8. Tutorial overlay showing workout interface
+9. Complete first workout with guidance
+10. Celebration screen: "First workout done! 🎉"
 ```
 
-## User Experience Goals
+**Experienced User Journey**
 
-### Simplicity
+```
+1. Download app → Skip tutorial
+2. Import from previous app (CSV) or manual entry
+3. Browse premium programs → Select "Boring But Big"
+4. Customize supplemental percentage (50% → 60%)
+5. Start workout immediately
+6. Efficient logging, no hand-holding
+7. Check analytics between cycles
+```
 
-- **Zero Learning Curve**: Onboarding guides through entire setup
-- **Clear Navigation**: Bottom tab bar with icon + label
-- **Contextual Actions**: Only relevant options shown per screen
-- **Smart Defaults**: Sensible presets for all configurations
+**Workout Day Journey (Typical)**
 
-### Confidence
+```
+Morning: Notification "Workout today: Overhead Press"
+At Gym:
+  - Open app → Current workout on home screen
+  - Tap "Start Workout" → Full-screen mode
+  - Warm-up sets displayed with weights
+  - Complete main work: 5/3/1 sets with AMRAP
+  - Hit PR on AMRAP → Celebration!
+  - Supplemental work (BBB): 5x10
+  - Assistance work: Push/Pull/Core
+  - Mark workout complete
+  - Summary: 45 minutes, 12,500 lbs total volume, 1 PR
+Post-Workout:
+  - Notification: "PR Alert! New bench 10RM: 185 lbs"
+  - View updated progress graph
+```
 
-- **Visual Feedback**: Progress bars, checkmarks, animations
-- **Validation**: Prevents errors (can't skip deload, must complete main work)
-- **Transparency**: Shows calculation formulas, explains percentages
-- **Achievement System**: Positive reinforcement for milestones
+### Key User Emotions We Target
 
-### Speed
+**During Onboarding:**
 
-- **Instant Navigation**: Lazy loading, sub-100ms transitions
-- **Quick Actions**: Large touch targets, minimal taps to common actions
-- **Auto-calculations**: No manual math ever needed
-- **Smart Timers**: Auto-start, voice announcements, background operation
+- Confidence: "This app understands 5/3/1"
+- Excitement: "I'm ready to start getting stronger"
+- Relief: "Finally, something that just works"
 
-### Motivation
+**During Active Workout:**
 
-- **Daily Tip System**: Training wisdom on dashboard
-- **Achievement Unlocks**: Gamification of progress
-- **Visual Progress**: Charts showing strength gains over time
-- **Streak Tracking**: Encourages consistency
+- Focus: "I know exactly what to do next"
+- Strength: "I'm crushing this workout"
+- Trust: "The app has my back"
 
-### Flexibility
+**After Workout:**
 
-- **Customization**: Themes, units, languages, rest timers
-- **Program Variants**: Support for different training methodologies
-- **Custom Exercises**: Add personal assistance movements
-- **Manual Overrides**: Can adjust any weight or rep scheme
+- Pride: "Look at that progress!"
+- Satisfaction: "Workout logged, done for the day"
+- Motivation: "Can't wait for the next session"
 
-## Design Principles
+**Over Time:**
 
-### 1. Workout-First Design
+- Progress: "I'm actually getting stronger"
+- Mastery: "I understand my body and the program"
+- Achievement: "All these PRs and consistency"
 
-The app exists to facilitate training. Every screen should either:
+## What Success Looks Like
 
-- Help user prepare for workout
-- Track the workout in progress
-- Analyze completed workouts
-- Plan future training
+### User Success Stories
 
-### 2. Progressive Disclosure
+**Beginner (Sarah, 25, new to strength training):**
 
-- Show essential info first (weights, reps, rest time)
-- Hide advanced options (custom percentages, exercise manager)
-- Reveal complexity only when needed (analytics, cycle stats)
+- "I tried starting 5/3/1 with a spreadsheet and gave up after two days"
+- "Titan 531 held my hand through setup and explained everything"
+- "Now I'm on my third cycle and hit PRs every week"
+- "The app knows more than me, so I just follow what it says"
 
-### 3. Offline-First Architecture
+**Intermediate (Mike, 32, training 2 years):**
 
-- All features work without internet
-- No loading spinners for core functionality
-- Optional cloud features clearly marked (AI Coach)
+- "Switched from Strong app because it didn't understand 5/3/1"
+- "Love the automatic TM adjustments and plate calculator"
+- "Premium was worth it for the BBB and FSL variations"
+- "My squat 1RM went from 315 to 405 in 6 months"
 
-### 4. Data Ownership
+**Advanced (Coach Tom, 40, training 10+ years):**
 
-- Users own their data completely
-- Export anytime, no vendor lock-in
-- Import to migrate or backup
-- No account required, no tracking
+- "I use it for myself and program for 8 clients"
+- "The custom program builder lets me tweak everything"
+- "Client dashboard shows who's slacking and who's crushing it"
+- "Being able to message clients in-app keeps engagement high"
 
-### 5. Coaching Empowerment
+### Behavioral Indicators of Success
 
-- Coach features don't complicate athlete view
-- Clean separation of roles
-- Easy client switching
-- All athlete features available in client view
+**High Engagement:**
 
-## Key Interactions
+- User opens app 4+ times per week
+- Completes 80%+ of scheduled workouts
+- Spends <3 minutes logging a workout
+- Views progress graphs weekly
+- Shares PRs to social media
 
-### Touch Targets
+**Quality Experience:**
 
-- Minimum 44px × 44px for all interactive elements
-- Large buttons for workout actions
-- Swipe gestures for history navigation
+- No support tickets about "how do I..."
+- Positive app store reviews mentioning ease of use
+- Users recommend to gym friends unprompted
+- Low uninstall rate after first workout
 
-### Feedback
+**Business Success:**
 
-- Instant visual response to taps
-- Haptic feedback for completions (if supported)
-- Toast notifications for actions
-- Modal confirmations for destructive actions
+- 7-10% free to premium conversion within 3 months
+- 85%+ premium retention month-over-month
+- Net Promoter Score (NPS) >40
+- Organic growth through word of mouth
 
-### Timer Experience
+## Product Personality
 
-- Large, readable countdown
-- Play/pause/reset controls
-- Voice announcements at intervals
-- Background operation with notifications
-- Different timers per exercise type
+**Titan 531 is:**
 
-### Form Inputs
+- **Knowledgeable:** Deep 5/3/1 expertise baked in
+- **Encouraging:** Celebrates achievements, motivates on tough days
+- **Efficient:** No wasted time, no friction, respects user's focus
+- **Reliable:** Always works, never loses data, performs consistently
+- **Professional:** Polished, modern, serious about training
 
-- Number pads for weights/reps
-- Steppers for fine adjustments
-- Quick presets for common values
-- Units shown inline
+**Titan 531 is NOT:**
 
-## Success Metrics
+- Gamified with meaningless badges
+- Social media focused
+- Trying to teach form or nutrition
+- Overwhelming with features
+- Condescending or childish
 
-### Engagement
+## Voice and Tone
 
-- Daily Active Users (DAU)
-- Workouts logged per user per week
-- Cycle completion rate
-- Feature adoption (tools, nutrition, AI coach)
+**In-App Copy:**
 
-### Retention
+- Direct and clear: "Log your set" not "How did that feel? 😊"
+- Encouraging but not over-the-top: "New PR!" not "OMG YOU'RE AMAZING!!!"
+- Technically accurate: Use proper 5/3/1 terminology
+- Concise: Every word earns its place
 
-- Week 1 retention (after first workout)
-- Month 1 retention (after first cycle)
-- Long-term retention (6+ months)
+**Examples:**
 
-### Value Delivery
+- ✅ "Week 1, Day 2: Bench Press"
+- ❌ "Time to crush some bench! 💪"
 
-- Average strength gains per cycle
-- User-reported PRs achieved
-- Export/backup usage (data trust)
-- PWA install rate
+- ✅ "Hit target: 5 reps"
+- ❌ "You totally nailed those reps!"
 
-### Quality
+- ✅ "TM increased to 225 lbs"
+- ❌ "Your training max just got swole! 🔥"
 
-- Error rate (localStorage failures, calculation errors)
-- Load time (p50, p95)
-- Crash rate
-- User-reported bugs
+**Premium Messaging:**
 
-## Target Scenarios
+- Value-focused: "Unlock all 15+ program variations"
+- No FOMO: "Upgrade anytime" not "Don't miss out!"
+- Clear benefits: "See your full training history since day one"
 
-### Scenario 1: Beginner Starting 5/3/1
+## Competitive Positioning
 
-**Context**: New to program, wants guidance  
-**App Solves**: Onboarding explains methodology, sets conservative TMs, guides through first workout with clear instructions
+**vs. Strong (General workout tracker):**
 
-### Scenario 2: Experienced Lifter Switching from Spreadsheet
+- We: Purpose-built for 5/3/1, automatic calculations
+- They: Generic, requires manual program setup
 
-**Context**: Knows program, wants better UX  
-**App Solves**: Quick setup, import existing TMs, immediately ready to train with superior tracking
+**vs. 531 Training Log:**
 
-### Scenario 3: Coach with 5+ Clients
+- We: Modern UI, smooth UX, premium features
+- They: Functional but dated, limited features
 
-**Context**: Managing multiple programs simultaneously  
-**App Solves**: Single dashboard to monitor all clients, easy switching, independent histories
+**vs. Spreadsheets:**
 
-### Scenario 4: Traveling Athlete
+- We: Mobile-optimized, no setup required, progress tracking
+- They: Powerful but desktop-only, steep learning curve
 
-**Context**: Limited equipment, different gym  
-**App Solves**: Plate calculator adapts to available equipment, offline functionality, conditioning alternatives
+**vs. Personal Training Coach:**
 
-### Scenario 5: Plateau Breaking
+- We: Focused on 5/3/1, simpler interface, better pricing
+- They: Many methodologies but complexity overwhelms
 
-**Context**: Stuck at same weights for cycles  
-**App Solves**: AI coach analyzes history, suggests programming adjustments, form checks identify technique issues
-
-## Content Strategy
-
-### Onboarding Content
-
-- Clear explanation of what Titan does
-- Brief 5/3/1 methodology overview
-- Importance of conservative training maxes
-- Program variant explanations
-
-### In-App Guidance
-
-- Daily tips from 5/3/1 philosophy
-- Exercise instructions in exercise manager
-- YouTube links for video demonstrations
-- Tooltips on advanced features
-
-### Error Messages
-
-- Friendly, actionable language
-- Explain why action prevented
-- Suggest remedy
-- Never blame user
-
-### Empty States
-
-- Encouraging first-time messaging
-- Clear next steps
-- Visual illustration
-- Call-to-action button
+**Our Unique Value:**
+The only modern, mobile-first app that deeply understands 5/3/1 and is actually pleasant to use in the gym.

@@ -1,914 +1,406 @@
-# Active Context: Titan 5/3/1
-
-## Current Status
-
-**Project State**: Feature-complete MVP at v1.2.1 + Cloud Sync Development  
-**Last Major Update**: November 2025  
-**Focus**: Supabase Integration for Optional Cloud Sync
-
-## Recent Work
-
-### Android APK Implementation (November 2025 - Phases 1-6 Complete)
-
-**Goal**: Package Titan 5/3/1 PWA as a native Android APK for Google Play Store distribution using Capacitor.
-
-**Status**: Core implementation complete. Ready for device testing.
-
-**Implementation Complete (November 2025):**
-
-1. **Phase 1: Environment Setup** ✅
-
-   - Installed Capacitor v7.4.4 (@capacitor/core, @capacitor/cli, @capacitor/android)
-   - Initialized Capacitor with app ID: `com.titan.workout`
-   - Created Android platform project in `android/` directory
-   - Verified Android project structure (gradle, build files, manifests)
-
-2. **Phase 2: Tailwind CSS Migration** ✅
-
-   - Migrated from Tailwind CDN to build process
-   - Installed Tailwind v4 with @tailwindcss/postcss plugin
-   - Created `tailwind.config.js` and `postcss.config.js`
-   - Created `src/index.css` with @import "tailwindcss" and @theme directive
-   - Removed CDN script tags from index.html
-   - Removed AI Studio import maps (app uses npm packages)
-   - Successfully tested build with proper Tailwind processing
-
-3. **Phase 3: Capacitor Configuration** ✅
+# Active Context - Titan 531
 
-   - Configured `capacitor.config.ts`:
-     - androidScheme: 'https' for secure contexts
-     - SplashScreen settings (2s duration, dark background)
-     - StatusBar settings (dark style, matches app theme)
-   - Added Capacitor scripts to package.json:
-     - `android:dev` - Live reload on device
-     - `android:build` - Build + sync + open Android Studio
-     - `android:sync` - Sync web assets to Android
-   - Updated `vite.config.ts`:
-     - base: '' for Capacitor compatibility
-     - Code splitting optimizations (vendor, charts, icons chunks)
-     - Disabled sourcemaps for production
-   - Updated `.gitignore` for Android build artifacts
-
-4. **Phase 4: Platform Detection Utility** ✅
+## Current Focus
 
-   - Created `src/utils/platformDetection.ts` with functions:
-     - `isNativeApp()` - Check if in Capacitor
-     - `isAndroid()` - Check if on Android
-     - `isWeb()` - Check if in web browser
-     - `getPlatform()` - Get platform name
-   - Updated service worker registration to be conditional:
-     - Only registers on web (protocol !== "capacitor:")
-     - Capacitor handles offline functionality natively
-   - Made test connection import conditional (dev only)
+**Phase Status:** Phase 1 (Foundation) Complete → Phase 2a (Setup & Structure) Next
 
-5. **Phase 5: Asset Preparation** ✅
+**Immediate Priority:** Implement onboarding flow and training max setup to get users into their first workout quickly.
 
-   - Created `resources/` directory for app assets
-   - Installed optional Capacitor plugins:
-     - @capacitor/splash-screen@7.0.3
-     - @capacitor/status-bar@7.0.3
-     - @capacitor/keyboard@7.0.3
-   - Plugin configuration in capacitor.config.ts
-   - Ready for icon/splash screen generation (awaiting source images)
+**Active Work Stream:** None currently in progress - ready to begin Phase 2a implementation.
 
-6. **Phase 6: Build and Test** ✅
-   - Successfully built production bundle: `npm run build`
-     - Main bundle: 461.88 KB (116.25 KB gzipped)
-     - Charts chunk: 355.83 KB (105.06 KB gzipped)
-     - Lazy-loaded feature chunks working correctly
-   - Successfully synced to Android: `npx cap sync android`
-     - Web assets copied to android/app/src/main/assets/public
-     - All 3 plugins detected and configured
-     - Android project ready for build
+## Recent Changes
 
-**What Works:**
+### Phase 1 Completion (✅ Complete)
 
-- ✅ Dual deployment: PWA (web) and native Android APK
-- ✅ Tailwind CSS fully integrated in build process
-- ✅ Service worker conditional (web only)
-- ✅ Platform detection available throughout app
-- ✅ localStorage persists in both web and Capacitor
-- ✅ All existing features preserved (workout tracking, AI coach, etc.)
-- ✅ Offline functionality in both environments
-- ✅ Production build optimized with code splitting
-
-**Pending:**
-
-- Production signing key generation
-- Play Store listing preparation
+**What Was Built:**
 
-**Key Technical Decisions:**
+1. **Project Infrastructure**
 
-1. **Capacitor over React Native**
+   - Vite + React 19 + TypeScript setup
+   - Material-UI v7 theme configuration
+   - Capacitor v7 Android platform integration
+   - React Router v7 for navigation
 
-   - Wraps existing PWA without code changes
-   - Minimal configuration required
-   - Maintains web version perfectly
-   - Official Google Play support
+2. **Authentication System**
 
-2. **Tailwind v4 over v3**
+   - Supabase client initialization
+   - AuthContext with sign up, sign in, sign out, password reset
+   - Login and Register pages with form validation
+   - RequireAuth wrapper for protected routes
+   - Session persistence
 
-   - Modern @theme directive instead of config
-   - Cleaner CSS with @import "tailwindcss"
-   - Better performance and smaller bundle
+3. **Base UI Components**
 
-3. **Conditional Service Worker**
+   - Layout component with AppBar structure
+   - Theme with gym-optimized customization (large touch targets, bold typography)
+   - Dark mode by default
+   - Home page placeholder
 
-   - Service worker only on web platform
-   - Capacitor handles caching natively
-   - Prevents conflicts and redundancy
+4. **Configuration Files**
+   - package.json with all core dependencies
+   - capacitor.config.ts for Android build
+   - TypeScript configurations
+   - ESLint setup
 
-4. **Platform Detection Pattern**
-   - Centralized utilities for platform checks
-   - Enables conditional native feature usage
-   - Future-proof for iOS if needed
+**Key Files Created:**
 
-**Impact:**
+- `src/theme.ts` - MUI theme with custom overrides
+- `src/supabaseClient.ts` - Backend client
+- `src/context/AuthContext.tsx` - Auth state management
+- `src/components/Layout.tsx` - App shell
+- `src/components/RequireAuth.tsx` - Route protection
+- `src/pages/Login.tsx` - Login screen
+- `src/pages/Register.tsx` - Registration screen
+- `src/pages/Home.tsx` - Dashboard placeholder
 
-- App now supports both web and native Android deployment
-- No changes to existing React components
-- No changes to business logic or services
-- localStorage-based architecture works in both environments
-- Ready for Google Play Store distribution (pending testing)
+**Current State:**
 
-**What Now Works:**
+- Users can create accounts and authenticate
+- Protected routing works correctly
+- Basic app shell exists with navigation
+- Ready for feature development
 
-- ✅ Android Studio successfully loads project
-- ✅ Emulator runs app without issues
-- ✅ All features functional in Android environment
-- ✅ App icons and splash screens display correctly
-- ✅ localStorage persists in native app
-- ✅ All UI renders properly with Tailwind CSS
+## Next Steps
 
-**Next Actions (When Ready for Production):**
+### Immediate (Phase 2a Start)
 
-1. Generate signing key for production builds
-2. Build release APK/AAB with signing
-3. Test release build thoroughly
-4. Prepare Play Store listing (screenshots, description, etc.)
-5. Submit to Google Play Store
+**1. Define Core Data Types** (Priority: High)
 
-### Supabase Integration (In Progress - Phase 3 Complete)
+- Create `src/types/workout.ts` with:
+  - `Lift` type for four main lifts
+  - `TrainingMax` interface
+  - `Exercise`, `Workout`, `Cycle` interfaces
+  - Extended `UserProfile` with training preferences
 
-**Goal**: Add optional cloud sync while maintaining localStorage as primary storage for guest mode.
+**2. Build Program Generation Logic** (Priority: High)
 
-**Phase 3 Complete (November 2025):**
+- Create `src/services/programGenerator.ts`
+- Implement 5/3/1 percentage calculations
+- Function to generate 4-week cycle (3 work weeks + deload)
+- Calculate weights for each set based on TM
 
-1. **Data Migration Service Implementation**
+**3. Create Program Context** (Priority: High)
 
-   - Created `services/database/migrationService.ts` - Complete migration service
-     - `migrateGuestDataToCloud()` - Main orchestrator with idempotency
-     - `migrateProfile()` - Profile data with UPSERT
-     - `migrateWorkoutHistory()` - Batch processing (50 per batch)
-     - `migrateNutritionData()` - Nutrition logs
-     - `migrateClientProfiles()` - Coach mode clients
-     - Migration flag in localStorage prevents re-runs
+- Build `src/context/ProgramContext.tsx`
+- Manage training maxes state
+- Track current cycle and active workout
+- Persist data to local storage initially
 
-2. **AuthContext Integration**
+**4. Build Onboarding Flow** (Priority: High)
 
-   - Modified `context/AuthContext.tsx` - Added migration triggers
-     - Added `migrating` and `migrationError` state
-     - Added `checkAndMigrate()` function
-     - Triggers automatically on SIGNED_IN event
-     - Exposes migration state globally via useAuth()
+- Create multi-step wizard
+- Steps:
+  1. Welcome & program introduction
+  2. Training max input (with 1RM calculator option)
+  3. Schedule preferences
+  4. Program preview and confirmation
+- Route at `/onboarding`
+- Redirect new users from home page
 
-3. **Migration UI Implementation**
+**5. Update Home Dashboard** (Priority: Medium)
 
-   - Modified `components/AuthModal.tsx` - Added migration states
-     - Loading state: "Syncing your data to cloud..." with spinner
-     - Success state: "Sync complete!" (auto-closes after 1.5s)
-     - Error state: Shows error with "Retry" and "Continue Without Sync" options
-     - Prevents modal close during migration
+- Display current/next workout
+- Show cycle progress
+- Quick action: "Start Workout" button
 
-4. **Migration Strategy**
-   - **Automatic**: Triggers on signup/signin (no user action needed)
-   - **Idempotent**: Safe to run multiple times
-   - **Graceful**: Partial failures don't block app usage
-   - **Transparent**: Clear UI feedback at every step
+### Short-Term (Phase 2b Next)
 
-**What Works Now:**
+**Active Workout Interface:**
 
-- New users: Account created → immediate success (no data to migrate)
-- Guest users with data: Sign up → automatic migration → success confirmation
-- Returning users: Sign in → no re-migration (flag checked)
-- Migration errors: Clear error display with retry option
-- Guest mode: Completely unaffected, still works perfectly
+- Pre-workout screen with exercise list
+- Full-screen workout mode
+- Set logging interface with large buttons
+- AMRAP set handling
+- Rest timer integration
 
-**Phase 2 Complete (November 2025):**
+**Exercise Database:**
 
-- Auth system with email/password + OAuth
-- Guest mode detection and preservation
-- Session persistence and management
-- Clean UI integration in Settings
+- Define 4 main lifts + common assistance exercises
+- Exercise details and instructions
 
-**Phase 1 Complete (November 2025):**
+**Workout Logging:**
 
-- Database schema designed and documented
-- Supabase client configured
-- TypeScript types defined
-- Testing infrastructure created
+- Save completed sets
+- Calculate workout statistics
+- Store in local database
 
-**Next Steps**: Proceed to Phase 4 (Data Abstraction Layer).
+### Considerations & Decisions Needed
 
-### Onboarding Auth Integration (November 2025 - Complete) ✅
+**Data Storage Decision:**
 
-**Goal**: Integrate cloud sync authentication into the onboarding flow to increase adoption and discoverability.
+- Start with localStorage for MVP speed
+- Structure data for easy migration to SQLite later
+- Keep Supabase integration ready for Premium tier
 
-**Status**: Complete. Onboarding now includes optional cloud sync as Step 5.
+**Onboarding Philosophy:**
 
-**Implementation Complete (November 2025):**
+- Absolute minimum friction to first workout
+- Advanced options collapsed/hidden
+- Can skip and use defaults for everything except TMs
 
-1. **Step 5: Cloud Sync Opt-In**
+**Calculation Strategy:**
 
-   - Added as final onboarding step (5 steps total now)
-   - Two-screen approach for better UX:
-     - **Step 5A (Benefits)**: Value proposition with checkmarks
-     - **Step 5B (Auth Form)**: Inline authentication (no modal)
-   - Smart skip logic:
-     - Skips if user already authenticated
-     - Skips if user previously dismissed (localStorage flag)
-     - Otherwise shows cloud sync opt-in
+- All percentage calculations done in programGenerator service
+- Round to nearest 2.5 lbs by default (configurable later)
+- Warm-up sets calculated automatically (40%, 50%, 60% of working weight)
 
-2. **Back Navigation**
+## Active Patterns & Preferences
 
-   - Added back buttons to Steps 2-5
-   - ArrowLeft icon in top-left corner
-   - Consistent styling across all steps (z-20, hover effects)
-   - All form data preserved when navigating backward
-   - Users can freely review and correct choices
+### 🔴 CRITICAL: Documentation-First Development
 
-3. **Google OAuth Integration**
+**MANDATORY BEFORE ANY FEATURE IMPLEMENTATION:**
 
-   - Added Google provider to Supabase Auth UI
-   - "Continue with Google" button at top of auth form
-   - Email/password fields as alternative below
-   - Requires Supabase dashboard configuration (OAuth setup)
+1. **Use Context7 MCP Tool** to fetch current library docs
+2. **Review documentation** for latest API patterns
+3. **Implement using current patterns** (not from memory)
 
-4. **Technical Implementation**
-   - Modified `features/shared/Onboarding.tsx`
-   - Added state: `showAuthForm`, `authView` (sign_up/sign_in)
-   - Added functions: `goToStep5()`, `handleSkipCloudSync()`
-   - Auto-completion: useEffect watches `isAuthenticated` state
-   - When auth succeeds → automatic migration → finish onboarding
-   - Dismissal flag: `onboarding_cloud_sync_dismissed` in localStorage
-
-**User Flow:**
+**Example Workflow:**
 
 ```
-Step 4 (Program) → Continue
-  ↓
-Check: Already authenticated? → YES → Skip to finish
-  ↓
-Check: Previously dismissed? → YES → Skip to finish
-  ↓
-Step 5A (Benefits) → Two choices:
-  ├─ "Enable Cloud Sync" → Step 5B (Auth Form)
-  │    ├─ Google sign-in OR email/password
-  │    ├─ Success → Migration runs → Finish
-  │    └─ "Back" → Return to 5A
-  └─ "Maybe Later" → Save dismissal flag → Finish
+Task: "Add MUI Dialog component"
+↓
+1. resolve-library-id("Material-UI")
+2. get-library-docs("/mui/material-ui", "Dialog")
+3. Review fetched documentation
+4. Implement using documented patterns
 ```
 
-**Benefits Screen (Step 5A):**
+See `techContext.md > Available MCP Tools` for complete Context7 documentation.
+
+### 🔴 CRITICAL: DRY/SOLID Principles
+
+**ALL code must follow DRY (Don't Repeat Yourself) and SOLID principles.**
+
+**Quick Reference:**
 
-- Cloud icon (blue-600 background)
-- "Cloud Backup" title
-- Three benefits with green checkmarks:
-  - Access from any device
-  - Never lose your progress
-  - Coach mode with clients
-- Primary button: "Enable Cloud Sync"
-- Secondary button: "Maybe Later"
-- Help text: "You can enable this later in Settings"
-- Back button to Step 4
-
-**Auth Form Screen (Step 5B):**
-
-- Cloud icon (blue-600 background)
-- "Create Your Account" title
-- Sign Up / Sign In tabs
-- Supabase Auth UI component (embedded inline)
-- Google OAuth button (if configured)
-- Email/password fields
-- "Back to Options" link to return to 5A
-
-**Back Navigation Pattern:**
-
-- Step 2 → Back → Step 1
-- Step 3 → Back → Step 2
-- Step 4 → Back → Step 3
-- Step 5A → Back → Step 4
-- Step 5B → Back → Step 5A
-
-**Key Design Decisions:**
-
-1. **Two-Screen Approach**
-
-   - Progressive disclosure (benefits first, form second)
-   - Reduces cognitive load
-   - Matches existing onboarding pattern
-   - Mobile-friendly (each screen fits without scroll)
-
-2. **Inline Auth (No Modal)**
-
-   - Maintains onboarding flow continuity
-   - No modal interruption
-   - Feels like natural progression
-   - Better UX than popup
-
-3. **Smart Skip Logic**
-
-   - Respects already-authenticated users
-   - Honors previous dismissal choice
-   - No repeated prompts
-   - Seamless for returning users
-
-4. **Google OAuth First**
-   - Faster signup (no password)
-   - Higher conversion rate
-   - Mobile-friendly (device Google account)
-   - Email/password as fallback
-
-**Impact:**
-
-- ✅ Cloud sync discoverability significantly improved
-- ✅ Onboarding completion rate expected to increase
-- ✅ Migration happens automatically on auth success
-- ✅ No friction for users who want to skip
-- ✅ Back navigation improves overall onboarding UX
-- ✅ All existing functionality preserved
-- ✅ No breaking changes to guest mode
-
-**Files Modified:**
-
-- `features/shared/Onboarding.tsx` - Added Step 5, back navigation, Google OAuth
-
-**What Works:**
-
-- Complete bidirectional navigation (Steps 1-5)
-- Data preservation when navigating back
-- Automatic migration on successful authentication
-- Skip logic for authenticated and dismissed users
-- Google OAuth integration (requires Supabase config)
-- Inline auth form (no modal interruption)
-- Progress dots show 5 steps
-- Consistent styling throughout
-
-**Testing Needed:**
-
-- Test complete flow (forward and backward navigation)
-- Verify Google OAuth works (requires Supabase setup)
-- Test dismissal flag persistence
-- Verify migration triggers correctly
-- Test on mobile devices
-
-### Gemini API Fix (November 2025)
-
-**Critical Bug Fixed**: App was crashing on startup due to incorrect API key access.
-
-**Problem**: Service used `process.env.API_KEY` which doesn't work in browser with Vite.
-
-**Solution**:
-
-- Changed to `import.meta.env.VITE_GEMINI_API_KEY` (Vite-compatible)
-- Implemented lazy initialization (client created only when needed)
-- Added proper error handling with helpful messages
-- Made AI features optional (won't crash if no key provided)
-
-**Impact**: App now starts successfully, AI features gracefully degrade if not configured.
-
-### Latest Changes (v1.2.1)
-
-1. **React 19 Upgrade**
-
-   - Upgraded to React 19.2.0 for improved performance
-   - Leveraging new concurrent rendering features
-   - Updated all hooks and patterns for React 19 compatibility
-
-2. **Enhanced UI Features**
-
-   - Improved theme system with 5 color schemes (blue, purple, green, orange, red)
-   - Better mobile responsiveness across all views
-   - Enhanced loading states with Suspense boundaries
-   - Toast notification system for user feedback
-
-3. **Coach Mode Enhancements**
-
-   - Multi-client management capability
-   - Profile switching between coach and client views
-   - Independent history tracking per client
-   - Client dashboard with overview
-
-4. **Nutrition Tracking**
-
-   - Daily macro tracking (calories, protein, carbs, fats)
-   - Meal logging with timestamps
-   - Progress visualization
-   - Photo attachment for meals
-
-5. **Advanced Tools**
-   - Custom plate inventory support
-   - Improved plate calculator accuracy
-   - Interval timer with audio cues
-   - Warmup generator with custom sets
-
-## Active Work Areas
-
-### Current Focus: None (Maintenance Mode)
-
-The app is feature-complete. Current focus is on:
-
-- Bug fixes if reported
-- Performance monitoring
-- Dependency updates
-- Security patches
-
-### Potential Next Features (Not Started)
-
-If development resumes, these areas were identified as enhancement opportunities:
-
-1. **Cloud Sync** (High Priority)
-
-   - Optional backend integration
-   - Cross-device synchronization
-   - Backup and restore from cloud
-   - Keep localStorage as primary, cloud as optional
-
-2. **Enhanced Analytics** (Medium Priority)
-
-   - More detailed volume/intensity charts
-   - PR tracking per lift
-   - Estimated 1RM trends over time
-   - Training load management
-
-3. **Social Features** (Low Priority)
-
-   - Share workouts to social media
-   - Public workout logs
-   - Community challenges
-   - Leaderboards
-
-4. **Advanced Programming** (Medium Priority)
-   - Custom program builder
-   - More program variants (Pervertor, Krypteia, etc.)
-   - Periodization templates
-   - Auto-regulation based on RPE
-
-## Important Decisions & Rationale
-
-### Architectural Decisions
-
-1. **No Backend by Design**
-
-   - **Decision**: Keep app 100% client-side
-   - **Rationale**:
-     - Zero hosting costs
-     - Perfect privacy (data never leaves device)
-     - Works completely offline
-     - Instant deployment
-   - **Trade-off**: No cross-device sync (acceptable for v1)
-
-2. **localStorage Over IndexedDB**
-
-   - **Decision**: Use localStorage as primary storage
-   - **Rationale**:
-     - Simpler API (synchronous)
-     - Sufficient for typical usage (~1-2MB)
-     - No migration complexity
-   - **Trade-off**: 5-10MB storage limit
-   - **Future**: Could migrate to IndexedDB if needed
-
-3. **Feature-Based Organization**
-
-   - **Decision**: Organize code by feature/domain
-   - **Rationale**:
-     - Clear boundaries
-     - Easy to locate code
-     - Scales well as app grows
-   - **Example**: features/workout/, features/history/, features/settings/
-
-4. **Centralized State (useAppController)**
-
-   - **Decision**: Single hook for all application state
-   - **Rationale**:
-     - No external library needed
-     - Simple mental model
-     - Easy to debug
-   - **Trade-off**: Could become large (currently manageable)
-
-5. **Lazy Loading Strategy**
-   - **Decision**: Lazy load all major views
-   - **Rationale**:
-     - Fast initial load (~200KB)
-     - On-demand loading improves perceived performance
-   - **Implementation**: React.lazy + Suspense
-
-### UI/UX Decisions
-
-1. **Bottom Navigation Pattern**
-
-   - **Decision**: Fixed bottom nav with icons
-   - **Rationale**:
-     - Mobile-friendly (thumb zone)
-     - Always accessible
-     - Industry standard for fitness apps
-   - **Views**: Dashboard, Workout, History, Profile, Tools
-
-2. **No Account Required**
-
-   - **Decision**: Zero authentication
-   - **Rationale**:
-     - Lower barrier to entry
-     - Privacy-focused
-     - Simplifies architecture
-   - **Trade-off**: No cloud features (by design)
-
-3. **AI Features Optional**
-
-   - **Decision**: AI features require user-provided API key
-   - **Rationale**:
-     - No server/API key management needed
-     - User controls costs
-     - Privacy maintained
-   - **Implementation**: Gemini API key stored in localStorage
-
-4. **Premium Features Free**
-   - **Decision**: "Premium" is demo-unlocked for all
-   - **Rationale**:
-     - No payment processing needed
-     - MVP validation
-     - Could add monetization later
-   - **Current State**: All program variants free
-
-### Technical Decisions
-
-1. **TypeScript Strict Mode**
-
-   - **Decision**: Enable all strict TypeScript checks
-   - **Rationale**:
-     - Catch errors at compile time
-     - Better refactoring confidence
-     - Self-documenting code
-   - **Trade-off**: More upfront type work (worth it)
-
-2. **Vite Over Create React App**
-
-   - **Decision**: Use Vite as build tool
-   - **Rationale**:
-     - 10-100x faster HMR
-     - Better dev experience
-     - Modern architecture (ES modules)
-     - CRA is deprecated
-
-3. **Inline Styles Over CSS Modules**
-
-   - **Decision**: Tailwind utilities in className
-   - **Rationale**:
-     - Co-location with components
-     - No build step for CSS
-     - Easier theme system with CSS vars
-   - **Theme**: Dynamic colors via CSS custom properties
-
-4. **No Testing Framework (Yet)**
-
-   - **Decision**: No automated tests in v1
-   - **Rationale**:
-     - MVP speed priority
-     - Manual testing sufficient for v1
-   - **Future**: Add Jest + RTL when stability needed
-
-5. **Supabase Over Prisma** (New - November 2025)
-   - **Decision**: Use Supabase for optional cloud sync
-   - **Rationale**:
-     - No backend code needed (Prisma requires Node.js server)
-     - Built-in authentication (email/password + OAuth)
-     - Row-level security at database level
-     - Real-time subscriptions available (future feature)
-     - Generous free tier (50k MAU, 500MB database)
-     - Client libraries handle everything
-     - Still PostgreSQL underneath (can self-host later)
-   - **Trade-off**: Vendor dependency (though data is exportable)
-   - **Deployment**: Works with Vercel (first-class integration)
-
-## Key Patterns & Preferences
-
-### Code Patterns
-
-1. **Service Layer Pattern**
-
-   - Business logic lives in services/
-   - Components stay thin (presentation)
-   - Easy to test logic independently
-   - Example: workoutLogic.ts, analyticsLogic.ts
-
-2. **Custom Hook Pattern**
-
-   - useAppController for app state
-   - useLocalStorage for persistence
-   - useRestTimer for timer logic
-   - Composition over inheritance
-
-3. **Error Handling Strategy**
-
-   - Error boundary at top level (render errors)
-   - Try/catch in services (API/logic errors)
-   - User-friendly messages in UI
-   - Graceful degradation (AI features)
-
-4. **Type Safety Patterns**
-   - Discriminated unions for state (AppView, LiftType)
-   - Strict null checks
-   - No 'any' types (use 'unknown' then narrow)
-   - Generic utility types
+- **DRY:** Extract repeated code into utils/hooks/services
+- **Single Responsibility:** One component/function = one purpose
+- **Open/Closed:** Extend through composition, not modification
+- **Liskov Substitution:** Interface implementations are interchangeable
+- **Interface Segregation:** Small, focused interfaces
+- **Dependency Inversion:** Depend on abstractions, not implementations
+
+See `systemPatterns.md > DRY Principles` and `systemPatterns.md > SOLID Principles` for detailed examples and anti-patterns.
+
+### 🔴 CRITICAL: File Organization Standards
+
+**Strict directory structure must be followed:**
+
+```
+src/
+├── components/          # Reusable UI components
+│   ├── common/         # Generic (Button, Card)
+│   ├── forms/          # Form-specific
+│   ├── layout/         # Layout components
+│   ├── workout/        # Workout-specific
+│   └── index.ts        # Public API exports
+├── pages/              # Route-level (one per route)
+├── features/           # Complex features (3+ components)
+├── context/            # React Context providers
+├── hooks/              # Custom hooks
+├── services/           # Business logic (pure functions)
+├── utils/              # Pure utility functions
+├── types/              # TypeScript definitions
+├── constants/          # App-wide constants
+└── config/             # Configuration files
+```
+
+**Component File Structure (REQUIRED ORDER):**
+
+1. External imports
+2. Internal imports
+3. Types/Interfaces
+4. Constants (UPPER_SNAKE_CASE)
+5. Main component
+6. Helper components
+7. Helper functions
+8. Type guards
+
+See `systemPatterns.md > File Organization Standards` for complete details.
+
+### Component Structure
+
+- Functional components with hooks (no class components)
+- TypeScript interfaces for all props
+- Co-locate related components in feature folders when 3+ components
+- Components: 150-300 lines max (split if larger)
+- Use index.ts for public API exports
+
+### State Management
+
+- React Context API for global state (Auth, Program)
+- Local state for component-specific data
+- Consider React Query for caching later if needed
+- No Redux (decided against for this scale)
+
+### Styling Approach
+
+- MUI components as primary UI building blocks
+- Use `sx` prop for one-off styles
+- Theme overrides for global component defaults
+- Avoid CSS modules/styled-components unless necessary
+- Large touch targets (64px) for gym optimization
+
+### Form Handling
+
+- react-hook-form for all forms
+- Validate on blur, submit
+- Clear error messages
+- Large input fields and buttons
+- Check React Hook Form docs via Context7 before implementation
+
+### Data Flow
+
+- Context provides data + methods to update
+- Services handle business logic (calculations, transformations)
+- Components focus on presentation and user interaction
+- Persist to storage layer from context
+- Unidirectional data flow (see systemPatterns.md)
+
+### Code Quality Rules
+
+**No Magic Numbers/Strings:**
+
+```typescript
+// ❌ BAD
+if (reps > 20) { ... }
+
+// ✅ GOOD
+import { WORKOUT_CONSTANTS } from "@/constants/workout";
+if (reps > WORKOUT_CONSTANTS.MAX_REPS) { ... }
+```
+
+**Extract Repeated Logic:**
+
+```typescript
+// ❌ BAD - Duplicated in 5 components
+const [open, setOpen] = useState(false);
+
+// ✅ GOOD - Custom hook
+const { open, handleOpen, handleClose } = useDialog();
+```
 
 ### Naming Conventions
 
-1. **Components**: PascalCase (Button.tsx, ActiveWorkout.tsx)
-2. **Hooks**: camelCase with 'use' prefix (useAppController.ts)
-3. **Types**: PascalCase (UserProfile, WorkoutSession)
-4. **Services**: camelCase (workoutLogic.ts, geminiService.ts)
-5. **Constants**: SCREAMING_SNAKE_CASE (WEEK_MULTIPLIERS)
+- Components: PascalCase (e.g., `WorkoutCard.tsx`)
+- Hooks: camelCase with `use` prefix (e.g., `useWorkout.ts`)
+- Services: camelCase (e.g., `programGenerator.ts`)
+- Types: PascalCase interfaces (e.g., `TrainingMax`)
+- Constants: UPPER_SNAKE_CASE (e.g., `MAX_REPS`)
+- Files: Match component/hook/service name
 
-### File Organization Preferences
+## Key Learnings & Insights
 
-- One component per file
-- Co-locate types with usage (when file-specific)
-- Shared types in types/ directory
-- Index exports for public API
-- Group related components in subdirectories
+### From Phase 1 Implementation
 
-## Project Insights & Learnings
+**1. MUI v7 Differences:**
 
-### What Works Well
+- Some components have new props/structure vs v5
+- Theme customization is powerful for gym-optimized UI
+- Default component sizes too small - need overrides
 
-1. **Feature-Based Architecture**
+**2. Supabase Integration:**
 
-   - Easy to find code
-   - Clear mental model
-   - Scales nicely
-   - Minimal coupling
+- Session management is straightforward
+- Email confirmation can be disabled for faster testing
+- Need clear error handling for network issues
 
-2. **localStorage + React State**
+**3. React 19 Benefits:**
 
-   - Simple and effective
-   - No backend complexity
-   - Instant persistence
-   - Works offline perfectly
+- Better performance out of the box
+- Improved TypeScript integration
+- No major breaking changes from 18
 
-3. **Lazy Loading**
+**4. Capacitor Setup:**
 
-   - Fast initial load
-   - Users only load what they need
-   - Vite makes this trivial
-   - React.lazy + Suspense pattern
+- Android platform integration is smooth
+- Need to sync after major changes
+- Web version works great for rapid development
 
-4. **Centralized State (useAppController)**
+### Design Decisions Made
 
-   - Single source of truth
-   - Easy to reason about
-   - No prop drilling issues
-   - Context for UI-only state
+**Theme Strategy:**
 
-5. **TypeScript Benefits**
-   - Catches bugs early
-   - Refactoring confidence
-   - Better IDE experience
-   - Self-documenting
+- Start with dark mode as default (gym lighting)
+- High contrast colors for visibility
+- Extra-large touch targets (64px) for primary actions
+- Bold typography (minimum 16px base, larger for key UI)
 
-### Challenges Faced
+**Authentication Flow:**
 
-1. **localStorage Size Limits**
+- Email/password for MVP (Google Sign-In later)
+- No email verification required initially (reduce friction)
+- Guest mode not in Phase 1 (can add later)
 
-   - Safari especially strict (5MB)
-   - Progress photos can fill quickly
-   - **Solution**: Export/import for backup
-   - **Future**: Consider image compression or IndexedDB
+**Navigation Structure:**
 
-2. **PWA Installation Quirks**
+- Bottom navigation for main tabs (when implemented)
+- AppBar for contextual actions
+- Minimize navigation during active workout
 
-   - iOS Safari has limited PWA support
-   - Install prompt timing tricky
-   - **Solution**: User-initiated install from Settings
-   - **Trade-off**: Less discoverable than auto-prompt
+### Technical Constraints Discovered
 
-3. **AI API Rate Limits**
+**Performance Considerations:**
 
-   - Free tier constrains heavy users
-   - Coaches with many clients hit limits
-   - **Solution**: Clear error messages, user controls API key
-   - **Future**: Could add retry logic or queueing
+- Keep calculation logic in services, not components
+- Memoize expensive computations
+- Lazy load routes as app grows
 
-4. **No Real-time Sync**
+**Mobile Considerations:**
 
-   - Users want multi-device access
-   - localStorage doesn't sync
-   - **Solution**: Export/import workflow
-   - **Future**: Optional cloud sync most requested feature
+- Test on actual Android device regularly
+- Consider screen size variations (320px minimum)
+- One-handed operation critical
 
-5. **Type Complexity**
-   - Some types (WorkoutSession) quite complex
-   - Discriminated unions need careful design
-   - **Solution**: Keep types cohesive, document well
-   - **Benefit**: Type safety prevents runtime bugs
+## Open Questions
 
-### User Feedback Patterns
+**For Phase 2a:**
 
-Common user requests (if development continues):
+- Should we support multiple concurrent cycles? (Decision: No for MVP, one active cycle only)
+- How many assistance exercise templates to include? (Decision: 3-4 pre-built templates)
+- Allow editing TM mid-cycle? (Decision: Yes, but warn about implications)
 
-1. **Cloud Sync** (Most Requested)
+**For Later:**
 
-   - "I want to use on phone and computer"
-   - "Lost data when cleared browser"
-   - Solution would be optional backend sync
+- SQLite migration timing - when does localStorage become limiting?
+- Offline sync strategy for Premium tier
+- When to introduce analytics/graphs?
 
-2. **Apple Health Integration**
+## Blockers & Risks
 
-   - "Track workouts in Health app"
-   - Would require native app or health API
+**Current Blockers:** None
 
-3. **Rest Timer Notifications**
+**Potential Risks:**
 
-   - "Timer doesn't notify when phone locked"
-   - PWA limitation - would need native app
+1. **5/3/1 Logic Complexity:** Need to ensure calculations match book exactly
+   - Mitigation: Test against known spreadsheet values
+2. **Data Migration:** Moving from localStorage to SQLite later
 
-4. **More Program Variants**
+   - Mitigation: Structure data with migration in mind from start
 
-   - "Can you add Pervertor?"
-   - "I want to customize percentages"
-   - Could add custom program builder
+3. **User Onboarding Drop-off:** Users might quit before first workout
+   - Mitigation: Minimize onboarding steps, make first workout instant
 
-5. **Video Form Checks**
-   - "Can I upload videos?"
-   - "Store videos in app"
-   - Storage challenge - would need cloud solution
+## Communication Notes
 
-## Technical Debt
+**Key Stakeholder Messages:**
 
-### Known Issues
+- Phase 1 complete and working smoothly
+- Ready to start core feature development
+- Timeline on track for MVP in 16 weeks
 
-1. **No Automated Tests**
+**User Feedback to Incorporate:**
 
-   - Manual testing only
-   - Refactoring carries risk
-   - **Priority**: Medium
-   - **Action**: Add Jest + RTL when time allows
+- (None yet - pre-launch)
 
-2. **localStorage Quota Handling**
+## Context for Next Session
 
-   - Could be more graceful
-   - Users hit limits unexpectedly
-   - **Priority**: Low
-   - **Action**: Better warnings, compression
+**When resuming work, remember:**
 
-3. **Image Storage**
-
-   - Base64 in localStorage inefficient
-   - No compression
-   - **Priority**: Low
-   - **Action**: Implement compression or move to IndexedDB
-
-4. **Error Logging**
-
-   - Console logs only
-   - No external error tracking
-   - **Priority**: Low
-   - **Action**: Add Sentry or similar (optional)
-
-5. **Bundle Size Could Be Smaller**
-   - Some unused Recharts code
-   - Could tree-shake better
-   - **Priority**: Low
-   - **Action**: Audit bundle with analyzer
-
-### Refactoring Opportunities
-
-1. **Split useAppController**
-
-   - Single hook getting large
-   - Could split into domain hooks
-   - **Impact**: Medium refactor
-   - **Benefit**: Better organization
-
-2. **Improve Type Coverage**
-
-   - Some 'any' types remain
-   - Could narrow unknown types
-   - **Impact**: Low effort
-   - **Benefit**: More type safety
-
-3. **Consolidate Duplicate Logic**
-   - Some calculation logic duplicated
-   - Could extract more utilities
-   - **Impact**: Low
-   - **Benefit**: DRY principle
-
-## Next Steps (If Development Resumes)
-
-### Immediate Priorities
-
-1. **User Testing**
-
-   - Get app in hands of real users
-   - Gather feedback on UX
-   - Identify pain points
-   - Validate feature priorities
-
-2. **Performance Monitoring**
-
-   - Add Web Vitals tracking
-   - Monitor bundle sizes
-   - Identify slow operations
-   - Optimize based on data
-
-3. **Accessibility Audit**
-   - Test with screen readers
-   - Improve keyboard navigation
-   - Ensure color contrast
-   - Add ARIA labels
-
-### Medium-Term Enhancements
-
-1. **Cloud Sync (Optional)**
-
-   - Firebase or Supabase backend
-   - Keep localStorage primary
-   - Sync as opt-in feature
-   - Handle conflicts gracefully
-
-2. **Enhanced Analytics**
-
-   - More chart types
-   - PR tracking
-   - Volume trends
-   - Recovery metrics
-
-3. **Testing Suite**
-   - Jest for unit tests
-   - React Testing Library for components
-   - Playwright for E2E
-   - CI/CD pipeline
-
-### Long-Term Possibilities
-
-1. **Native Mobile Apps**
-
-   - React Native port
-   - Better OS integration
-   - Push notifications
-   - Health app sync
-
-2. **Advanced Programming**
-
-   - Program builder UI
-   - More 5/3/1 variants
-   - Auto-regulation
-   - Periodization templates
-
-3. **Social Features**
-   - Optional workout sharing
-   - Community challenges
-   - Coach-client communication
-   - Workout templates library
-
-## Environment & Context
-
-### Development Environment
-
-- **IDE**: VS Code with TypeScript, Prettier, ESLint extensions
-- **Node**: v18+
-- **Package Manager**: npm
-- **OS**: Cross-platform development (works on macOS, Windows, Linux)
-
-### Deployment Context
-
-- **Hosting**: Static hosting (Vercel, Netlify, etc.)
-- **Build**: `npm run build` → dist/
-- **PWA**: Service worker caches for offline
-- **URL**: Can be deployed to any domain
-
-### User Context
-
-- **Primary Users**: Individual strength athletes
-- **Secondary Users**: Coaches managing clients
-- **Device**: Mobile-first, but works on desktop
-- **Usage**: Gym environment (potentially offline)
-
-## Memory Bank Maintenance
-
-### When to Update This File
-
-Update activeContext.md when:
-
-- Starting new feature work
-- Making architectural decisions
-- Discovering new patterns
-- User feedback patterns emerge
-- Technical debt identified
-- Completing major milestones
-
-### Related Files
-
-- **projectbrief.md**: Core requirements and scope
-- **systemPatterns.md**: Architecture and code patterns
-- **progress.md**: What's done vs what remains
-- **techContext.md**: Technology stack details
+1. Read ALL Memory Bank files first
+2. Phase 1 is complete - authentication and routing work
+3. Phase 2a is next - focus on onboarding and program setup
+4. Start with data types, then service layer, then UI
+5. All 5/3/1 calculations should be in programGenerator service
+6. Keep it simple - one active cycle, basic assistance templates
+7. Test calculations against known 5/3/1 values
