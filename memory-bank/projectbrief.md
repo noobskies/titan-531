@@ -14,7 +14,7 @@ Build a comprehensive, gym-optimized workout tracking app that makes following t
 ## Core Problems Solved
 
 1. **Complexity Barrier:** 5/3/1 requires percentage calculations, cycle planning, and progression tracking - manual tracking is error-prone
-2. **Gym Usability:** Existing apps aren't optimized for gym environments (small text, difficult to use with sweaty hands, poor one-handed operation)
+2. **Poor Design:** Existing apps often look outdated, clunky, or utilitarian without visual appeal
 3. **Fragmented Tools:** Users juggle multiple apps/spreadsheets for program planning, workout logging, and progress tracking
 4. **Lack of Guidance:** New lifters struggle to understand 5/3/1 variations and when to apply them
 
@@ -132,7 +132,7 @@ Build a comprehensive, gym-optimized workout tracking app that makes following t
 
 ### Differentiation
 
-1. **Gym-Optimized UX:** Extra-large touch targets, high contrast, one-handed operation
+1. **Modern, Attractive UX:** Professional design, refined aesthetics, and smooth interactions
 2. **Modern Tech Stack:** Fast, reliable, beautiful Material Design
 3. **Smart Defaults:** Intelligent suggestions reduce decision fatigue
 4. **Comprehensive Free Tier:** Original 5/3/1 is completely free forever
@@ -191,14 +191,14 @@ Google Play submission, marketing, support systems
 
 ## Design Philosophy
 
-### Gym-First Design Principles
+### Design Principles
 
-1. **Large Touch Targets:** Minimum 48px, prefer 64px for primary actions
-2. **High Visibility:** Bold typography, high contrast, clear hierarchy
-3. **One-Handed Operation:** Bottom navigation, strategic FAB placement
-4. **Minimal Distractions:** Clean interface during active workouts
+1. **Modern Aesthetics:** Clean, attractive interface with refined typography and spacing
+2. **Standard Sizing:** Use standard touch targets (48px) and inputs for a professional look
+3. **Visual Hierarchy:** Clear distinction between elements using color, spacing, and elevation
+4. **Smooth Interactions:** Transitions and feedback that feel polished and high-quality
 5. **Immediate Feedback:** Visual and haptic responses to all actions
-6. **Sweat-Proof:** Extra spacing, large inputs, obvious affordances
+6. **Consistency:** Uniform design language across the entire application
 
 ### Development Principles
 

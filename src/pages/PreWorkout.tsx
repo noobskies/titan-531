@@ -192,7 +192,7 @@ export default function PreWorkout() {
             onClick={handleStartWorkout}
             sx={{
               height: WORKOUT_UI_CONSTANTS.BUTTON_HEIGHT,
-              fontSize: "1.25rem",
+              fontSize: "1rem",
               fontWeight: "bold",
             }}
           >

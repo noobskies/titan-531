@@ -10,12 +10,19 @@ import {
   Alert,
   Link,
   Divider,
+  Container,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import LoginIcon from "@mui/icons-material/Login";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { signIn, signInWithGoogle } = useAuth();
@@ -47,94 +54,164 @@ export default function Login() {
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100%",
-      }}
-    >
-      <Paper elevation={3} sx={{ p: 4, width: "100%", maxWidth: 400 }}>
-        <Typography variant="h4" component="h1" gutterBottom textAlign="center">
-          Login
-        </Typography>
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {error}
-          </Alert>
-        )}
+    <Container component="main" maxWidth="xs">
+      <Box
+        sx={{
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          py: 4,
+        }}
+      >
+        <Box sx={{ mb: 4, textAlign: "center" }}>
+          <Typography
+            variant="h3"
+            component="h1"
+            gutterBottom
+            color="primary.main"
+            fontWeight="bold"
+          >
+            Titan 531
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            Your personal strength training companion
+          </Typography>
+        </Box>
 
-        <Button
-          variant="outlined"
-          fullWidth
-          size="large"
-          startIcon={<GoogleIcon />}
-          onClick={handleGoogleSignIn}
-          disabled={loading}
+        <Paper
+          elevation={2}
           sx={{
-            mb: 3,
-            height: 64,
-            textTransform: "none",
-            fontSize: "1.1rem",
-            backgroundColor: "background.paper",
-            color: "text.primary",
+            p: 4,
+            width: "100%",
+            borderRadius: 3,
+            border: "1px solid",
             borderColor: "divider",
-            "&:hover": {
-              backgroundColor: "action.hover",
-              borderColor: "text.primary",
-            },
           }}
         >
-          {loading ? "Connecting..." : "Continue with Google"}
-        </Button>
-
-        <Divider sx={{ mb: 3 }}>
-          <Typography variant="body2" color="text.secondary">
-            OR
+          <Typography
+            variant="h5"
+            component="h2"
+            gutterBottom
+            fontWeight="bold"
+          >
+            Welcome back
           </Typography>
-        </Divider>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            Please enter your details to sign in
+          </Typography>
 
-        <form onSubmit={handleSubmit}>
-          <TextField
-            label="Email"
-            type="email"
-            fullWidth
-            margin="normal"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <TextField
-            label="Password"
-            type="password"
-            fullWidth
-            margin="normal"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+          {error && (
+            <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>
+              {error}
+            </Alert>
+          )}
+
           <Button
-            type="submit"
-            variant="contained"
-            color="primary"
+            variant="outlined"
             fullWidth
             size="large"
+            startIcon={<GoogleIcon />}
+            onClick={handleGoogleSignIn}
             disabled={loading}
-            sx={{ mt: 2 }}
+            sx={{
+              mb: 3,
+              textTransform: "none",
+              color: "text.primary",
+              borderColor: "divider",
+              "&:hover": {
+                backgroundColor: "action.hover",
+                borderColor: "text.primary",
+              },
+            }}
           >
-            {loading ? "Logging in..." : "Login"}
+            Continue with Google
           </Button>
-        </form>
-        <Box sx={{ mt: 2, textAlign: "center" }}>
-          <Typography variant="body2">
+
+          <Divider sx={{ mb: 3 }}>
+            <Typography variant="caption" color="text.secondary">
+              OR CONTINUE WITH EMAIL
+            </Typography>
+          </Divider>
+
+          <form onSubmit={handleSubmit}>
+            <TextField
+              label="Email"
+              type="email"
+              fullWidth
+              margin="normal"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              disabled={loading}
+              placeholder="Enter your email"
+              variant="outlined"
+            />
+            <TextField
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              fullWidth
+              margin="normal"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              disabled={loading}
+              placeholder="Enter your password"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+
+            <Box sx={{ mt: 1, mb: 2, textAlign: "right" }}>
+              <Link
+                component={RouterLink}
+                to="/forgot-password"
+                variant="body2"
+                color="primary"
+                underline="hover"
+              >
+                Forgot password?
+              </Link>
+            </Box>
+
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              size="large"
+              disabled={loading}
+              startIcon={!loading && <LoginIcon />}
+              sx={{ mt: 1 }}
+            >
+              {loading ? "Signing in..." : "Sign in"}
+            </Button>
+          </form>
+        </Paper>
+
+        <Box sx={{ mt: 3, textAlign: "center" }}>
+          <Typography variant="body2" color="text.secondary">
             Don't have an account?{" "}
-            <Link component={RouterLink} to="/register">
-              Register
+            <Link
+              component={RouterLink}
+              to="/register"
+              fontWeight="bold"
+              underline="hover"
+            >
+              Sign up
             </Link>
           </Typography>
         </Box>
-      </Paper>
-    </Box>
+      </Box>
+    </Container>
   );
 }

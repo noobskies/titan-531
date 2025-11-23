@@ -10,13 +10,20 @@ import {
   Alert,
   Link,
   Divider,
+  Container,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { signUp, signInWithGoogle } = useAuth();
@@ -34,13 +41,20 @@ export default function Register() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
+
     if (password !== confirmPassword) {
       setError("Passwords do not match");
+      setLoading(false);
       return;
     }
 
-    setLoading(true);
-    setError(null);
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters");
+      setLoading(false);
+      return;
+    }
 
     const { error } = await signUp(email, password);
 
@@ -48,112 +62,168 @@ export default function Register() {
       setError(error.message);
       setLoading(false);
     } else {
-      // Typically auto-login or redirect to login.
-      // Assuming auto-login or simple redirect for now.
-      // Supabase usually requires email confirmation by default.
-      // But we will redirect to home or login.
       navigate("/");
     }
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100%",
-      }}
-    >
-      <Paper elevation={3} sx={{ p: 4, width: "100%", maxWidth: 400 }}>
-        <Typography variant="h4" component="h1" gutterBottom textAlign="center">
-          Register
-        </Typography>
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {error}
-          </Alert>
-        )}
+    <Container component="main" maxWidth="xs">
+      <Box
+        sx={{
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          py: 4,
+        }}
+      >
+        <Box sx={{ mb: 4, textAlign: "center" }}>
+          <Typography
+            variant="h3"
+            component="h1"
+            gutterBottom
+            color="primary.main"
+            fontWeight="bold"
+          >
+            Titan 531
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            Join the strength revolution
+          </Typography>
+        </Box>
 
-        <Button
-          variant="outlined"
-          fullWidth
-          size="large"
-          startIcon={<GoogleIcon />}
-          onClick={handleGoogleSignIn}
-          disabled={loading}
+        <Paper
+          elevation={2}
           sx={{
-            mb: 3,
-            height: 64,
-            textTransform: "none",
-            fontSize: "1.1rem",
-            backgroundColor: "background.paper",
-            color: "text.primary",
+            p: 4,
+            width: "100%",
+            borderRadius: 3,
+            border: "1px solid",
             borderColor: "divider",
-            "&:hover": {
-              backgroundColor: "action.hover",
-              borderColor: "text.primary",
-            },
           }}
         >
-          {loading ? "Connecting..." : "Continue with Google"}
-        </Button>
-
-        <Divider sx={{ mb: 3 }}>
-          <Typography variant="body2" color="text.secondary">
-            OR
+          <Typography
+            variant="h5"
+            component="h2"
+            gutterBottom
+            fontWeight="bold"
+          >
+            Create an account
           </Typography>
-        </Divider>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            Get started with your free account
+          </Typography>
 
-        <form onSubmit={handleSubmit}>
-          <TextField
-            label="Email"
-            type="email"
-            fullWidth
-            margin="normal"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <TextField
-            label="Password"
-            type="password"
-            fullWidth
-            margin="normal"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <TextField
-            label="Confirm Password"
-            type="password"
-            fullWidth
-            margin="normal"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
+          {error && (
+            <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>
+              {error}
+            </Alert>
+          )}
+
           <Button
-            type="submit"
-            variant="contained"
-            color="primary"
+            variant="outlined"
             fullWidth
             size="large"
+            startIcon={<GoogleIcon />}
+            onClick={handleGoogleSignIn}
             disabled={loading}
-            sx={{ mt: 2 }}
+            sx={{
+              mb: 3,
+              textTransform: "none",
+              color: "text.primary",
+              borderColor: "divider",
+              "&:hover": {
+                backgroundColor: "action.hover",
+                borderColor: "text.primary",
+              },
+            }}
           >
-            {loading ? "Registering..." : "Register"}
+            Sign up with Google
           </Button>
-        </form>
-        <Box sx={{ mt: 2, textAlign: "center" }}>
-          <Typography variant="body2">
+
+          <Divider sx={{ mb: 3 }}>
+            <Typography variant="caption" color="text.secondary">
+              OR SIGN UP WITH EMAIL
+            </Typography>
+          </Divider>
+
+          <form onSubmit={handleSubmit}>
+            <TextField
+              label="Email"
+              type="email"
+              fullWidth
+              margin="normal"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              disabled={loading}
+              placeholder="Enter your email"
+              variant="outlined"
+            />
+            <TextField
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              fullWidth
+              margin="normal"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              disabled={loading}
+              placeholder="Create a password"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <TextField
+              label="Confirm Password"
+              type={showPassword ? "text" : "password"}
+              fullWidth
+              margin="normal"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              disabled={loading}
+              placeholder="Confirm your password"
+            />
+
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              size="large"
+              disabled={loading}
+              startIcon={!loading && <PersonAddIcon />}
+              sx={{ mt: 3 }}
+            >
+              {loading ? "Creating Account..." : "Create Account"}
+            </Button>
+          </form>
+        </Paper>
+
+        <Box sx={{ mt: 3, textAlign: "center" }}>
+          <Typography variant="body2" color="text.secondary">
             Already have an account?{" "}
-            <Link component={RouterLink} to="/login">
-              Login
+            <Link
+              component={RouterLink}
+              to="/login"
+              fontWeight="bold"
+              underline="hover"
+            >
+              Sign in
             </Link>
           </Typography>
         </Box>
-      </Paper>
-    </Box>
+      </Box>
+    </Container>
   );
 }

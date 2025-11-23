@@ -90,7 +90,7 @@ export function SetLogger({ set, onLog, isAmrap }: SetLoggerProps) {
               onChange={(e) => setWeight(Number(e.target.value))}
               type="number"
               inputProps={{
-                style: { textAlign: "center", fontSize: "1.5rem" },
+                style: { textAlign: "center", fontSize: "1.25rem" },
               }}
               variant="standard"
               fullWidth
@@ -115,7 +115,7 @@ export function SetLogger({ set, onLog, isAmrap }: SetLoggerProps) {
               onChange={(e) => setReps(Number(e.target.value))}
               type="number"
               inputProps={{
-                style: { textAlign: "center", fontSize: "1.5rem" },
+                style: { textAlign: "center", fontSize: "1.25rem" },
               }}
               variant="standard"
               fullWidth
@@ -137,7 +137,7 @@ export function SetLogger({ set, onLog, isAmrap }: SetLoggerProps) {
           startIcon={<CheckCircleIcon />}
           sx={{
             height: WORKOUT_UI_CONSTANTS.BUTTON_HEIGHT,
-            fontSize: "1.25rem",
+            fontSize: "1rem",
             fontWeight: "bold",
           }}
         >

@@ -22,12 +22,10 @@
 
 ### The Real-World Context
 
-**Gym Environment Challenges:**
+**Gym Environment Context:**
 
-- Sweaty hands make precise phone interactions difficult
-- Bright overhead lights or dim lighting affect screen visibility
 - Need to log data quickly between sets (rest timer running)
-- Often using phone one-handed while holding water bottle/towel
+- Often using phone one-handed
 - Distractions from other gym-goers
 - Need to reference previous performance while actively lifting
 
@@ -49,11 +47,11 @@
 - **Solution:** Automatic weight calculation based on TM and week/set scheme
 - **Impact:** User logs "5 reps completed" and we handle the rest
 
-**2. Gym Usability Crisis**
+**2. Poor Design Crisis**
 
-- **Problem:** Standard apps require precision taps and squinting at small text
-- **Solution:** Extra-large touch targets (64px), bold typography (60px+ for timers)
-- **Impact:** One-handed operation with sweaty hands, readable from arms-length
+- **Problem:** Many workout apps look outdated, cluttered, or purely utilitarian
+- **Solution:** Clean, modern interface with refined typography and standard sizing
+- **Impact:** A professional, enjoyable user experience that feels premium
 
 **3. Program Confusion**
 
@@ -119,9 +117,9 @@
 **2. Effortless Workout Flow**
 
 ```
-Open app → "Start Workout" button (64px) →
-Exercise displayed (large text) →
-Complete set → Tap target reps (large button) →
+Open app → "Start Workout" button →
+Exercise displayed →
+Complete set → Tap target reps →
 Rest timer auto-starts →
 Repeat until workout complete →
 Summary and PR celebrations

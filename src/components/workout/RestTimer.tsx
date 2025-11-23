@@ -50,9 +50,12 @@ export function RestTimer({
         <CircularProgress
           variant="determinate"
           value={progress}
-          size={200}
-          thickness={2}
-          sx={{ color: isRunning ? "primary.main" : "text.disabled" }}
+          size={180}
+          thickness={3}
+          sx={{
+            color: isRunning ? "primary.main" : "text.disabled",
+            transition: "color 0.3s, value 0.3s linear",
+          }}
         />
         <Box
           sx={{

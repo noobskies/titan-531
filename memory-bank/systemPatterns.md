@@ -351,11 +351,7 @@ function WorkoutDashboard() {
   variant="contained"
   size="large"
   fullWidth
-  sx={{
-    height: 64, // Gym-optimized height
-    fontSize: "1.25rem", // Large text
-    fontWeight: "bold",
-  }}
+  startIcon={<PlayArrowIcon />}
 >
   Start Workout
 </Button>

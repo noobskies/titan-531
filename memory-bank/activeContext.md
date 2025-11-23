@@ -293,7 +293,7 @@ See `systemPatterns.md > File Organization Standards` for complete details.
 - Use `sx` prop for one-off styles
 - Theme overrides for global component defaults
 - Avoid CSS modules/styled-components unless necessary
-- Large touch targets (64px) for gym optimization
+- Standard touch targets (48px) for cleaner, professional UI
 
 ### Form Handling
 
@@ -376,9 +376,9 @@ const { open, handleOpen, handleClose } = useDialog();
 **Theme Strategy:**
 
 - Start with dark mode as default (gym lighting)
-- High contrast colors for visibility
-- Extra-large touch targets (64px) for primary actions
-- Bold typography (minimum 16px base, larger for key UI)
+- Modern, attractive color palette (Slate/Blue/Pink)
+- Standard touch targets (48px) for professional UI
+- Refined typography and spacing
 
 **Authentication Flow:**
 
