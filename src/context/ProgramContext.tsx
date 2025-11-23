@@ -19,6 +19,14 @@ interface ProgramContextType {
   updateTM: (lift: LiftType, weight: number, unit?: WeightUnit) => void;
   startNewCycle: (programId: string, startDate?: string) => void;
   setActiveWorkout: (workout: Workout | null) => void;
+  updateSet: (
+    workoutId: string,
+    exerciseId: string,
+    setId: string,
+    actualReps: number,
+    weight: number
+  ) => void;
+  updateWorkoutNotes: (workoutId: string, notes: string) => void;
   completeWorkout: (workout: Workout) => void;
   resetProgram: () => void;
 }
@@ -134,6 +142,62 @@ export function ProgramProvider({ children }: { children: React.ReactNode }) {
     setCurrentCycle(newCycle);
   };
 
+  const updateSet = (
+    workoutId: string,
+    exerciseId: string,
+    setId: string,
+    actualReps: number,
+    weight: number
+  ) => {
+    if (!activeWorkout || activeWorkout.id !== workoutId) return;
+
+    // Create deep copy of active workout
+    const updatedWorkout = { ...activeWorkout };
+
+    // Find exercise
+    const exercise = updatedWorkout.exercises.find(
+      (ex) => ex.id === exerciseId
+    );
+    if (!exercise) return;
+
+    // Find set
+    const set = exercise.sets.find((s) => s.id === setId);
+    if (!set) return;
+
+    // Update set data
+    set.completed = true;
+    set.actualReps = actualReps;
+    set.weight = weight;
+
+    // Update state
+    setActiveWorkout(updatedWorkout);
+
+    // Also persist to currentCycle for redundancy/safety
+    if (currentCycle) {
+      const updatedCycle = { ...currentCycle };
+      const weekIndex = updatedWorkout.week - 1;
+
+      if (updatedCycle.weeks[weekIndex]) {
+        const workoutIndex = updatedCycle.weeks[weekIndex].findIndex(
+          (w) => w.id === workoutId
+        );
+
+        if (workoutIndex >= 0) {
+          // Replace entire workout with updated one
+          updatedCycle.weeks[weekIndex][workoutIndex] = updatedWorkout;
+          setCurrentCycle(updatedCycle);
+        }
+      }
+    }
+  };
+
+  const updateWorkoutNotes = (workoutId: string, notes: string) => {
+    if (activeWorkout && activeWorkout.id === workoutId) {
+      const updatedWorkout = { ...activeWorkout, notes };
+      setActiveWorkout(updatedWorkout);
+    }
+  };
+
   const completeWorkout = (workout: Workout) => {
     if (!currentCycle) return;
 
@@ -178,6 +242,8 @@ export function ProgramProvider({ children }: { children: React.ReactNode }) {
         updateTM,
         startNewCycle,
         setActiveWorkout,
+        updateSet,
+        updateWorkoutNotes,
         completeWorkout,
         resetProgram,
       }}

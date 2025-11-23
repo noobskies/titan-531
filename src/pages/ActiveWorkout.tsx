@@ -20,17 +20,19 @@ import { SetLogger } from "../components/workout/SetLogger";
 import { RestTimer } from "../components/workout/RestTimer";
 import { useRestTimer } from "../hooks/useRestTimer";
 import { WORKOUT_CONSTANTS } from "../constants/workout";
-// import type { WorkoutSet } from "../types/workout";
+import { calculateWorkoutDuration } from "../services/workoutAnalytics";
 
 export default function ActiveWorkout() {
   const navigate = useNavigate();
-  const { activeWorkout, completeWorkout } = useProgram();
+  const { activeWorkout, completeWorkout, updateSet } = useProgram();
 
   // State
   const [exerciseIndex, setExerciseIndex] = useState(0);
   const [setIndex, setSetIndex] = useState(0);
   const [isResting, setIsResting] = useState(false);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
+  // Track start time for duration calculation
+  const [startTime] = useState(new Date().toISOString());
 
   // Timer
   const restTimer = useRestTimer(WORKOUT_CONSTANTS.REST_TIMER_MAIN);
@@ -61,22 +63,15 @@ export default function ActiveWorkout() {
 
   const handleLogSet = (reps: number, weight: number) => {
     console.log("Logging set:", { reps, weight });
-    // 1. Update set data (in a real app, we'd update context here)
-    /*
-    const updatedSet: WorkoutSet = {
-      ...currentSet,
-      completed: true,
-      actualReps: reps,
-      weight: weight,
-    };
-    */
 
-    // Note: We need a way to update the specific set in context
-    // For MVP, we'll assume context updates happen via completeWorkout or we add a helper
-    // Since we don't have updateSet in context yet, we'll modify activeWorkout locally
-    // This assumes activeWorkout is mutable or we update it.
-    // Ideally, we add updateSet to ProgramContext.
-    // For now, let's proceed with flow logic.
+    // 1. Update set data in context
+    updateSet(
+      activeWorkout.id,
+      currentExercise.id,
+      currentSet.id,
+      reps,
+      weight
+    );
 
     // 2. Start Rest Timer
     let restTime: number = WORKOUT_CONSTANTS.REST_TIMER_ASSISTANCE;
@@ -109,8 +104,19 @@ export default function ActiveWorkout() {
   };
 
   const handleFinishWorkout = () => {
-    completeWorkout(activeWorkout);
-    navigate("/"); // In Phase 2b completion, we'll go to summary
+    // Calculate duration
+    const endTime = new Date().toISOString();
+    const duration = calculateWorkoutDuration(startTime, endTime);
+
+    // Update workout with duration
+    const completedWorkout = {
+      ...activeWorkout,
+      duration,
+      completedAt: endTime,
+    };
+
+    completeWorkout(completedWorkout);
+    navigate("/workout/complete");
   };
 
   return (
@@ -168,7 +174,7 @@ export default function ActiveWorkout() {
         {isResting ? (
           <RestTimer
             remaining={restTimer.remaining}
-            totalDuration={WORKOUT_CONSTANTS.REST_TIMER_MAIN} // Should pass actual duration
+            totalDuration={WORKOUT_CONSTANTS.REST_TIMER_MAIN} // Should pass actual duration based on exercise type
             isRunning={restTimer.isRunning}
             onPause={restTimer.pause}
             onResume={restTimer.resume}

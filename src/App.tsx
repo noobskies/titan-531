@@ -9,6 +9,8 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Onboarding from "./pages/Onboarding";
 import PreWorkout from "./pages/PreWorkout";
+import ActiveWorkout from "./pages/ActiveWorkout";
+import WorkoutComplete from "./pages/WorkoutComplete";
 import RequireAuth from "./components/RequireAuth";
 
 const theme = createAppTheme("dark");
@@ -45,6 +47,22 @@ function App() {
                   element={
                     <RequireAuth>
                       <PreWorkout />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path="/workout/active"
+                  element={
+                    <RequireAuth>
+                      <ActiveWorkout />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path="/workout/complete"
+                  element={
+                    <RequireAuth>
+                      <WorkoutComplete />
                     </RequireAuth>
                   }
                 />
