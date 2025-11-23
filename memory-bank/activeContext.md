@@ -2,13 +2,42 @@
 
 ## Current Focus
 
-**Phase Status:** Phase 3a (Database & Sync Foundation) Complete → Phase 3b (Analytics) Next
+**Phase Status:** Phase 3b (Analytics) Complete → Phase 3c (Customization & Premium UI) Next
 
-**Immediate Priority:** Build the Analytics service and dashboard for Premium users.
+**Immediate Priority:** Build customization features and premium UI components.
 
 **Active Work Stream:** Implementing Premium Features (Phase 3).
 
 ## Recent Changes
+
+### Phase 3b: Analytics (✅ Complete)
+
+**What Was Built:**
+
+1. **Core Analytics Logic** (`src/services/workoutAnalytics.ts`)
+
+   - `calculateE1RM`: Estimated 1-Rep Max using Epley formula
+   - `getVolumeHistory`: Tracks volume load per workout
+   - `getPRHistory`: Identifies personal records (1RM, 5RM, etc.)
+   - `getProgressSummary`: Aggregates key stats (total workouts, volume, streak)
+
+2. **Visualization Components** (`src/components/analytics/`)
+
+   - `E1RMChart`: Line chart showing strength progression over time
+   - `VolumeChart`: Bar chart showing volume load trends
+   - `PRHistoryList`: List component for recent personal records
+   - `ProgressCard`: Summary dashboard card for high-level metrics
+   - Integrated `recharts` library for responsive visualizations
+
+3. **Analytics Dashboard** (`src/pages/Analytics.tsx`)
+
+   - Comprehensive dashboard view protected by `RequireAuth`
+   - Lift filtering (Squat, Bench, Deadlift, Press)
+   - Responsive layout adapting to mobile/desktop
+
+4. **Infrastructure Updates**
+   - **Routing:** Added `/analytics` route and navigation link
+   - **Provider Fix:** Updated `src/main.tsx` to correctly wrap app with all providers (Router, Theme, Auth, Program) to fix context errors
 
 ### Phase 3a: Database & Sync Foundation (✅ Complete)
 
@@ -71,39 +100,33 @@
 
 ## Next Steps
 
-### Phase 3b: Analytics (Upcoming)
+### Phase 3c: Customization & Premium UI (Immediate)
 
-**1. Analytics Service**
-
-- Implement `calculateE1RM` (Estimated 1-Rep Max) logic
-- Implement volume progression calculation
-- Implement PR history tracking
-
-**2. Visualization Components**
-
-- Integrate `recharts` library
-- Create `E1RMChart` component
-- Create `VolumeChart` component
-- Create `PRHistoryList` component
-
-**3. Analytics Dashboard**
-
-- Create `src/pages/Analytics.tsx`
-- Connect to `ProgramContext` / `SyncService` for data
-- Implement date range filtering
-
-### Phase 3c: Customization & Premium UI (Follow-up)
-
-**1. Customization**
+**1. Customization Features**
 
 - Allow editing exercises (swap main/assistance)
 - Custom plate inventory for calculator
-- Dark/Light mode toggle
+- Dark/Light mode toggle implementation
+- Settings page implementation
 
-**2. Premium Feature Gating**
+**2. Premium Experience**
 
 - Implement paywall UI for non-premium users
 - Create "Upgrade to Premium" screen
+- Integrate payment flow (placeholder/mock for MVP)
+
+### Phase 3d: Program Variations (Upcoming)
+
+**1. Program Logic**
+
+- Implement "Boring But Big" (BBB) template
+- Implement "First Set Last" (FSL) template
+- Implement "Triumvirate" template
+
+**2. Program Selection UI**
+
+- Create program selection screen
+- Add template details and previews
 
 ## Active Patterns & Preferences
 
@@ -200,15 +223,16 @@ src/
 
 ## Open Questions
 
-**For Phase 3b:**
+**For Phase 3c:**
 
-- Chart Library: Recharts vs Victory? (Leaning Recharts for React 19 compatibility)
-- Performance: How much historical data should we load at once for analytics?
+- Where should settings be stored? (Local + Sync or strictly Local?)
+- Should we allow custom themes beyond Light/Dark?
 
 ## Context for Next Session
 
 **When resuming work, remember:**
 
-1. Phase 3a is complete. The app now has a database schema and basic sync capability.
-2. Next step is Phase 3b (Analytics).
-3. Start by installing `recharts` (checking docs first!) and building the analytics service.
+1. Phase 3b (Analytics) is complete and functional.
+2. `src/main.tsx` has been fixed to properly include all providers.
+3. Next step is Phase 3c (Customization & Premium UI).
+4. Start by building the Settings page layout.
