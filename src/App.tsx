@@ -7,6 +7,8 @@ import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Onboarding from "./pages/Onboarding";
+import PreWorkout from "./pages/PreWorkout";
 import RequireAuth from "./components/RequireAuth";
 
 const theme = createAppTheme("dark");
@@ -27,6 +29,22 @@ function App() {
                   element={
                     <RequireAuth>
                       <Home />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path="/onboarding"
+                  element={
+                    <RequireAuth>
+                      <Onboarding />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path="/workout/pre/:workoutId"
+                  element={
+                    <RequireAuth>
+                      <PreWorkout />
                     </RequireAuth>
                   }
                 />

@@ -105,8 +105,11 @@ export default function Home() {
                       fullWidth
                       sx={{ height: 64, fontSize: "1.25rem" }}
                       onClick={() => {
-                        // Phase 2b: Navigate to workout interface
-                        console.log("Start workout:", nextWorkout.id);
+                        if (activeWorkout) {
+                          navigate("/workout/active");
+                        } else {
+                          navigate(`/workout/pre/${nextWorkout.id}`);
+                        }
                       }}
                     >
                       {activeWorkout ? "Resume Workout" : "Start Workout"}

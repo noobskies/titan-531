@@ -20,6 +20,7 @@ export interface WorkoutSet {
   completed: boolean;
   actualReps?: number;
   isAmrap?: boolean;
+  isWarmup?: boolean;
   rpe?: number;
 }
 

@@ -2,13 +2,49 @@
 
 ## Current Focus
 
-**Phase Status:** Phase 2a (Setup & Structure) Complete → Phase 2b (Workout Interface) Next
+**Phase Status:** Phase 2a (Setup & Structure) Complete → Phase 2b (Workout Interface) Complete → Phase 3 (Premium Features) Next
 
-**Immediate Priority:** Implement the actual workout interface, set logging, and rest timer to allow users to complete their first session.
+**Immediate Priority:** Verify the workout flow and prepare for data persistence improvements or premium features.
 
-**Active Work Stream:** Planning Phase 2b implementation for workout execution and logging.
+**Active Work Stream:** Completed Phase 2b implementation.
 
 ## Recent Changes
+
+### Phase 2b Completion (✅ Complete)
+
+**What Was Built:**
+
+1. **Pre-Workout Screen** (`src/pages/PreWorkout.tsx`)
+
+   - Workout overview with main lift, week, day
+   - Exercise list preview
+   - Navigation to active workout
+
+2. **Active Workout Interface** (`src/pages/ActiveWorkout.tsx`)
+
+   - Full-screen immersive UI
+   - Exercise and set navigation logic
+   - Integrated Rest Timer and Set Logger
+   - Exit confirmation dialog
+
+3. **Workout Components**
+
+   - `RestTimer.tsx`: Visual countdown with CircularProgress, add/skip controls
+   - `SetLogger.tsx`: Interface for logging regular and AMRAP sets, weight adjustment
+   - `useRestTimer.ts`: Custom hook for timer logic
+
+4. **Integration**
+   - Updated `Home.tsx` to navigate to PreWorkout/ActiveWorkout
+   - Updated `App.tsx` with new routes
+   - Defined `WORKOUT_UI_CONSTANTS` for consistent styling
+
+**Current State:**
+
+- Users can start a workout from the dashboard
+- Navigate through exercises and sets
+- Log sets (mock implementation for now, logs to console)
+- Use rest timer between sets
+- Complete workout and return to dashboard
 
 ### Phase 2a Completion (✅ Complete)
 
@@ -16,141 +52,122 @@
 
 1. **Core Data Structure**
 
-   - Defined `TrainingMax`, `Cycle`, `Workout`, `Exercise` types in `src/types/workout.ts`
-   - Created consolidated type exports in `src/types/index.ts`
-   - Extended UserProfile in `src/types/user.ts`
+   - Defined `TrainingMax`, `Cycle`, `Workout`, `Exercise` types
+   - Extended UserProfile
 
 2. **Program Logic Engine**
 
-   - Implemented `src/services/programGenerator.ts` with:
-     - 1RM to TM calculation (90%)
-     - Rounding logic (2.5 lbs)
-     - Full 4-week cycle generation (Week 1-3 + Deload)
-     - Warm-up set calculation
+   - Implemented `programGenerator.ts` with 5/3/1 calculations
    - Defined constants in `src/constants/workout.ts`
 
 3. **State Management**
 
    - Created `ProgramContext` with localStorage persistence
    - Implemented `useProgram` hook
-   - Wrapped App in `ProgramProvider`
-   - Logic to manage TMs, current cycle, and active workout
 
 4. **UI Implementation**
-   - **Onboarding:** Created `src/pages/Onboarding.tsx` with multi-step structure (Welcome, TMs, Schedule, Preview)
-   - **Dashboard:** Updated `src/pages/Home.tsx` to display:
-     - Next scheduled workout card
-     - Cycle progress bar
-     - Current Training Maxes
-     - "Start Workout" action
-
-**Current State:**
-
-- Users can onboard (mock flow) and generate a valid 5/3/1 cycle
-- Dashboard correctly displays the generated schedule
-- Data persists across reloads via localStorage
-- Foundation is solid for implementing the actual workout interface
-
-### Phase 1 Completion (✅ Complete)
-
-**What Was Built:**
-
-1. **Project Infrastructure**
-
-   - Vite + React 19 + TypeScript setup
-   - Material-UI v7 theme configuration
-   - Capacitor v7 Android platform integration
-   - React Router v7 for navigation
-
-2. **Authentication System**
-
-   - Supabase client initialization
-   - AuthContext with sign up, sign in, sign out, password reset
-   - Login and Register pages with form validation
-   - RequireAuth wrapper for protected routes
-   - Session persistence
-
-3. **Base UI Components**
-
-   - Layout component with AppBar structure
-   - Theme with gym-optimized customization (large touch targets, bold typography)
-   - Dark mode by default
-   - Home page placeholder
-
-4. **Configuration Files**
-   - package.json with all core dependencies
-   - capacitor.config.ts for Android build
-   - TypeScript configurations
-   - ESLint setup
-
-**Key Files Created:**
-
-- `src/theme.ts` - MUI theme with custom overrides
-- `src/supabaseClient.ts` - Backend client
-- `src/context/AuthContext.tsx` - Auth state management
-- `src/components/Layout.tsx` - App shell
-- `src/components/RequireAuth.tsx` - Route protection
-- `src/pages/Login.tsx` - Login screen
-- `src/pages/Register.tsx` - Registration screen
-- `src/pages/Home.tsx` - Dashboard placeholder
-
-**Current State:**
-
-- Users can create accounts and authenticate
-- Protected routing works correctly
-- Basic app shell exists with navigation
-- Ready for feature development
+   - **Onboarding:** Multi-step wizard
+   - **Dashboard:** Next workout card, cycle progress
 
 ## Next Steps
 
-### Immediate (Phase 2b Start)
+### Immediate (Phase 3 Preparation)
 
-**1. Pre-Workout Screen** (Priority: High)
+**1. Workout Completion & History**
 
-- Create `src/pages/PreWorkout.tsx`
-- Display workout details (lift, week, day)
-- List all exercises and sets
-- "Begin Workout" button
+- Implement `WorkoutComplete.tsx` summary screen (currently redirects to Home)
+- Save completed workout data to `ProgramContext` (currently mostly mocked)
+- Update cycle progress based on completed workouts
 
-**2. Active Workout Mode** (Priority: High)
+**2. Data Persistence**
 
-- Create `src/pages/ActiveWorkout.tsx`
-- Full-screen immersive UI
-- Large touch targets for gym use
-- Current exercise focus view
+- Ensure set data is actually saved to `currentCycle` in `ProgramContext`
+- Implement `updateSet` method in context
 
-**3. Set Logging Interface** (Priority: High)
+### Phase 3: Premium Features (Upcoming)
 
-- "Hit Target" button for main sets
-- Rep counter for AMRAP sets
-- Weight adjustment controls
-- Visual feedback on completion
+**1. Cloud Sync**
 
-**4. Rest Timer** (Priority: Medium)
+- Connect `ProgramContext` to Supabase database
+- Sync TMs and history
 
-- Create `src/components/RestTimer.tsx`
-- Auto-start after set completion
-- Background notification support
-- Adjustable duration
+**2. Analytics**
 
-**5. Workout Completion Flow** (Priority: Medium)
+- Visualize progress over time (e1RM graphs)
 
-- Summary screen with PRs
-- Save to history
-- Update cycle progress
-- Return to dashboard
+**3. Customization**
 
-### Short-Term (Phase 2b Refinement)
+- Allow editing exercises
+- Custom plates for calculator
 
-**Active Workout Interface:**
+## Active Patterns & Preferences
 
-- Pre-workout screen with exercise list
-- Full-screen workout mode
-- Set logging interface with large buttons
-- AMRAP set handling
-- Rest timer integration
+### 🔴 CRITICAL: Documentation-First Development
 
-**Exercise Database:**
+**MANDATORY BEFORE ANY FEATURE IMPLEMENTATION:**
+
+1. **Use Context7 MCP Tool** to fetch current library docs
+2. **Review documentation** for latest API patterns
+3. **Implement using current patterns** (not from memory)
+
+### 🔴 CRITICAL: DRY/SOLID Principles
+
+**ALL code must follow DRY (Don't Repeat Yourself) and SOLID principles.**
+
+- **DRY:** Extract repeated code into utils/hooks/services
+- **Single Responsibility:** One component/function = one purpose
+- **No Magic Numbers:** Use named constants
+
+### 🔴 CRITICAL: File Organization Standards
+
+**Strict directory structure must be followed:**
+
+```
+src/
+├── components/
+│   ├── workout/        # Workout-specific
+│   └── index.ts
+├── pages/
+├── context/
+├── hooks/
+├── services/
+├── constants/
+└── config/
+```
+
+## Key Learnings & Insights
+
+### From Phase 2b Implementation
+
+**1. MUI Grid v2 vs v1:**
+
+- Detected that `Grid` in MUI v7 uses `size` prop instead of `item` and `xs`
+- Context7 docs helped identify correct component usage
+
+**2. Timer Logic:**
+
+- `useRestTimer` hook cleanly separates logic from UI
+- `setInterval` needs careful cleanup in `useEffect`
+
+**3. Navigation Flow:**
+
+- `PreWorkout` -> `ActiveWorkout` -> `Home` loop works well
+- `activeWorkout` state in context acts as the "session"
+
+## Open Questions
+
+**For Phase 3:**
+
+- How detailed should the workout summary be?
+- Should we store individual set logs in a separate table or nested JSON? (JSON for now in localStorage, relational in Supabase later)
+
+## Context for Next Session
+
+**When resuming work, remember:**
+
+1. Phase 2b is largely complete, but data saving needs final wiring in Context
+2. `ActiveWorkout.tsx` currently logs sets to console; needs `updateSet` context method
+3. `WorkoutComplete` screen is skipped; consider adding it for better UX
 
 - Define 4 main lifts + common assistance exercises
 - Exercise details and instructions
