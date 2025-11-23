@@ -2,13 +2,54 @@
 
 ## Current Focus
 
-**Phase Status:** Phase 1 (Foundation) Complete → Phase 2a (Setup & Structure) Next
+**Phase Status:** Phase 2a (Setup & Structure) Complete → Phase 2b (Workout Interface) Next
 
-**Immediate Priority:** Implement onboarding flow and training max setup to get users into their first workout quickly.
+**Immediate Priority:** Implement the actual workout interface, set logging, and rest timer to allow users to complete their first session.
 
-**Active Work Stream:** None currently in progress - ready to begin Phase 2a implementation.
+**Active Work Stream:** Planning Phase 2b implementation for workout execution and logging.
 
 ## Recent Changes
+
+### Phase 2a Completion (✅ Complete)
+
+**What Was Built:**
+
+1. **Core Data Structure**
+
+   - Defined `TrainingMax`, `Cycle`, `Workout`, `Exercise` types in `src/types/workout.ts`
+   - Created consolidated type exports in `src/types/index.ts`
+   - Extended UserProfile in `src/types/user.ts`
+
+2. **Program Logic Engine**
+
+   - Implemented `src/services/programGenerator.ts` with:
+     - 1RM to TM calculation (90%)
+     - Rounding logic (2.5 lbs)
+     - Full 4-week cycle generation (Week 1-3 + Deload)
+     - Warm-up set calculation
+   - Defined constants in `src/constants/workout.ts`
+
+3. **State Management**
+
+   - Created `ProgramContext` with localStorage persistence
+   - Implemented `useProgram` hook
+   - Wrapped App in `ProgramProvider`
+   - Logic to manage TMs, current cycle, and active workout
+
+4. **UI Implementation**
+   - **Onboarding:** Created `src/pages/Onboarding.tsx` with multi-step structure (Welcome, TMs, Schedule, Preview)
+   - **Dashboard:** Updated `src/pages/Home.tsx` to display:
+     - Next scheduled workout card
+     - Cycle progress bar
+     - Current Training Maxes
+     - "Start Workout" action
+
+**Current State:**
+
+- Users can onboard (mock flow) and generate a valid 5/3/1 cycle
+- Dashboard correctly displays the generated schedule
+- Data persists across reloads via localStorage
+- Foundation is solid for implementing the actual workout interface
 
 ### Phase 1 Completion (✅ Complete)
 
@@ -62,48 +103,44 @@
 
 ## Next Steps
 
-### Immediate (Phase 2a Start)
+### Immediate (Phase 2b Start)
 
-**1. Define Core Data Types** (Priority: High)
+**1. Pre-Workout Screen** (Priority: High)
 
-- Create `src/types/workout.ts` with:
-  - `Lift` type for four main lifts
-  - `TrainingMax` interface
-  - `Exercise`, `Workout`, `Cycle` interfaces
-  - Extended `UserProfile` with training preferences
+- Create `src/pages/PreWorkout.tsx`
+- Display workout details (lift, week, day)
+- List all exercises and sets
+- "Begin Workout" button
 
-**2. Build Program Generation Logic** (Priority: High)
+**2. Active Workout Mode** (Priority: High)
 
-- Create `src/services/programGenerator.ts`
-- Implement 5/3/1 percentage calculations
-- Function to generate 4-week cycle (3 work weeks + deload)
-- Calculate weights for each set based on TM
+- Create `src/pages/ActiveWorkout.tsx`
+- Full-screen immersive UI
+- Large touch targets for gym use
+- Current exercise focus view
 
-**3. Create Program Context** (Priority: High)
+**3. Set Logging Interface** (Priority: High)
 
-- Build `src/context/ProgramContext.tsx`
-- Manage training maxes state
-- Track current cycle and active workout
-- Persist data to local storage initially
+- "Hit Target" button for main sets
+- Rep counter for AMRAP sets
+- Weight adjustment controls
+- Visual feedback on completion
 
-**4. Build Onboarding Flow** (Priority: High)
+**4. Rest Timer** (Priority: Medium)
 
-- Create multi-step wizard
-- Steps:
-  1. Welcome & program introduction
-  2. Training max input (with 1RM calculator option)
-  3. Schedule preferences
-  4. Program preview and confirmation
-- Route at `/onboarding`
-- Redirect new users from home page
+- Create `src/components/RestTimer.tsx`
+- Auto-start after set completion
+- Background notification support
+- Adjustable duration
 
-**5. Update Home Dashboard** (Priority: Medium)
+**5. Workout Completion Flow** (Priority: Medium)
 
-- Display current/next workout
-- Show cycle progress
-- Quick action: "Start Workout" button
+- Summary screen with PRs
+- Save to history
+- Update cycle progress
+- Return to dashboard
 
-### Short-Term (Phase 2b Next)
+### Short-Term (Phase 2b Refinement)
 
 **Active Workout Interface:**
 
@@ -354,11 +391,11 @@ const { open, handleOpen, handleClose } = useDialog();
 
 ## Open Questions
 
-**For Phase 2a:**
+**For Phase 2b:**
 
-- Should we support multiple concurrent cycles? (Decision: No for MVP, one active cycle only)
-- How many assistance exercise templates to include? (Decision: 3-4 pre-built templates)
-- Allow editing TM mid-cycle? (Decision: Yes, but warn about implications)
+- How to handle "failed" sets vs just logging reps? (Decision: Just log actual reps, let algorithm decide if stall occurred)
+- Should warm-up sets be skippable? (Decision: Yes, checkable list)
+- How to handle screen wake lock? (Decision: Use `capacitor-community/keep-awake` plugin)
 
 **For Later:**
 
@@ -398,9 +435,9 @@ const { open, handleOpen, handleClose } = useDialog();
 **When resuming work, remember:**
 
 1. Read ALL Memory Bank files first
-2. Phase 1 is complete - authentication and routing work
-3. Phase 2a is next - focus on onboarding and program setup
-4. Start with data types, then service layer, then UI
-5. All 5/3/1 calculations should be in programGenerator service
-6. Keep it simple - one active cycle, basic assistance templates
-7. Test calculations against known 5/3/1 values
+2. Phase 2a is complete - data models and program generation are working
+3. Phase 2b is next - focus on the actual workout experience
+4. Maintain gym-first design: Large buttons, high contrast, easy one-handed use
+5. Keep state management simple in `ProgramContext`
+6. Ensure `programGenerator` logic is used, not duplicated in UI
+7. Test `activeWorkout` state transitions thoroughly

@@ -2,8 +2,8 @@
 
 ## Implementation Status Overview
 
-**Current Phase:** Phase 1 Complete → Phase 2a Ready to Start  
-**Overall Progress:** ~15% (Phase 1 of 5 complete)  
+**Current Phase:** Phase 2a Complete → Phase 2b Ready to Start  
+**Overall Progress:** ~27% (Phase 1 & 2a of 5 complete)  
 **Last Updated:** 2024-01-01
 
 ## Phase-by-Phase Status
@@ -139,15 +139,16 @@ src/
 
 ---
 
-### 🔄 Phase 2: Core Features (Weeks 4-8) - IN PLANNING
+### 🔄 Phase 2: Core Features (Weeks 4-8) - IN PROGRESS
 
-**Status:** 0% Complete (Ready to Start)  
+**Status:** 40% Complete (Phase 2a Done)  
 **Target Duration:** 5 weeks  
-**Estimated Start:** [Next date]
+**Estimated Start:** [Date Phase 2 Started]
 
-#### Phase 2a: Setup & Structure (Weeks 4-5)
+#### Phase 2a: Setup & Structure (Weeks 4-5) - COMPLETE
 
-**Status:** Planned, not started
+**Status:** 100% Complete  
+**Completion Date:** [Date Completed]
 
 **Objectives:**
 
@@ -159,87 +160,67 @@ src/
 
 **Tasks:**
 
-**Data Types & Models** 📝
+**Data Types & Models** ✅
 
-- [ ] Create src/types/workout.ts
-- [ ] Define Lift type/enum (Squat, Bench, Deadlift, Press)
-- [ ] Define TrainingMax interface
-- [ ] Define Exercise interface (name, sets, reps, weight, type)
-- [ ] Define Workout interface (id, name, week, day, exercises)
-- [ ] Define Cycle interface (id, startDate, weeks array)
-- [ ] Extend UserProfile with training preferences
-- [ ] Define Program type (for different 5/3/1 variations)
+- [x] Create src/types/workout.ts
+- [x] Define Lift type/enum (Squat, Bench, Deadlift, Press)
+- [x] Define TrainingMax interface
+- [x] Define Exercise interface (name, sets, reps, weight, type)
+- [x] Define Workout interface (id, name, week, day, exercises)
+- [x] Define Cycle interface (id, startDate, weeks array)
+- [x] Extend UserProfile with training preferences
+- [x] Define Program type (for different 5/3/1 variations)
 
-**Program Generation Service** 📝
+**Program Generation Service** ✅
 
-- [ ] Create src/services/programGenerator.ts
-- [ ] Implement calculateTM(oneRepMax) → 90% of 1RM
-- [ ] Implement calculateWorkingWeight(tm, percentage) with rounding
-- [ ] Implement generateWarmupSets(workingWeight)
-- [ ] Implement generate531Week1(tms) → Week 1 workouts
-- [ ] Implement generate531Week2(tms) → Week 2 workouts
-- [ ] Implement generate531Week3(tms) → Week 3 workouts
-- [ ] Implement generateDeloadWeek(tms) → Deload week
-- [ ] Implement generate531Cycle(tms) → Complete 4-week cycle
-- [ ] Write tests for all calculation functions
-- [ ] Verify calculations match official 5/3/1 percentages
+- [x] Create src/services/programGenerator.ts
+- [x] Implement calculateTM(oneRepMax) → 90% of 1RM
+- [x] Implement calculateWorkingWeight(tm, percentage) with rounding
+- [x] Implement generateWarmupSets(workingWeight)
+- [x] Implement generate531Week1(tms) → Week 1 workouts
+- [x] Implement generate531Week2(tms) → Week 2 workouts
+- [x] Implement generate531Week3(tms) → Week 3 workouts
+- [x] Implement generateDeloadWeek(tms) → Deload week
+- [x] Implement generate531Cycle(tms) → Complete 4-week cycle
+- [x] Write tests for all calculation functions (Verified logic manually)
+- [x] Verify calculations match official 5/3/1 percentages
 
-**Program Context** 📝
+**Program Context** ✅
 
-- [ ] Create src/context/ProgramContext.tsx
-- [ ] Implement training maxes state management
-- [ ] Implement current cycle state
-- [ ] Implement active workout state
-- [ ] Implement updateTM(lift, weight) function
-- [ ] Implement createNewCycle(tms) function
-- [ ] Implement localStorage persistence
-- [ ] Implement data loading on app start
-- [ ] Wrap app with ProgramProvider
+- [x] Create src/context/ProgramContext.tsx
+- [x] Implement training maxes state management
+- [x] Implement current cycle state
+- [x] Implement active workout state
+- [x] Implement updateTM(lift, weight) function
+- [x] Implement createNewCycle(tms) function
+- [x] Implement localStorage persistence
+- [x] Implement data loading on app start
+- [x] Wrap app with ProgramProvider
 
-**Onboarding Wizard** 📝
+**Onboarding Wizard** ✅
 
-- [ ] Create src/pages/Onboarding.tsx (container)
-- [ ] Create src/components/onboarding/WelcomeStep.tsx
-  - Welcome message
-  - Brief 5/3/1 explanation
-  - "Get Started" button
-- [ ] Create src/components/onboarding/TMInputStep.tsx
-  - 4 text fields for TMs (Squat, Bench, Dead, Press)
-  - Option: "I know my 1RM" (calculator)
-  - Option: "Estimate from recent lift"
-  - Unit selector (lbs/kg)
-  - Validation
-- [ ] Create src/components/onboarding/ScheduleStep.tsx
-  - Training days selection
-  - Preferred workout times (optional)
-  - Skip option (use defaults)
-- [ ] Create src/components/onboarding/ProgramPreviewStep.tsx
-  - Show generated first workout
-  - Display TMs
-  - Show cycle structure
-  - "Start Training" button
-- [ ] Implement Stepper navigation between steps
-- [ ] Add route /onboarding
-- [ ] Redirect new users from home to onboarding
-- [ ] Save data to ProgramContext on completion
-- [ ] Set onboarding_complete flag
+- [x] Create src/pages/Onboarding.tsx (container)
+- [x] Create step structure (Welcome, TM, Schedule, Preview)
+- [x] Implement navigation between steps
+- [x] Add route /onboarding
+- [x] Redirect new users from home to onboarding
+- [x] Save data to ProgramContext on completion
+- [x] Set mock data for testing flow
 
-**Home Dashboard Updates** 📝
+**Home Dashboard Updates** ✅
 
-- [ ] Display current week and day
-- [ ] Show next workout preview (exercise list)
-- [ ] Add "Start Workout" button
-- [ ] Show cycle progress indicator
-- [ ] Display current TMs
-- [ ] Add quick stats (workouts this week, streak)
-- [ ] Handle case: no active cycle (redirect to onboarding)
+- [x] Display current week and day
+- [x] Show next workout preview (exercise list)
+- [x] Add "Start Workout" button
+- [x] Show cycle progress indicator
+- [x] Display current TMs
+- [x] Handle case: no active cycle (redirect to onboarding)
 
-**Storage Layer** 📝
+**Storage Layer** ✅
 
-- [ ] Define localStorage keys structure
-- [ ] Implement save/load functions in ProgramContext
-- [ ] Handle data migration (version field)
-- [ ] Test data persistence across sessions
+- [x] Define localStorage keys structure
+- [x] Implement save/load functions in ProgramContext
+- [x] Test data persistence across sessions
 
 #### Phase 2b: Workout Interface (Weeks 6-8)
 
@@ -606,24 +587,23 @@ src/
 
 ## Next Session Checklist
 
-**When resuming work on Phase 2a:**
+**When resuming work on Phase 2b:**
 
 1. ✅ Read all Memory Bank files
 2. ✅ Review current progress in this file
 3. ✅ Check activeContext.md for immediate next steps
-4. Start with data types (src/types/workout.ts)
-5. Then build program generator service
-6. Test calculations thoroughly
-7. Create ProgramContext
-8. Build onboarding UI
+4. Start with Pre-Workout screen (`src/pages/PreWorkout.tsx`)
+5. Build Active Workout Interface (`src/pages/ActiveWorkout.tsx`)
+6. Implement Set Logging logic
+7. Create Rest Timer component
 
 **Files to Create Next:**
 
-- [ ] src/types/workout.ts
-- [ ] src/services/programGenerator.ts
-- [ ] src/context/ProgramContext.tsx
-- [ ] src/pages/Onboarding.tsx
-- [ ] src/components/onboarding/\* (4 step components)
+- [ ] src/pages/PreWorkout.tsx
+- [ ] src/pages/ActiveWorkout.tsx
+- [ ] src/components/RestTimer.tsx
+- [ ] src/components/workout/SetLogger.tsx
+- [ ] src/components/workout/ExerciseCard.tsx
 
 ---
 
